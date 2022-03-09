@@ -258,6 +258,10 @@ package Test::YAFT {
 				? ($result->{value}, $params{expect})
 				: ($result->{error}, $params{throws})
 				;
+			$got = $params{got};
+			my $expect = $params{expect};
+			my $got    = _build_got $arguments;
+			my $expect = _build_expect $arguments;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
 
@@ -322,6 +326,9 @@ package Test::YAFT {
 
 	our @EXPORT = (
 		qw[ act             ],
+		qw[ arrange         ],
+		qw[ assume          ],
+		qw[ expect          ],
 		qw[ expect_false    ],
 		qw[ expect_instance_of ],
 		qw[ expect_true     ],
@@ -412,6 +419,68 @@ package Test::YAFT {
 		Test::YAFT::Test::Deep::Cmp::Value->new (@_);
 	}
 
+	sub _parse_arguments {
+		my (@arguments) = @_;
+
+		my %refs = (
+			'Test::YAFT::Got' => [],
+			'Test::YAFT::Expect' => [],
+			'Test::YAFT::Arrange' => [],
+		);
+
+		my %params;
+
+		while (@arguments) {
+			my $head = shift @arguments;
+
+			if (Ref::Util::is_blessed_coderef $head) {
+				my $ref = ref $head;
+				die "Unknown ref $ref" unless exists $refs{$ref};
+				push @{ $refs{$ref} }, $head;
+				next;
+			}
+
+			if (Ref::Util::is_coderef $head) {
+				unshift @arguments, $head->();
+				next;
+			}
+
+			die "Invalid number of arguments" unless @arguments;
+			$params{$head} = shift @arguments;
+		}
+
+		return +{
+			got     => $refs{'Test::YAFT::Got'},
+			arrange => $refs{'Test::YAFT::Arrange'},
+			expect  => $refs{'Test::YAFT::Expect'},
+			params  => \ %params,
+		};
+	}
+
+	sub _build_got {
+		my ($arguments) = @_;
+
+		return $arguments->{params}{got}
+			if exists $arguments->{params}{got};
+
+		return $_->()
+			for @{ $arguments->{got} };
+
+		deduce 'act-value';
+	}
+
+	sub _build_expect {
+		my ($arguments) = @_;
+
+		return $arguments->{params}{expect}
+			if exists $arguments->{params}{expect};
+
+		return $_->()
+			for @{ $arguments->{expect} };
+
+		return;
+	}
+
 	sub test_frame (&) {
 		my ($code) = @_;
 
@@ -421,6 +490,67 @@ package Test::YAFT {
 		local $Test::Builder::Level = $Test::Builder::Level + 3;
 
 		goto &frame;
+	}
+
+	sub nok {
+		my ($title, @params) = @_;
+
+		my $arguments = _parse_arguments @params;
+
+		test_frame {
+			$_->() for @{ $arguments->{arrange} };
+			my $got = _build_got $arguments;
+			Test::More::ok $got, $title;
+		};
+	}
+
+	sub act :prototype(&;@) {
+		my ($act_coderef, @dependencies) = @_;
+
+		proclaim 'act-dependencies' => \ @dependencies;
+		proclaim 'act'              => $act_coderef;
+	}
+
+	sub got :prototype(&) {
+		bless 'Test::YAFT::Got', $_[0];
+	}
+
+	sub arrange :prototype(&) {
+		bless 'Test::YAFT::Arrange', $_[0];
+	}
+
+	sub expect :prototype(&) {
+		bless 'Test::YAFT::Expect', $_[0];
+	}
+
+	sub subtest :prototype($&) {
+		my ($title, $code) = @_;
+
+		test_internals {
+			test_frame { Test::More::subtest $title, $code };
+		}
+	}
+
+	sub assume {
+		my ($title, @params) = @_;
+
+		my $arguments = _parse_arguments @params;
+
+		subtest $title => sub {
+			$_->() for @{ $arguments->{arrange} };
+
+			my $got    = _build_got $arguments;
+
+			for my $expect (@{ $arguments->{expect} }) {
+				local $_ = $got;
+
+				$expect->();
+			}
+		};
+	}
+
+	sub there {
+		goto &it;
 	}
 
 	1;
@@ -442,6 +572,58 @@ Test::YAFT - Yet another testing framework
 
 This module combines features of multiple test libraries providing
 its own, BDD inspired, Context oriented, testing approach.
+
+=head2 Motivation
+
+There are multiple C<Test> libraries, each of with some good parts,
+as well as with some parts solved better by another library - but
+these libraries do not cooperate.
+
+=head2 Goals
+
+Test base should be entry point for newbies into project, giving them
+explanation what and why.
+
+Good test should also be understandable by any person involved in project,
+even those not capable of reading perl (well, some are still need, but not
+as a code, rather as a punctuation/markdown/...)
+
+=over
+
+=item Test message is mandatory
+
+Test without declaration why it exists makes no sense.
+From readability point of view it's easier to read a test code when one knows
+what to expect (in opposite to common optional test message at the end.
+
+	it "should not allow unauthorized user to list available products"
+		=> arrange { authorized_user => none }
+		=> act     { rest_api_operation 'list_available_products' }
+		=> expect  { rest_api_response NOT_ALLOWED }
+		;
+
+=item Every other parameter is explicitely named
+
+	it "should be like that"
+		=> got    => $got
+		=> expect => $expect
+		;
+
+=item Use context oriented approach
+
+Allow multiple tests on same value
+
+	got { $got };
+
+	it "should ..."
+		=> expect => ...
+		;
+
+	it "should ... "
+		=> expect => another ...
+		;
+
+=back
 
 =head1 GLOSSARY
 
@@ -1052,6 +1234,32 @@ Utility function to populate required boring details like
 =item create new L<Context::Singleton> frame
 
 =back
+
+=head1 EXPECTATIONS
+
+=head2 Test::Deep
+
+Most C<Test::Deep> exports are reexported.
+
+=head2 expect_true
+
+Alias for C<Test::Deep::bool (1)>
+
+=head3 expect_false
+
+Alias for C<Test::Deep::bool (0)>
+
+=head3 pass
+
+=head3 fail
+
+=head3 done_testing
+
+Reexport from L<Test::More>.
+
+=head3 had_no_warnings
+
+Reexport from L<Test::Warnings>
 
 =head1 AUTHOR
 

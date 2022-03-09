@@ -13,6 +13,58 @@ Test::YAFT - Yet another testing framework
 This module combines features of multiple test libraries providing
 its own, BDD inspired, Context oriented, testing approach.
 
+=head2 Motivation
+
+There are multiple C<Test> libraries, each of with some good parts,
+as well as with some parts solved better by another library - but
+these libraries do not cooperate.
+
+=head2 Goals
+
+Test base should be entry point for newbies into project, giving them
+explanation what and why.
+
+Good test should also be understandable by any person involved in project,
+even those not capable of reading perl (well, some are still need, but not
+as a code, rather as a punctuation/markdown/...)
+
+=over
+
+=item Test message is mandatory
+
+Test without declaration why it exists makes no sense.
+From readability point of view it's easier to read a test code when one knows
+what to expect (in opposite to common optional test message at the end.
+
+	it "should not allow unauthorized user to list available products"
+		=> arrange { authorized_user => none }
+		=> act     { rest_api_operation 'list_available_products' }
+		=> expect  { rest_api_response NOT_ALLOWED }
+		;
+
+=item Every other parameter is explicitely named
+
+	it "should be like that"
+		=> got    => $got
+		=> expect => $expect
+		;
+
+=item Use context oriented approach
+
+Allow multiple tests on same value
+
+	got { $got };
+
+	it "should ..."
+		=> expect => ...
+		;
+
+	it "should ... "
+		=> expect => another ...
+		;
+
+=back
+
 =head1 GLOSSARY
 
 =over
@@ -403,6 +455,15 @@ Functions helping to organize your tests.
 
 Reexported L<Test::More/BAIL_OUT>
 
+=head3 act
+
+	act { ... do something ... };
+
+Registry function to build value of C<$got> of asserts.
+
+When executing, registered coderef will take C<act-arguments>
+
+
 =head3 diag
 
 Reexported L<Test::More/diag>
@@ -508,6 +569,32 @@ Utility function to populate required boring details like
 =item create new L<Context::Singleton> frame
 
 =back
+
+=head1 EXPECTATIONS
+
+=head2 Test::Deep
+
+Most C<Test::Deep> exports are reexported.
+
+=head2 expect_true
+
+Alias for C<Test::Deep::bool (1)>
+
+=head3 expect_false
+
+Alias for C<Test::Deep::bool (0)>
+
+=head3 pass
+
+=head3 fail
+
+=head3 done_testing
+
+Reexport from L<Test::More>.
+
+=head3 had_no_warnings
+
+Reexport from L<Test::Warnings>
 
 =head1 AUTHOR
 

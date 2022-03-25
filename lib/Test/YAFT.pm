@@ -5,6 +5,15 @@ use warnings;
 use Syntax::Construct 'package-version', 'package-block';
 
 package Test::YAFT {
+	use parent 'Exporter::Tiny';
+
+	our @EXPORT = (
+	);
+
+	our @EXPORT_OK = (
+	);
+
+	1;
 };
 
 __END__
@@ -28,6 +37,20 @@ its own, BDD inspired, Context oriented, testing approach.
 
 =over
 
+=item assert
+
+Assert function performs actual value comparison.
+
+=item expectation
+
+Expectation function provides object (L<Test::Deep::Cmp>) describing
+compared value.
+
+=item plumbing
+
+Similar concept to git, plumbing functions are used to build
+higher level asserts, expectations, and/or tools.
+
 =back
 
 =head1 EXPORTED SYMBOLS
@@ -35,6 +58,10 @@ its own, BDD inspired, Context oriented, testing approach.
 This module exports symbols using L<Exporter::Tiny>.
 
 =head2 Asserts
+
+	use Test::YAFT qw[ :asserts ];
+
+Assert functions are exported by default.
 
 Every assert accepts (if any) test message as a first (positional) parameter,
 with restof parameters using named approach.
@@ -59,11 +86,19 @@ with one parameter per line, leading with fat comma.
 
 =head2 Helper Functions
 
+	use Test::YAFT qw[ :helpers ];
+
+Helper functions are exported by default.
+
 Functions helping to organize your tests.
 
-=head2 Utility Functions
+=head2 Plumbing Functions
 
-Functions helping writing your custom asserts and/or expectations.
+	use Test::YAFT qw[ :plumbings ];
+
+Functions helping writing your custom asserts, expectations, and/or tools.
+
+Plumbing functions are not exported by default.
 
 =head1 AUTHOR
 

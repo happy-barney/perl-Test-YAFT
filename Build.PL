@@ -23,15 +23,27 @@ my %module_build_args = (
   "module_name" => "Test::YAFT",
   "recursive_test_files" => 1,
   "requires" => {
+    "Exporter::Tiny" => 0,
     "Syntax::Construct" => 0,
+    "parent" => 0,
     "perl" => "5.014",
     "warnings" => 0
+  },
+  "test_requires" => {
+    "Test::Deep" => 0,
+    "Test::More" => 0,
+    "Test::Tester" => 0,
+    "Test::Warnings" => 0
   }
 );
 
 
 my %fallback_build_requires = (
-  "Module::Build" => "0.28"
+  "Module::Build" => "0.28",
+  "Test::Deep" => 0,
+  "Test::More" => 0,
+  "Test::Tester" => 0,
+  "Test::Warnings" => 0
 );
 
 

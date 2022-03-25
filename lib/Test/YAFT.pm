@@ -16,6 +16,15 @@ package Test::YAFT {
 	use Test::Deep qw[];
 	use Test::Differences qw[];
 	use Test::More     v0.970 qw[];
+	use Test::Builder  qw[];
+	use Test::Deep     qw[ !cmp_deep !cmp_bag !cmp_methods !cmp_set ];
+	use Test::More     v0.970 import => [
+		qw[ diag            ],
+		qw[ done_testing    ],
+		qw[ note            ],
+		qw[ pass            ],
+		qw[ plan            ],
+	];
 	use Test::Warnings qw[ :no_end_test ];
 
 	use Test::YAFT::Attributes;
@@ -338,11 +347,16 @@ package Test::YAFT {
 		qw[ had_no_warnings ],
 	);
 
+	sub had_no_warnings (;$) :Reexported(\&Test::Warnings::had_no_warnings => asserts);
+	our @EXPORT_OK = (
+		qw[ test_frame      ],
+	);
 
 	sub expect_false;
 	sub expect_instance_of;
 	sub expect_true;
 	sub expect_value;
+	sub test_frame (&);
 
 	sub expect_false {
 		Test::Deep::bool (0);
@@ -358,6 +372,17 @@ package Test::YAFT {
 
 	sub expect_value {
 		Test::YAFT::Test::Deep::Cmp::Value->new (@_);
+	}
+
+	sub test_frame (&) {
+		my ($code) = @_;
+
+		# 1 - caller sub context
+		# 2 - this sub context
+		# 3 - code arg context
+		local $Test::Builder::Level = $Test::Builder::Level + 3;
+
+		goto &frame;
 	}
 
 	1;
@@ -962,6 +987,23 @@ Utility function to populate required boring details like
 =item adjusting L<Test::Builder/level>
 
 =item create L<Context::Singleton/frame>
+
+=back
+
+=head3 test_frame
+
+	sub my_assert {
+		test_frame {
+		};
+	}
+
+Utility function to populate required boring details like
+
+=over
+
+=item adjusting L<$Test::Builder::Level>
+
+=item create new L<Context::Singleton> frame
 
 =back
 

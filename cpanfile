@@ -10,6 +10,7 @@ requires "Import::Into" => "0";
 requires "Ref::Util" => "0";
 requires "Safe::Isa" => "0";
 requires "Syntax::Construct" => "0";
+requires "Test::Builder" => "0";
 requires "Test::Deep" => "0";
 requires "Test::Deep::Cmp" => "0";
 requires "Test::Deep::Obj" => "0";

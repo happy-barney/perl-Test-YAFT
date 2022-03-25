@@ -492,6 +492,23 @@ Utility function to populate required boring details like
 
 =back
 
+=head3 test_frame
+
+	sub my_assert {
+		test_frame {
+		};
+	}
+
+Utility function to populate required boring details like
+
+=over
+
+=item adjusting L<$Test::Builder::Level>
+
+=item create new L<Context::Singleton> frame
+
+=back
+
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>

@@ -368,6 +368,8 @@ mapped into L<Test::YAFT> workflow.
 
 This module exports symbols using L<Exporter::Tiny>.
 
+=head2 Reexport
+
 =head2 Asserts
 
 	use Test::YAFT qw[ :asserts ];

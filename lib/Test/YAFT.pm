@@ -321,6 +321,7 @@ package Test::YAFT {
 	}
 
 	our @EXPORT = (
+		qw[ act             ],
 		qw[ expect_false    ],
 		qw[ expect_instance_of ],
 		qw[ expect_true     ],
@@ -352,11 +353,48 @@ package Test::YAFT {
 		qw[ test_frame      ],
 	);
 
+	BEGIN {
+		contrive 'act-result'
+			=> dep  => [qw[ act act-arguments ]]
+			=> as   => sub {
+				my ($act, $act_arguments) = @_;
+				my $value;
+				my $lives_ok = eval { $act = $act->(@$act_arguments); 1 };
+				my $error = $@;
+
+				+{
+					act_lives => $lives_ok,
+					act_error => $error,
+					act_value => $value,
+				};
+			};
+
+		contrive 'act-lives'
+			=> dep  => [qw[ act-result ]]
+			=> as   => sub { $_[0]->{act_lives} }
+			;
+
+		contrive 'act-error'
+			=> dep  => [qw[ act-result ]]
+			=> as   => sub { $_[0]->{act_error} }
+			;
+
+		contrive 'act-value'
+			=> dep  => [qw[ act-result-log ]]
+			=> as   => sub { $_[0]->{act_value} }
+			;
+	}
+
+	sub act (&);
 	sub expect_false;
 	sub expect_instance_of;
 	sub expect_true;
 	sub expect_value;
 	sub test_frame (&);
+
+	sub act (&) {
+		proclaim act => shift;
+	}
 
 	sub expect_false {
 		Test::Deep::bool (0);
@@ -853,6 +891,14 @@ Functions helping to organize your tests.
 =head3 BAIL_OUT
 
 Reexported L<Test::More/BAIL_OUT>
+
+=head3 act
+
+	act { ... do something ... };
+
+Registry function to build value of C<$got> of asserts.
+
+When executing, registered coderef will take C<act-arguments>
 
 =head3 arrange
 

@@ -23,6 +23,8 @@ package Test::YAFT {
 	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
 	use Test::YAFT::Got;
+	use Test::YAFT::Test::Deep::Cmp::Instance_Of;
+	use Test::YAFT::Test::Deep::Cmp::Value;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub got (&);
@@ -309,6 +311,49 @@ package Test::YAFT {
 		&frame ($code);
 	}
 
+	our @EXPORT = (
+		qw[ expect_false    ],
+		qw[ expect_instance_of ],
+		qw[ expect_true     ],
+		qw[ expect_value    ]
+
+		# Reexport from Test::Deep
+		(grep { $_ =~ m/\b(cmp_deep|cmp_bag|cmp_methods|cmp_set)\b/ } @{ $Test::Deep::EXPORT_TAGS{v1} }),
+
+		# Reexport from Test::More
+		qw[ diag            ],
+		qw[ diag            ],
+		qw[ done_testing    ],
+		qw[ note            ],
+		qw[ pass            ],
+		qw[ plan            ],
+
+		# Reexport from Test::Warnings
+		qw[ had_no_warnings ],
+	);
+
+
+	sub expect_false;
+	sub expect_instance_of;
+	sub expect_true;
+	sub expect_value;
+
+	sub expect_false {
+		Test::Deep::bool (0);
+	}
+
+	sub expect_instance_of {
+		Test::YAFT::Test::Deep::Cmp::Instance_Of->new (@_);
+	}
+
+	sub expect_true {
+		Test::Deep::bool (1);
+	}
+
+	sub expect_value {
+		Test::YAFT::Test::Deep::Cmp::Value->new (@_);
+	}
+
 	1;
 };
 
@@ -512,14 +557,27 @@ Simple shortcut to expect value behaving like boolean true.
 
 Reexported from L<Test::More>
 
-=head3 there
+=head2 Expectations
 
-	there "should be ..."
-		=> got    => ...
-		=> expect => ...
-		;
+=head3 L<Test::Deep> expectations
 
-Alias for C<it>, providing convenient word to form meaningful English sentence
+Module reexports L<Test::Deep> v1 expectations (eg: C<ignore>)
+
+=head3 expect_false
+
+Shortcut for L<Test::Deep>C<::bool (0)> using words to express intention
+
+=head3 expect_instance_of
+
+Similar to L<Test::Deep>'s C<obj_isa> but requires instance of exact class.
+
+=head3 expect_true
+
+Shortcut for L<Test::Deep>C<::bool (1)> using words to express intention
+
+=head3 expect_value
+
+Wraps any value as L<Test::Deep::Cmp>
 
 =head2 Expectations
 

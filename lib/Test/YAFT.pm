@@ -317,6 +317,12 @@ package Test::YAFT {
 		qw[ expect_true     ],
 		qw[ expect_value    ]
 
+		# Reexport from Context::Singleton
+		qw[ contrive        ],
+		qw[ proclaim        ],
+		qw[ is_deduced      ],
+		qw[ try_deduce      ],
+
 		# Reexport from Test::Deep
 		(grep { $_ =~ m/\b(cmp_deep|cmp_bag|cmp_methods|cmp_set)\b/ } @{ $Test::Deep::EXPORT_TAGS{v1} }),
 

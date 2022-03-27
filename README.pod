@@ -164,14 +164,27 @@ Simple shortcut to expect value behaving like boolean true.
 
 Reexported from L<Test::More>
 
-=head3 there
+=head2 Expectations
 
-	there "should be ..."
-		=> got    => ...
-		=> expect => ...
-		;
+=head3 L<Test::Deep> expectations
 
-Alias for C<it>, providing convenient word to form meaningful English sentence
+Module reexports L<Test::Deep> v1 expectations (eg: C<ignore>)
+
+=head3 expect_false
+
+Shortcut for L<Test::Deep>C<::bool (0)> using words to express intention
+
+=head3 expect_instance_of
+
+Similar to L<Test::Deep>'s C<obj_isa> but requires instance of exact class.
+
+=head3 expect_true
+
+Shortcut for L<Test::Deep>C<::bool (1)> using words to express intention
+
+=head3 expect_value
+
+Wraps any value as L<Test::Deep::Cmp>
 
 =head2 Expectations
 

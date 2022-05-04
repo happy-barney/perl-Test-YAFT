@@ -24,6 +24,8 @@ my %module_build_args = (
   "recursive_test_files" => 1,
   "requires" => {
     "Attribute::Handlers" => 0,
+    "Context::Singleton" => 0,
+    "Devel::StackTrace" => 0,
     "Exporter::Tiny" => 0,
     "Syntax::Construct" => 0,
     "parent" => 0,
@@ -35,7 +37,8 @@ my %module_build_args = (
     "Test::Deep" => 0,
     "Test::More" => 0,
     "Test::Tester" => 0,
-    "Test::Warnings" => 0
+    "Test::Warnings" => 0,
+    "require::relative" => 0
   }
 );
 
@@ -45,7 +48,8 @@ my %fallback_build_requires = (
   "Test::Deep" => 0,
   "Test::More" => 0,
   "Test::Tester" => 0,
-  "Test::Warnings" => 0
+  "Test::Warnings" => 0,
+  "require::relative" => 0
 );
 
 

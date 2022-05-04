@@ -23,10 +23,12 @@ my %module_build_args = (
   "module_name" => "Test::YAFT",
   "recursive_test_files" => 1,
   "requires" => {
+    "Attribute::Handlers" => 0,
     "Exporter::Tiny" => 0,
     "Syntax::Construct" => 0,
     "parent" => 0,
     "perl" => "5.014",
+    "strict" => 0,
     "warnings" => 0
   },
   "test_requires" => {

@@ -7,11 +7,23 @@ use Syntax::Construct 'package-version', 'package-block';
 package Test::YAFT {
 	use parent 'Exporter::Tiny';
 
-	our @EXPORT = (
-	);
+	use Context::Singleton;
 
-	our @EXPORT_OK = (
-	);
+	use Test::YAFT::Attributes;
+
+	sub test_frame (&)          :Exportable(all,plumbings);
+
+	sub test_frame (&) {
+		my ($code) = @_;
+
+		# 1 - caller sub context
+		# 2 - this sub context
+		# 3 - frame
+		# 4 - code arg context
+		local $Test::Builder::Level = $Test::Builder::Level + 4;
+
+		&frame ($code);
+	}
 
 	1;
 };
@@ -99,6 +111,25 @@ Functions helping to organize your tests.
 Functions helping writing your custom asserts, expectations, and/or tools.
 
 Plumbing functions are not exported by default.
+
+=head3 test_frame (&)
+
+	use Test::YAFT qw[ test_frame ];
+	sub my_assert {
+		test_frame {
+			...
+		};
+	}
+
+Utility function to populate required boring details like
+
+=over
+
+=item adjusting L<Test::Builder/level>
+
+=item create L<Context::Singleton/frame>
+
+=back
 
 =head1 AUTHOR
 

@@ -80,6 +80,25 @@ Functions helping writing your custom asserts, expectations, and/or tools.
 
 Plumbing functions are not exported by default.
 
+=head3 test_frame (&)
+
+	use Test::YAFT qw[ test_frame ];
+	sub my_assert {
+		test_frame {
+			...
+		};
+	}
+
+Utility function to populate required boring details like
+
+=over
+
+=item adjusting L<Test::Builder/level>
+
+=item create L<Context::Singleton/frame>
+
+=back
+
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>

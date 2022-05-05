@@ -5,7 +5,12 @@ requires "Attribute::Handlers" => "0";
 requires "Context::Singleton" => "0";
 requires "Devel::StackTrace" => "0";
 requires "Exporter::Tiny" => "0";
+requires "Ref::Util" => "0";
+requires "Safe::Isa" => "0";
 requires "Syntax::Construct" => "0";
+requires "Test::Deep" => "0";
+requires "Test::Differences" => "0";
+requires "Test::More" => "0";
 requires "parent" => "0";
 requires "perl" => "5.014";
 requires "strict" => "0";
@@ -16,8 +21,6 @@ on 'build' => sub {
 };
 
 on 'test' => sub {
-  requires "Test::Deep" => "0";
-  requires "Test::More" => "0";
   requires "Test::Tester" => "0";
   requires "Test::Warnings" => "0";
   requires "require::relative" => "0";

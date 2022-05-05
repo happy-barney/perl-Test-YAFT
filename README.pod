@@ -64,6 +64,54 @@ or via builder functions
 Coding style note: I suggest to use coding style as presented in all examples,
 with one parameter per line, leading with fat comma.
 
+=head3 it
+
+	it "should be ..."
+		=> got    => ...
+		=> expect => ...
+		;
+
+Basic test primitive, used by all other test functions.
+It uses L<Test::Deep>'s C<cmp_deeply> to compare values.
+
+In addition to C<Test::Deep>'s stack also uses L<Test::Difference> to report
+differences when failed.
+
+When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
+
+Accepted named parameters:
+
+=over
+
+=item diag
+
+Custom diagnostic message, printed out in case of failure.
+
+When specified no other diagnostic message is printed.
+
+Can be string, arrayref of strings, or coderef returning strings.
+
+Coderef gets two parameters - Test::Deep stack and value under test.
+
+=item expect
+
+Expected value.
+
+=item got
+
+Value under test.
+
+=back
+
+=head3 there
+
+	there "should be ..."
+		=> got    => ...
+		=> expect => ...
+		;
+
+Alias for C<it>, providing convenient word to form meaningful English sentence
+
 =head2 Helper Functions
 
 	use Test::YAFT qw[ :helpers ];

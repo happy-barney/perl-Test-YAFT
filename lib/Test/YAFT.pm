@@ -8,10 +8,64 @@ package Test::YAFT {
 	use parent 'Exporter::Tiny';
 
 	use Context::Singleton;
+	use Ref::Util qw[];
+	use Safe::Isa qw[];
+
+	use Test::Deep qw[];
+	use Test::Differences qw[];
+	use Test::More qw[];
 
 	use Test::YAFT::Attributes;
 
+	sub it                      :Exported(all,asserts);
 	sub test_frame (&)          :Exportable(all,plumbings);
+	sub there                   :Exported(all,asserts)      :From(\&it);
+
+	sub _run_diag;
+
+	sub _run_diag {
+		my ($diag, $stack, $got) = @_;
+
+		return
+			unless $diag;
+
+		return Test::More::diag ($diag->($stack, $got))
+			if Ref::Util::is_coderef ($diag);
+
+		return Test::More::diag (@$diag)
+			if Ref::Util::is_arrayref ($diag);
+
+		return Test::More::diag ($diag);
+	}
+
+	sub it {
+		my ($title, %params) = @_;
+
+		my ($ok, $stack, $got);
+		test_frame {
+			$got    = $params{got};
+			my $expect = $params{expect};
+
+			return Test::More::ok (!($got xor $expect->{val}), $title)
+				if $expect->$Safe::Isa::_isa (Test::Deep::Boolean::);
+
+			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
+
+			return Test::More::pass ($title)
+				if $ok;
+
+			return Test::More::fail ($title)
+				if $params{diag};
+
+			Test::Differences::eq_or_diff $got, $expect, $title;
+			Test::More::diag (Test::Deep::deep_diag ($stack))
+				if ref $got || ref $expect;
+
+			return;
+		} or _run_diag ($params{diag}, $stack, $got);
+
+		return $ok;
+	}
 
 	sub test_frame (&) {
 		my ($code) = @_;
@@ -95,6 +149,54 @@ or via builder functions
 
 Coding style note: I suggest to use coding style as presented in all examples,
 with one parameter per line, leading with fat comma.
+
+=head3 it
+
+	it "should be ..."
+		=> got    => ...
+		=> expect => ...
+		;
+
+Basic test primitive, used by all other test functions.
+It uses L<Test::Deep>'s C<cmp_deeply> to compare values.
+
+In addition to C<Test::Deep>'s stack also uses L<Test::Difference> to report
+differences when failed.
+
+When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
+
+Accepted named parameters:
+
+=over
+
+=item diag
+
+Custom diagnostic message, printed out in case of failure.
+
+When specified no other diagnostic message is printed.
+
+Can be string, arrayref of strings, or coderef returning strings.
+
+Coderef gets two parameters - Test::Deep stack and value under test.
+
+=item expect
+
+Expected value.
+
+=item got
+
+Value under test.
+
+=back
+
+=head3 there
+
+	there "should be ..."
+		=> got    => ...
+		=> expect => ...
+		;
+
+Alias for C<it>, providing convenient word to form meaningful English sentence
 
 =head2 Helper Functions
 

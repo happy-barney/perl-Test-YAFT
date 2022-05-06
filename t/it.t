@@ -10,7 +10,7 @@ Test::More::subtest "when expecting boolean true" => sub {
 		sub {
 			it "should just pass"
 				=> got    => 1
-				=> expect => Test::Deep::bool (1)
+				=> expect => expect_true
 				;
 		},
 		{
@@ -27,7 +27,7 @@ Test::More::subtest "when expecting boolean false" => sub {
 		sub {
 			it "should just pass"
 				=> got    => 0
-				=> expect => Test::Deep::bool (0)
+				=> expect => expect_false
 				;
 		},
 		{
@@ -44,7 +44,7 @@ Test::More::subtest "when failing to expect boolean false" => sub {
 		sub {
 			it "should just pass"
 				=> got    => 1
-				=> expect => Test::Deep::bool (0)
+				=> expect => expect_false
 				;
 		},
 		{
@@ -61,7 +61,7 @@ Test::More::subtest "when failing with custom diag" => sub {
 		sub {
 			it "when failing with custom diag"
 				=> got    => 1
-				=> expect => Test::Deep::bool (0)
+				=> expect => expect_false
 				=> diag   => 'it should not fail'
 				;
 		},

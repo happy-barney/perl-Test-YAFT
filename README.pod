@@ -24,7 +24,7 @@ Assert function performs actual value comparison.
 =item expectation
 
 Expectation function provides object (L<Test::Deep::Cmp>) describing
-compared value.
+expected value.
 
 =item plumbing
 
@@ -103,6 +103,23 @@ Value under test.
 
 =back
 
+=head3 nok
+
+	nok "shouldn't be ..."
+		=> got    => ...
+		;
+
+Simple shortcut to expect value behaving like boolean false.
+
+=head3 ok
+
+	ok "should be ..."
+		=> got    => ...
+		;
+
+
+Simple shortcut to expect value behaving like boolean true.
+
 =head3 there
 
 	there "should be ..."
@@ -111,6 +128,18 @@ Value under test.
 		;
 
 Alias for C<it>, providing convenient word to form meaningful English sentence
+
+=head2 Expectations
+
+Every expectation returns L<Test::Deep::Cmp> object.
+
+=head3 expect_false
+
+Boolean expectation.
+
+=head3 expect_true
+
+Boolean expectation.
 
 =head2 Helper Functions
 

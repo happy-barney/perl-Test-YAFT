@@ -17,7 +17,11 @@ package Test::YAFT {
 
 	use Test::YAFT::Attributes;
 
+	sub expect_false            :Exported(all,expectations);
+	sub expect_true             :Exported(all,expectations);
 	sub it                      :Exported(all,asserts);
+	sub nok                     :Exported(all,asserts);
+	sub ok                      :Exported(all,asserts);
 	sub test_frame (&)          :Exportable(all,plumbings);
 	sub there                   :Exported(all,asserts)      :From(\&it);
 
@@ -38,6 +42,14 @@ package Test::YAFT {
 		return Test::More::diag ($diag);
 	}
 
+	sub expect_false {
+		Test::Deep::bool (0);
+	}
+
+	sub expect_true {
+		Test::Deep::bool (1);
+	}
+
 	sub it {
 		my ($title, %params) = @_;
 
@@ -46,16 +58,13 @@ package Test::YAFT {
 			$got    = $params{got};
 			my $expect = $params{expect};
 
-			return Test::More::ok (!($got xor $expect->{val}), $title)
-				if $expect->$Safe::Isa::_isa (Test::Deep::Boolean::);
-
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
 
-			return Test::More::pass ($title)
-				if $ok;
-
-			return Test::More::fail ($title)
-				if $params{diag};
+			return Test::More::ok ($ok, $title)
+				if $ok
+				|| defined $params{diag}
+				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
+				;
 
 			Test::Differences::eq_or_diff $got, $expect, $title;
 			Test::More::diag (Test::Deep::deep_diag ($stack))
@@ -65,6 +74,22 @@ package Test::YAFT {
 		} or _run_diag ($params{diag}, $stack, $got);
 
 		return $ok;
+	}
+
+	sub nok {
+		my ($message, %params) = @_;
+
+		test_frame {
+			it $message, %params, expect => expect_false, diag => ''
+		}
+	}
+
+	sub ok {
+		my ($message, %params) = @_;
+
+		test_frame {
+			it $message, %params, expect => expect_true, diag => ''
+		}
 	}
 
 	sub test_frame (&) {
@@ -110,7 +135,7 @@ Assert function performs actual value comparison.
 =item expectation
 
 Expectation function provides object (L<Test::Deep::Cmp>) describing
-compared value.
+expected value.
 
 =item plumbing
 
@@ -189,6 +214,23 @@ Value under test.
 
 =back
 
+=head3 nok
+
+	nok "shouldn't be ..."
+		=> got    => ...
+		;
+
+Simple shortcut to expect value behaving like boolean false.
+
+=head3 ok
+
+	ok "should be ..."
+		=> got    => ...
+		;
+
+
+Simple shortcut to expect value behaving like boolean true.
+
 =head3 there
 
 	there "should be ..."
@@ -197,6 +239,18 @@ Value under test.
 		;
 
 Alias for C<it>, providing convenient word to form meaningful English sentence
+
+=head2 Expectations
+
+Every expectation returns L<Test::Deep::Cmp> object.
+
+=head3 expect_false
+
+Boolean expectation.
+
+=head3 expect_true
+
+Boolean expectation.
 
 =head2 Helper Functions
 

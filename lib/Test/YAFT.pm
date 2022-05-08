@@ -19,6 +19,7 @@ package Test::YAFT {
 
 	sub expect_false            :Exported(all,expectations);
 	sub expect_true             :Exported(all,expectations);
+	sub fail                    :Exported(all,asserts);
 	sub it                      :Exported(all,asserts);
 	sub nok                     :Exported(all,asserts);
 	sub ok                      :Exported(all,asserts);
@@ -48,6 +49,14 @@ package Test::YAFT {
 
 	sub expect_true {
 		Test::Deep::bool (1);
+	}
+
+	sub fail {
+		my ($title, %params) = @_;
+
+		test_frame {
+			it $title, diag => '', %params, got => 0, expect => expect_true;
+		}
 	}
 
 	sub it {
@@ -174,6 +183,22 @@ or via builder functions
 
 Coding style note: I suggest to use coding style as presented in all examples,
 with one parameter per line, leading with fat comma.
+
+=head3 fail
+
+	return fail 'what failed';
+	return fail 'what failed'
+		=> diag => "diagnostic message"
+		;
+	return fail 'what failed'
+		=> diag => sub { "diagnostic message" }
+		;
+
+Likewise L<Test::More/fail> it also always fails, but it also accepts
+additional parameter - diagnostic message to show.
+
+When diagnostic message is a CODEREF, it is executed and its result is treated
+as list of diagnostic messages (passed to C<diag>)
 
 =head3 it
 

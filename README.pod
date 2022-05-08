@@ -64,6 +64,22 @@ or via builder functions
 Coding style note: I suggest to use coding style as presented in all examples,
 with one parameter per line, leading with fat comma.
 
+=head3 fail
+
+	return fail 'what failed';
+	return fail 'what failed'
+		=> diag => "diagnostic message"
+		;
+	return fail 'what failed'
+		=> diag => sub { "diagnostic message" }
+		;
+
+Likewise L<Test::More/fail> it also always fails, but it also accepts
+additional parameter - diagnostic message to show.
+
+When diagnostic message is a CODEREF, it is executed and its result is treated
+as list of diagnostic messages (passed to C<diag>)
+
 =head3 it
 
 	it "should be ..."

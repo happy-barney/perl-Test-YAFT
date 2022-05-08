@@ -23,6 +23,7 @@ package Test::YAFT {
 	sub it                      :Exported(all,asserts);
 	sub nok                     :Exported(all,asserts);
 	sub ok                      :Exported(all,asserts);
+	sub subtest                 :Exported(all,helpers);
 	sub test_frame (&)          :Exportable(all,plumbings);
 	sub there                   :Exported(all,asserts)      :From(\&it);
 
@@ -99,6 +100,14 @@ package Test::YAFT {
 		test_frame {
 			it $message, %params, expect => expect_true, diag => ''
 		}
+	}
+
+	sub subtest {
+		my ($title, $code) = @_;
+
+		test_frame {
+			Test::More::subtest $title, $code;
+		};
 	}
 
 	sub test_frame (&) {
@@ -284,6 +293,15 @@ Boolean expectation.
 Helper functions are exported by default.
 
 Functions helping to organize your tests.
+
+=head3 subtest
+
+	subtest "title" => sub {
+		...;
+	}
+
+Similar to L<Test::More/subtest> but also creates new L<Context::Singleton>
+frame for each subtest.
 
 =head2 Plumbing Functions
 

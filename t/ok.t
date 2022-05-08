@@ -5,7 +5,7 @@ use warnings;
 
 use require::relative "test-helper.pl";
 
-Test::More::subtest "when getting true" => sub {
+subtest "when getting true" => sub {
 	Test::Tester::check_test
 		sub {
 			ok "should just pass"
@@ -21,7 +21,7 @@ Test::More::subtest "when getting true" => sub {
 	;
 };
 
-Test::More::subtest "when getting false" => sub {
+subtest "when getting false" => sub {
 	Test::Tester::check_test
 		sub {
 			ok "should just fail"

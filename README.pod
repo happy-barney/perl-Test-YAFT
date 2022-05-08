@@ -165,6 +165,15 @@ Helper functions are exported by default.
 
 Functions helping to organize your tests.
 
+=head3 subtest
+
+	subtest "title" => sub {
+		...;
+	}
+
+Similar to L<Test::More/subtest> but also creates new L<Context::Singleton>
+frame for each subtest.
+
 =head2 Plumbing Functions
 
 	use Test::YAFT qw[ :plumbings ];

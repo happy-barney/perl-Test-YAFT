@@ -5,7 +5,7 @@ use warnings;
 
 use require::relative "test-helper.pl";
 
-Test::More::subtest "when expecting boolean true" => sub {
+subtest "when expecting boolean true" => sub {
 	Test::Tester::check_test
 		sub {
 			it "should just pass"
@@ -22,7 +22,7 @@ Test::More::subtest "when expecting boolean true" => sub {
 	;
 };
 
-Test::More::subtest "when expecting boolean false" => sub {
+subtest "when expecting boolean false" => sub {
 	Test::Tester::check_test
 		sub {
 			it "should just pass"
@@ -39,7 +39,7 @@ Test::More::subtest "when expecting boolean false" => sub {
 	;
 };
 
-Test::More::subtest "when failing to expect boolean false" => sub {
+subtest "when failing to expect boolean false" => sub {
 	Test::Tester::check_test
 		sub {
 			it "should just pass"
@@ -56,7 +56,7 @@ Test::More::subtest "when failing to expect boolean false" => sub {
 	;
 };
 
-Test::More::subtest "when failing with custom diag" => sub {
+subtest "when failing with custom diag" => sub {
 	Test::Tester::check_test
 		sub {
 			it "when failing with custom diag"
@@ -75,7 +75,7 @@ Test::More::subtest "when failing with custom diag" => sub {
 	;
 };
 
-Test::More::subtest "when succeeding with Test::Deep::Cmp" => sub {
+subtest "when succeeding with Test::Deep::Cmp" => sub {
 	Test::Tester::check_test
 		sub {
 			it "when succeeding with Test::Deep::Cmp"
@@ -93,7 +93,7 @@ Test::More::subtest "when succeeding with Test::Deep::Cmp" => sub {
 	;
 };
 
-Test::More::subtest "when failing with Test::Deep::Cmp it should diag also using Test::Difference" => sub {
+subtest "when failing with Test::Deep::Cmp it should diag also using Test::Difference" => sub {
 	Test::Tester::check_test
 		sub {
 			it "when failing with Test::Deep::Cmp"
@@ -126,7 +126,7 @@ DIAG
 	;
 };
 
-Test::More::subtest "when failing with Test::Deep::Cmp and custom diag it should diag just custom diag" => sub {
+subtest "when failing with Test::Deep::Cmp and custom diag it should diag just custom diag" => sub {
 	Test::Tester::check_test
 		sub {
 			it "when failing with Test::Deep::Cmp"

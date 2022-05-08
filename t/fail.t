@@ -5,7 +5,7 @@ use warnings;
 
 use require::relative "test-helper.pl";
 
-Test::More::subtest "when just fails" => sub {
+subtest "when just fails" => sub {
 	Test::Tester::check_test
 		sub {
 			fail "when just fails";
@@ -20,7 +20,7 @@ Test::More::subtest "when just fails" => sub {
 	;
 };
 
-Test::More::subtest "when failing with custom diag" => sub {
+subtest "when failing with custom diag" => sub {
 	Test::Tester::check_test
 		sub {
 			fail "when failing with custom diag"

@@ -13,7 +13,7 @@ sub custom_assert {
 	};
 }
 
-Test::More::subtest "test_frame() should properly alter Test::Builder::Level" => sub {
+subtest "test_frame() should properly alter Test::Builder::Level" => sub {
 	Test::Tester::check_test(
 		sub { custom_assert },
 		{

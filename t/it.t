@@ -145,6 +145,6 @@ subtest "when failing with Test::Deep::Cmp and custom diag it should diag just c
 	;
 };
 
-Test::Warnings::had_no_warnings;
+had_no_warnings;
 
-Test::More::done_testing;
+done_testing;

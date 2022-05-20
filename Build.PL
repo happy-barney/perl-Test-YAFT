@@ -33,6 +33,7 @@ my %module_build_args = (
     "Test::Deep" => 0,
     "Test::Differences" => 0,
     "Test::More" => 0,
+    "Test::Warnings" => 0,
     "parent" => 0,
     "perl" => "5.014",
     "strict" => 0,
@@ -40,7 +41,6 @@ my %module_build_args = (
   },
   "test_requires" => {
     "Test::Tester" => 0,
-    "Test::Warnings" => 0,
     "require::relative" => 0
   }
 );
@@ -49,7 +49,6 @@ my %module_build_args = (
 my %fallback_build_requires = (
   "Module::Build" => "0.28",
   "Test::Tester" => 0,
-  "Test::Warnings" => 0,
   "require::relative" => 0
 );
 

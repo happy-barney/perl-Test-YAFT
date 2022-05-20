@@ -33,6 +33,17 @@ higher level asserts, expectations, and/or tools.
 
 =back
 
+=head1 Test::YAFT AND OTHER LIBRARIES
+
+Please read following documentation how are other test libraries
+mapped into L<Test::YAFT> workflow.
+
+=over
+
+=item L<Test::YAFT::Test::Warnings>
+
+=back
+
 =head1 EXPORTED SYMBOLS
 
 This module exports symbols using L<Exporter::Tiny>.
@@ -79,6 +90,13 @@ additional parameter - diagnostic message to show.
 
 When diagnostic message is a CODEREF, it is executed and its result is treated
 as list of diagnostic messages (passed to C<diag>)
+
+=head3 had_no_warnings
+
+	had_no_warnings;
+	had_no_warnings 'title';
+
+Reexported from L<Test::Warnings>
 
 =head3 it
 

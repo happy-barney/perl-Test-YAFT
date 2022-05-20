@@ -11,6 +11,7 @@ requires "Syntax::Construct" => "0";
 requires "Test::Deep" => "0";
 requires "Test::Differences" => "0";
 requires "Test::More" => "0";
+requires "Test::Warnings" => "0";
 requires "parent" => "0";
 requires "perl" => "5.014";
 requires "strict" => "0";
@@ -22,7 +23,6 @@ on 'build' => sub {
 
 on 'test' => sub {
   requires "Test::Tester" => "0";
-  requires "Test::Warnings" => "0";
   requires "require::relative" => "0";
 };
 

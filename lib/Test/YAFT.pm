@@ -14,12 +14,17 @@ package Test::YAFT {
 	use Test::Deep qw[];
 	use Test::Differences qw[];
 	use Test::More qw[];
+	use Test::Warnings qw[ :no_end_test ];
 
 	use Test::YAFT::Attributes;
+
+	# v5.14 forward prototype declaration to prevent warnings from attributes
+	sub had_no_warnings (;$);
 
 	sub expect_false            :Exported(all,expectations);
 	sub expect_true             :Exported(all,expectations);
 	sub fail                    :Exported(all,asserts);
+	sub had_no_warnings (;$)    :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub it                      :Exported(all,asserts);
 	sub nok                     :Exported(all,asserts);
 	sub ok                      :Exported(all,asserts);
@@ -162,6 +167,17 @@ higher level asserts, expectations, and/or tools.
 
 =back
 
+=head1 Test::YAFT AND OTHER LIBRARIES
+
+Please read following documentation how are other test libraries
+mapped into L<Test::YAFT> workflow.
+
+=over
+
+=item L<Test::YAFT::Test::Warnings>
+
+=back
+
 =head1 EXPORTED SYMBOLS
 
 This module exports symbols using L<Exporter::Tiny>.
@@ -208,6 +224,13 @@ additional parameter - diagnostic message to show.
 
 When diagnostic message is a CODEREF, it is executed and its result is treated
 as list of diagnostic messages (passed to C<diag>)
+
+=head3 had_no_warnings
+
+	had_no_warnings;
+	had_no_warnings 'title';
+
+Reexported from L<Test::Warnings>
 
 =head3 it
 

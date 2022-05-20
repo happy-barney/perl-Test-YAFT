@@ -37,6 +37,6 @@ subtest "when failing with custom diag" => sub {
 	;
 };
 
-Test::Warnings::had_no_warnings;
+had_no_warnings;
 
 Test::More::done_testing;

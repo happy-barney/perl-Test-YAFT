@@ -25,4 +25,6 @@ subtest "test_frame() should properly alter Test::Builder::Level" => sub {
 
 Test::Warnings::had_no_warnings;
 
-Test::More::done_testing;
+had_no_warnings;
+
+done_testing;

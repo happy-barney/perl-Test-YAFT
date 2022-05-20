@@ -13,24 +13,40 @@ package Test::YAFT {
 
 	use Test::Deep qw[];
 	use Test::Differences qw[];
-	use Test::More qw[];
+	use Test::More     v0.970 qw[];
 	use Test::Warnings qw[ :no_end_test ];
 
 	use Test::YAFT::Attributes;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub had_no_warnings (;$);
+	sub pass (;$);
 
+	sub BAIL_OUT                :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
+	sub diag                    :Exported(all,helpers)      :From(\&Test::More::diag);
+	sub done_testing            :Exported(all,helpers)      :From(\&Test::More::done_testing);
 	sub expect_false            :Exported(all,expectations);
 	sub expect_true             :Exported(all,expectations);
+	sub explain                 :Exported(all,helpers)      :From(\&Test::More::explain);
 	sub fail                    :Exported(all,asserts);
 	sub had_no_warnings (;$)    :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub it                      :Exported(all,asserts);
 	sub nok                     :Exported(all,asserts);
+	sub note                    :Exported(all,helpers)      :From(\&Test::More::note);
 	sub ok                      :Exported(all,asserts);
+	sub pass (;$)               :Exported(all,asserts)      :From(\&Test::More::pass);
+	sub plan                    :Exported(all,helpers)      :From(\&Test::More::plan);
+	sub skip                    :Exported(all,helpers)      :From(\&Test::More::skip);
 	sub subtest                 :Exported(all,helpers);
 	sub test_frame (&)          :Exportable(all,plumbings);
 	sub there                   :Exported(all,asserts)      :From(\&it);
+	sub todo                    :Exported(all,helpers)      :From(\&Test::More::todo);
+	sub todo_skip               :Exported(all,helpers)      :From(\&Test::More::todo_skip);
+
+	# TODO: Test::More - use behaviour ?
+	# isnt
+	# require_ok
+	# use_ok
 
 	sub _run_diag;
 
@@ -174,6 +190,8 @@ mapped into L<Test::YAFT> workflow.
 
 =over
 
+=item L<Test::YAFT::Test::More>
+
 =item L<Test::YAFT::Test::Warnings>
 
 =back
@@ -288,6 +306,12 @@ Simple shortcut to expect value behaving like boolean false.
 
 Simple shortcut to expect value behaving like boolean true.
 
+=head3 pass
+
+	pass 'what passed';
+
+Reexported from L<Test::More>
+
 =head3 there
 
 	there "should be ..."
@@ -317,6 +341,34 @@ Helper functions are exported by default.
 
 Functions helping to organize your tests.
 
+=head3 BAIL_OUT
+
+Reexported L<Test::More/BAIL_OUT>
+
+=head3 diag
+
+Reexported L<Test::More/diag>
+
+=head3 done_testing
+
+Reexported L<Test::More/done_testing>
+
+=head3 explain
+
+Reexported L<Test::More/explain>
+
+=head3 note
+
+Reexported L<Test::More/note>
+
+=head3 plan
+
+Reexported L<Test::More/plan>
+
+=head3 skip
+
+Reexported L<Test::More/skip>
+
 =head3 subtest
 
 	subtest "title" => sub {
@@ -325,6 +377,14 @@ Functions helping to organize your tests.
 
 Similar to L<Test::More/subtest> but also creates new L<Context::Singleton>
 frame for each subtest.
+
+=head3 todo
+
+Reexported L<Test::More/todo>
+
+=head3 todo_skip
+
+Reexported L<Test::More/todo_skip>
 
 =head2 Plumbing Functions
 

@@ -40,6 +40,8 @@ mapped into L<Test::YAFT> workflow.
 
 =over
 
+=item L<Test::YAFT::Test::More>
+
 =item L<Test::YAFT::Test::Warnings>
 
 =back
@@ -154,6 +156,12 @@ Simple shortcut to expect value behaving like boolean false.
 
 Simple shortcut to expect value behaving like boolean true.
 
+=head3 pass
+
+	pass 'what passed';
+
+Reexported from L<Test::More>
+
 =head3 there
 
 	there "should be ..."
@@ -183,6 +191,34 @@ Helper functions are exported by default.
 
 Functions helping to organize your tests.
 
+=head3 BAIL_OUT
+
+Reexported L<Test::More/BAIL_OUT>
+
+=head3 diag
+
+Reexported L<Test::More/diag>
+
+=head3 done_testing
+
+Reexported L<Test::More/done_testing>
+
+=head3 explain
+
+Reexported L<Test::More/explain>
+
+=head3 note
+
+Reexported L<Test::More/note>
+
+=head3 plan
+
+Reexported L<Test::More/plan>
+
+=head3 skip
+
+Reexported L<Test::More/skip>
+
 =head3 subtest
 
 	subtest "title" => sub {
@@ -191,6 +227,14 @@ Functions helping to organize your tests.
 
 Similar to L<Test::More/subtest> but also creates new L<Context::Singleton>
 frame for each subtest.
+
+=head3 todo
+
+Reexported L<Test::More/todo>
+
+=head3 todo_skip
+
+Reexported L<Test::More/todo_skip>
 
 =head2 Plumbing Functions
 

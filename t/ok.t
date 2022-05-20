@@ -37,7 +37,7 @@ subtest "when getting false" => sub {
 	;
 };
 
-Test::Warnings::had_no_warnings;
+had_no_warnings;
 
-Test::More::done_testing;
+done_testing;
 

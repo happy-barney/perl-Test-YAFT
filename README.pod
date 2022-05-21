@@ -175,13 +175,206 @@ Alias for C<it>, providing convenient word to form meaningful English sentence
 
 Every expectation returns L<Test::Deep::Cmp> object.
 
+=head3 expect_all
+
+Reexported L<Test::Deep/all>.
+
+=head3 expect_any
+
+Reexported L<Test::Deep/any>.
+
+=head3 expect_array
+
+Reexported L<Test::Deep/array>.
+
+=head3 expect_array_each
+
+Reexported L<Test::Deep/array_each>.
+
+=head3 expect_array_elements_only
+
+Reexported L<Test::Deep/arrayelementsonly>.
+
+=head3 expect_array_length
+
+Reexported L<Test::Deep/arraylength>.
+
+=head3 expect_array_length_only
+
+Reexported L<Test::Deep/arraylengthonly>.
+
+=head3 expect_bag
+
+Reexported L<Test::Deep/bag>.
+
+=head3 expect_blessed
+
+Reexported L<Test::Deep/blessed>.
+
+=head3 expect_bool
+
+Reexported L<Test::Deep/bool>.
+
+=head3 expect_code
+
+Reexported L<Test::Deep/code>.
+
 =head3 expect_false
 
 Boolean expectation.
 
+=head3 expect_hash
+
+Reexported L<Test::Deep/hash>.
+
+=head3 expect_hash_each
+
+Reexported L<Test::Deep/hash_each>.
+
+=head3 expect_hash_keys
+
+Reexported L<Test::Deep/hashkeys>.
+
+=head3 expect_hash_keys_only
+
+Reexported L<Test::Deep/hashkeysonly>.
+
+=head3 expect_isa
+
+Reexported L<Test::Deep/Isa>.
+Instance or inheritance expectation.
+
+=head3 expect_listmethods
+
+Reexported L<Test::Deep/listmethods>.
+
+=head3 expect_methods
+
+Reexported L<Test::Deep/methods>.
+
+=head3 expect_no_class
+
+Reexported L<Test::Deep/noclass>.
+
+=head3 expect_none
+
+Reexported L<Test::Deep/none>.
+
+=head3 expect_none_of
+
+Reexported L<Test::Deep/noneof>.
+
+=head3 expect_num
+
+Reexported L<Test::Deep/num>.
+
+=head3 expect_obj_isa
+
+Reexported L<Test::Deep/obj_isa>.
+
+=head3 expect_re
+
+Reexported L<Test::Deep/re>.
+
+=head3 expect_ref_type
+
+Reexported L<Test::Deep/reftype>.
+
+=head3 expect_regexp_matches
+
+Reexported L<Test::Deep/regexpmatches>.
+
+=head3 expect_regexp_only
+
+Reexported L<Test::Deep/regexponly>.
+
+=head3 expect_regexpref
+
+Reexported L<Test::Deep/regexpref>.
+
+=head3 expect_regexpref_only
+
+Reexported L<Test::Deep/regexprefonly>.
+
+=head3 expect_scalarref
+
+Reexported L<Test::Deep/scalarref>.
+
+=head3 expect_scalarrefonly
+
+Reexported L<Test::Deep/scalarrefonly>.
+
+=head3 expect_set
+
+Reexported L<Test::Deep/set>.
+
+=head3 expect_shallow
+
+Reexported L<Test::Deep/shallow>.
+
+=head3 expect_str
+
+Reexported L<Test::Deep/str>.
+
+=head3 expect_subbag
+
+Reexported L<Test::Deep/subbagof>.
+
+=head3 expect_subbag_of
+
+Reexported L<Test::Deep/subbagof>.
+
+=head3 expect_subhash
+
+Reexported L<Test::Deep/subhashof>.
+
+=head3 expect_subhash_of
+
+Reexported L<Test::Deep/subhashof>.
+
+=head3 expect_subset
+
+Reexported L<Test::Deep/subsetof>.
+
+=head3 expect_subset_of
+
+Reexported L<Test::Deep/subsetof>.
+
+=head3 expect_superbag
+
+Reexported L<Test::Deep/superbagof>.
+
+=head3 expect_superbag_of
+
+Reexported L<Test::Deep/superbagof>.
+
+=head3 expect_superhash
+
+Reexported L<Test::Deep/superhashof>.
+
+=head3 expect_superhash_of
+
+Reexported L<Test::Deep/superhashof>.
+
+=head3 expect_superset
+
+Reexported L<Test::Deep/supersetof>.
+
+=head3 expect_superset_of
+
+Reexported L<Test::Deep/supersetof>.
+
 =head3 expect_true
 
 Boolean expectation.
+
+=head3 expect_use_class
+
+Reexported L<Test::Deep/useclass>.
+
+=head3 ignore
+
+Reexported L<Test::Deep/ignore>.
 
 =head2 Helper Functions
 
@@ -241,8 +434,29 @@ Reexported L<Test::More/todo_skip>
 	use Test::YAFT qw[ :plumbings ];
 
 Functions helping writing your custom asserts, expectations, and/or tools.
-
 Plumbing functions are not exported by default.
+
+=head3 cmp_details
+
+	use Test::YAFT qw[ cmp_details ];
+	my ($ok, $stack) = cmp_details ($a, $b);
+
+Reexported L<Test::Deep/cmp_details>.
+
+=head3 deep_diag
+
+	use Test::YAFT qw[ deep_diag ];
+	deep_diag ($stack);
+
+Reexported L<Test::Deep/deep_diag>.
+
+=head3 eq_deeply
+
+	use Test::YAFT qw[ eq_deeply ];
+	if (eq_deeply ($a, $b)) {
+	}
+
+Reexported L<Test::Deep/eq_deeply>.
 
 =head3 test_frame (&)
 

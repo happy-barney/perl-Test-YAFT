@@ -22,26 +22,77 @@ package Test::YAFT {
 	sub had_no_warnings (;$);
 	sub pass (;$);
 
-	sub BAIL_OUT                :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
-	sub diag                    :Exported(all,helpers)      :From(\&Test::More::diag);
-	sub done_testing            :Exported(all,helpers)      :From(\&Test::More::done_testing);
-	sub expect_false            :Exported(all,expectations);
-	sub expect_true             :Exported(all,expectations);
-	sub explain                 :Exported(all,helpers)      :From(\&Test::More::explain);
-	sub fail                    :Exported(all,asserts);
-	sub had_no_warnings (;$)    :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
-	sub it                      :Exported(all,asserts);
-	sub nok                     :Exported(all,asserts);
-	sub note                    :Exported(all,helpers)      :From(\&Test::More::note);
-	sub ok                      :Exported(all,asserts);
-	sub pass (;$)               :Exported(all,asserts)      :From(\&Test::More::pass);
-	sub plan                    :Exported(all,helpers)      :From(\&Test::More::plan);
-	sub skip                    :Exported(all,helpers)      :From(\&Test::More::skip);
-	sub subtest                 :Exported(all,helpers);
-	sub test_frame (&)          :Exportable(all,plumbings);
-	sub there                   :Exported(all,asserts)      :From(\&it);
-	sub todo                    :Exported(all,helpers)      :From(\&Test::More::todo);
-	sub todo_skip               :Exported(all,helpers)      :From(\&Test::More::todo_skip);
+	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
+	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
+	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
+	sub diag                        :Exported(all,helpers)      :From(\&Test::More::diag);
+	sub done_testing                :Exported(all,helpers)      :From(\&Test::More::done_testing);
+	sub eq_deeply                   :Exportable(all,plumbings)  :From(\&Test::Deep::eq_deeply);
+	sub expect_all                  :Exported(all,expectations) :From(\&Test::Deep::all);
+	sub expect_any                  :Exported(all,expectations) :From(\&Test::Deep::any);
+	sub expect_array                :Exported(all,expectations) :From(\&Test::Deep::array);
+	sub expect_array_each           :Exported(all,expectations) :From(\&Test::Deep::array_each);
+	sub expect_array_elements_only  :Exported(all,expectations) :From(\&Test::Deep::arrayelementsonly);
+	sub expect_array_length         :Exported(all,expectations) :From(\&Test::Deep::arraylength);
+	sub expect_array_length_only    :Exported(all,expectations) :From(\&Test::Deep::arraylengthonly);
+	sub expect_bag                  :Exported(all,expectations) :From(\&Test::Deep::bag);
+	sub expect_blessed              :Exported(all,expectations) :From(\&Test::Deep::blessed);
+	sub expect_bool                 :Exported(all,expectations) :From(\&Test::Deep::bool);
+	sub expect_code                 :Exported(all,expectations) :From(\&Test::Deep::code);
+	sub expect_false                :Exported(all,expectations);
+	sub expect_hash                 :Exported(all,expectations) :From(\&Test::Deep::hash);
+	sub expect_hash_each            :Exported(all,expectations) :From(\&Test::Deep::hash_each);
+	sub expect_hash_keys            :Exported(all,expectations) :From(\&Test::Deep::hashkeys);
+	sub expect_hash_keys_only       :Exported(all,expectations) :From(\&Test::Deep::hashkeysonly);
+	sub expect_isa                  :Exported(all,expectations) :From(\&Test::Deep::Isa);
+	sub expect_listmethods          :Exported(all,expectations) :From(\&Test::Deep::listmethods);
+	sub expect_methods              :Exported(all,expectations) :From(\&Test::Deep::methods);
+	sub expect_no_class             :Exported(all,expectations) :From(\&Test::Deep::noclass);
+	sub expect_none                 :Exported(all,expectations) :From(\&Test::Deep::none);
+	sub expect_none_of              :Exported(all,expectations) :From(\&Test::Deep::noneof);
+	sub expect_num                  :Exported(all,expectations) :From(\&Test::Deep::num);
+	sub expect_obj_isa              :Exported(all,expectations) :From(\&Test::Deep::obj_isa);
+	sub expect_re                   :Exported(all,expectations) :From(\&Test::Deep::re);
+	sub expect_ref_type             :Exported(all,expectations) :From(\&Test::Deep::reftype);
+	sub expect_regexp_matches       :Exported(all,expectations) :From(\&Test::Deep::regexpmatches);
+	sub expect_regexp_only          :Exported(all,expectations) :From(\&Test::Deep::regexponly);
+	sub expect_regexpref            :Exported(all,expectations) :From(\&Test::Deep::regexpref);
+	sub expect_regexpref_only       :Exported(all,expectations) :From(\&Test::Deep::regexprefonly);
+	sub expect_scalarref            :Exported(all,expectations) :From(\&Test::Deep::scalref);
+	sub expect_scalarref_only       :Exported(all,expectations) :From(\&Test::Deep::scalarrefonly);
+	sub expect_set                  :Exported(all,expectations) :From(\&Test::Deep::set);
+	sub expect_shallow              :Exported(all,expectations) :From(\&Test::Deep::shallow);
+	sub expect_str                  :Exported(all,expectations) :From(\&Test::Deep::str);
+	sub expect_subbag               :Exported(all,expectations) :From(\&Test::Deep::subbagof);
+	sub expect_subbag_of            :Exported(all,expectations) :From(\&Test::Deep::subbagof);
+	sub expect_subhash              :Exported(all,expectations) :From(\&Test::Deep::subhashof);
+	sub expect_subhash_of           :Exported(all,expectations) :From(\&Test::Deep::subhashof);
+	sub expect_subset               :Exported(all,expectations) :From(\&Test::Deep::subsetof);
+	sub expect_subset_of            :Exported(all,expectations) :From(\&Test::Deep::subsetof);
+	sub expect_superbag             :Exported(all,expectations) :From(\&Test::Deep::superbagof);
+	sub expect_superbag_of          :Exported(all,expectations) :From(\&Test::Deep::superbagof);
+	sub expect_superhash            :Exported(all,expectations) :From(\&Test::Deep::superhashof);
+	sub expect_superhash_of         :Exported(all,expectations) :From(\&Test::Deep::superhashof);
+	sub expect_superset             :Exported(all,expectations) :From(\&Test::Deep::supersetof);
+	sub expect_superset_of          :Exported(all,expectations) :From(\&Test::Deep::supersetof);
+	sub expect_true                 :Exported(all,expectations);
+	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
+	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
+	sub fail                        :Exported(all,asserts);
+	sub had_no_warnings (;$)        :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
+	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
+	sub it                          :Exported(all,asserts);
+	sub nok                         :Exported(all,asserts);
+	sub note                        :Exported(all,helpers)      :From(\&Test::More::note);
+	sub ok                          :Exported(all,asserts);
+	sub pass (;$)                   :Exported(all,asserts)      :From(\&Test::More::pass);
+	sub plan                        :Exported(all,helpers)      :From(\&Test::More::plan);
+	sub skip                        :Exported(all,helpers)      :From(\&Test::More::skip);
+	sub subtest                     :Exported(all,helpers);
+	sub test_frame (&)              :Exportable(all,plumbings);
+	sub there                       :Exported(all,asserts)      :From(\&it);
+	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
+	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
 
 	# TODO: Test::More - use behaviour ?
 	# isnt
@@ -325,13 +376,206 @@ Alias for C<it>, providing convenient word to form meaningful English sentence
 
 Every expectation returns L<Test::Deep::Cmp> object.
 
+=head3 expect_all
+
+Reexported L<Test::Deep/all>.
+
+=head3 expect_any
+
+Reexported L<Test::Deep/any>.
+
+=head3 expect_array
+
+Reexported L<Test::Deep/array>.
+
+=head3 expect_array_each
+
+Reexported L<Test::Deep/array_each>.
+
+=head3 expect_array_elements_only
+
+Reexported L<Test::Deep/arrayelementsonly>.
+
+=head3 expect_array_length
+
+Reexported L<Test::Deep/arraylength>.
+
+=head3 expect_array_length_only
+
+Reexported L<Test::Deep/arraylengthonly>.
+
+=head3 expect_bag
+
+Reexported L<Test::Deep/bag>.
+
+=head3 expect_blessed
+
+Reexported L<Test::Deep/blessed>.
+
+=head3 expect_bool
+
+Reexported L<Test::Deep/bool>.
+
+=head3 expect_code
+
+Reexported L<Test::Deep/code>.
+
 =head3 expect_false
 
 Boolean expectation.
 
+=head3 expect_hash
+
+Reexported L<Test::Deep/hash>.
+
+=head3 expect_hash_each
+
+Reexported L<Test::Deep/hash_each>.
+
+=head3 expect_hash_keys
+
+Reexported L<Test::Deep/hashkeys>.
+
+=head3 expect_hash_keys_only
+
+Reexported L<Test::Deep/hashkeysonly>.
+
+=head3 expect_isa
+
+Reexported L<Test::Deep/Isa>.
+Instance or inheritance expectation.
+
+=head3 expect_listmethods
+
+Reexported L<Test::Deep/listmethods>.
+
+=head3 expect_methods
+
+Reexported L<Test::Deep/methods>.
+
+=head3 expect_no_class
+
+Reexported L<Test::Deep/noclass>.
+
+=head3 expect_none
+
+Reexported L<Test::Deep/none>.
+
+=head3 expect_none_of
+
+Reexported L<Test::Deep/noneof>.
+
+=head3 expect_num
+
+Reexported L<Test::Deep/num>.
+
+=head3 expect_obj_isa
+
+Reexported L<Test::Deep/obj_isa>.
+
+=head3 expect_re
+
+Reexported L<Test::Deep/re>.
+
+=head3 expect_ref_type
+
+Reexported L<Test::Deep/reftype>.
+
+=head3 expect_regexp_matches
+
+Reexported L<Test::Deep/regexpmatches>.
+
+=head3 expect_regexp_only
+
+Reexported L<Test::Deep/regexponly>.
+
+=head3 expect_regexpref
+
+Reexported L<Test::Deep/regexpref>.
+
+=head3 expect_regexpref_only
+
+Reexported L<Test::Deep/regexprefonly>.
+
+=head3 expect_scalarref
+
+Reexported L<Test::Deep/scalarref>.
+
+=head3 expect_scalarrefonly
+
+Reexported L<Test::Deep/scalarrefonly>.
+
+=head3 expect_set
+
+Reexported L<Test::Deep/set>.
+
+=head3 expect_shallow
+
+Reexported L<Test::Deep/shallow>.
+
+=head3 expect_str
+
+Reexported L<Test::Deep/str>.
+
+=head3 expect_subbag
+
+Reexported L<Test::Deep/subbagof>.
+
+=head3 expect_subbag_of
+
+Reexported L<Test::Deep/subbagof>.
+
+=head3 expect_subhash
+
+Reexported L<Test::Deep/subhashof>.
+
+=head3 expect_subhash_of
+
+Reexported L<Test::Deep/subhashof>.
+
+=head3 expect_subset
+
+Reexported L<Test::Deep/subsetof>.
+
+=head3 expect_subset_of
+
+Reexported L<Test::Deep/subsetof>.
+
+=head3 expect_superbag
+
+Reexported L<Test::Deep/superbagof>.
+
+=head3 expect_superbag_of
+
+Reexported L<Test::Deep/superbagof>.
+
+=head3 expect_superhash
+
+Reexported L<Test::Deep/superhashof>.
+
+=head3 expect_superhash_of
+
+Reexported L<Test::Deep/superhashof>.
+
+=head3 expect_superset
+
+Reexported L<Test::Deep/supersetof>.
+
+=head3 expect_superset_of
+
+Reexported L<Test::Deep/supersetof>.
+
 =head3 expect_true
 
 Boolean expectation.
+
+=head3 expect_use_class
+
+Reexported L<Test::Deep/useclass>.
+
+=head3 ignore
+
+Reexported L<Test::Deep/ignore>.
 
 =head2 Helper Functions
 
@@ -391,8 +635,29 @@ Reexported L<Test::More/todo_skip>
 	use Test::YAFT qw[ :plumbings ];
 
 Functions helping writing your custom asserts, expectations, and/or tools.
-
 Plumbing functions are not exported by default.
+
+=head3 cmp_details
+
+	use Test::YAFT qw[ cmp_details ];
+	my ($ok, $stack) = cmp_details ($a, $b);
+
+Reexported L<Test::Deep/cmp_details>.
+
+=head3 deep_diag
+
+	use Test::YAFT qw[ deep_diag ];
+	deep_diag ($stack);
+
+Reexported L<Test::Deep/deep_diag>.
+
+=head3 eq_deeply
+
+	use Test::YAFT qw[ eq_deeply ];
+	if (eq_deeply ($a, $b)) {
+	}
+
+Reexported L<Test::Deep/eq_deeply>.
 
 =head3 test_frame (&)
 

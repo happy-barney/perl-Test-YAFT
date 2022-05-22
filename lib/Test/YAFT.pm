@@ -17,6 +17,7 @@ package Test::YAFT {
 	use Test::Warnings qw[ :no_end_test ];
 
 	use Test::YAFT::Attributes;
+	use Test::YAFT::Cmp;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub had_no_warnings (;$);
@@ -77,6 +78,7 @@ package Test::YAFT {
 	sub expect_superset_of          :Exported(all,expectations) :From(\&Test::Deep::supersetof);
 	sub expect_true                 :Exported(all,expectations);
 	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
+	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
 	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
 	sub fail                        :Exported(all,asserts);
 	sub had_no_warnings (;$)        :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
@@ -572,6 +574,12 @@ Boolean expectation.
 =head3 expect_use_class
 
 Reexported L<Test::Deep/useclass>.
+
+=head3 expect_value
+
+	=> expect => expect_value (42)
+
+Wraps any value as an expectation.
 
 =head3 ignore
 

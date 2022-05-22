@@ -16,7 +16,7 @@ package Test::YAFT::Attributes {
 		my $caller = scalar caller;
 		my $target = __PACKAGE__;
 
-		for my $attribute (qw[ Exported Exportable From ]) {
+		for my $attribute (qw[ Exported Exportable From Cmp_Builder ]) {
 			eval "sub ${caller}::${attribute} : ATTR(CODE,BEGIN) { goto &${target}::${attribute} }";
 			die "cannot install $target attribute $attribute in $caller: $@" if $@;
 		}
@@ -49,6 +49,17 @@ package Test::YAFT::Attributes {
 			my $function = shift @$data;
 			*{$symbol} = $function;
 		}
+	}
+
+	sub Cmp_Builder {
+		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
+
+		my $class = ref ($data)
+			? $data->[0]
+			: $data
+			;
+
+		*{$symbol} = eval "sub { $class->new (\@_) }";
 	}
 
 	1;

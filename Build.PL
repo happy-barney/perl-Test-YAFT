@@ -31,6 +31,7 @@ my %module_build_args = (
     "Safe::Isa" => 0,
     "Syntax::Construct" => 0,
     "Test::Deep" => 0,
+    "Test::Deep::Cmp" => 0,
     "Test::Differences" => 0,
     "Test::More" => "v0.970.0",
     "Test::Warnings" => 0,

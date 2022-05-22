@@ -374,6 +374,12 @@ Boolean expectation.
 
 Reexported L<Test::Deep/useclass>.
 
+=head3 expect_value
+
+	=> expect => expect_value (42)
+
+Wraps any value as an expectation.
+
 =head3 ignore
 
 Reexported L<Test::Deep/ignore>.

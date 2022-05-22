@@ -9,6 +9,7 @@ requires "Ref::Util" => "0";
 requires "Safe::Isa" => "0";
 requires "Syntax::Construct" => "0";
 requires "Test::Deep" => "0";
+requires "Test::Deep::Cmp" => "0";
 requires "Test::Differences" => "0";
 requires "Test::More" => "v0.970.0";
 requires "Test::Warnings" => "0";

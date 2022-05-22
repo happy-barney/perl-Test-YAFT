@@ -18,6 +18,7 @@ package Test::YAFT {
 
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
+	use Test::YAFT::Cmp::Complement;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub had_no_warnings (;$);
@@ -40,6 +41,7 @@ package Test::YAFT {
 	sub expect_blessed              :Exported(all,expectations) :From(\&Test::Deep::blessed);
 	sub expect_bool                 :Exported(all,expectations) :From(\&Test::Deep::bool);
 	sub expect_code                 :Exported(all,expectations) :From(\&Test::Deep::code);
+	sub expect_complement           :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Complement);
 	sub expect_false                :Exported(all,expectations);
 	sub expect_hash                 :Exported(all,expectations) :From(\&Test::Deep::hash);
 	sub expect_hash_each            :Exported(all,expectations) :From(\&Test::Deep::hash_each);
@@ -139,7 +141,7 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got);
 		test_frame {
-			$got    = $params{got};
+			$got = $params{got};
 			my $expect = $params{expect};
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
@@ -149,6 +151,13 @@ package Test::YAFT {
 				|| defined $params{diag}
 				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
 				;
+
+			if ($expect->$Safe::Isa::_isa (Test::YAFT::Cmp::Complement::)) {
+				Test::More::ok ($ok, $title);
+				Test::More::diag (Test::Deep::deep_diag ($stack))
+					unless $ok;
+				return $ok;
+			}
 
 			Test::Differences::eq_or_diff $got, $expect, $title;
 			Test::More::diag (Test::Deep::deep_diag ($stack))
@@ -421,6 +430,17 @@ Reexported L<Test::Deep/bool>.
 =head3 expect_code
 
 Reexported L<Test::Deep/code>.
+
+=head3 expect_complement_to
+
+	it "should be a boring number"
+		=> got    => $got
+		=> expect => expect_complement_to (42)
+		;
+
+Negative expectation.
+
+Usually it's easier to use overloaded complement operators C<!> or C<~>.
 
 =head3 expect_false
 

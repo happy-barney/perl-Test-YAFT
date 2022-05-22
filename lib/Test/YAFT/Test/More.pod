@@ -79,7 +79,7 @@ Replaced with L<Test::Deep> based comparators C<expect_isa>, C<expect_obj_isa>
 
 =item isnt
 
-TODO - Test::Deep comparator
+Implemented via expectation C<expect_complement>
 
 =item like
 
@@ -127,7 +127,7 @@ Reexported
 
 =item unlike
 
-TODO - Test::Deep comparator
+Implemented via comparator C<expect_complement>
 
 =item use_ok
 

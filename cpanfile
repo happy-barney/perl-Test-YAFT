@@ -13,6 +13,7 @@ requires "Test::Deep::Cmp" => "0";
 requires "Test::Differences" => "0";
 requires "Test::More" => "v0.970.0";
 requires "Test::Warnings" => "0";
+requires "overload" => "0";
 requires "parent" => "0";
 requires "perl" => "5.014";
 requires "strict" => "0";

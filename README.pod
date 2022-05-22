@@ -221,6 +221,17 @@ Reexported L<Test::Deep/bool>.
 
 Reexported L<Test::Deep/code>.
 
+=head3 expect_complement_to
+
+	it "should be a boring number"
+		=> got    => $got
+		=> expect => expect_complement_to (42)
+		;
+
+Negative expectation.
+
+Usually it's easier to use overloaded complement operators C<!> or C<~>.
+
 =head3 expect_false
 
 Boolean expectation.

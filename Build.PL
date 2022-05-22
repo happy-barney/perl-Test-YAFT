@@ -35,6 +35,7 @@ my %module_build_args = (
     "Test::Differences" => 0,
     "Test::More" => "v0.970.0",
     "Test::Warnings" => 0,
+    "overload" => 0,
     "parent" => 0,
     "perl" => "5.014",
     "strict" => 0,

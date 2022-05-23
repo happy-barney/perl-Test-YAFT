@@ -35,7 +35,7 @@ Not supported
 
 =item cmp_ok
 
-TODO - Test::Deep comparator
+Implemented as an expectation C<expect_compare>.
 
 =item diag
 

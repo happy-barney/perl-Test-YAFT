@@ -221,6 +221,16 @@ Reexported L<Test::Deep/bool>.
 
 Reexported L<Test::Deep/code>.
 
+=head3 expect_compare
+
+	it "should not exceed maximum value"
+		=> got    => $got
+		=> expect => expect_compare ('<=', $max)
+		;
+
+Similar to L<Test::More/cmp_ok> but provided as an expectation instead
+so it can be combined with other L<Test::Deep>-based expectations.
+
 =head3 expect_complement_to
 
 	it "should be a boring number"

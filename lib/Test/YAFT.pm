@@ -18,6 +18,7 @@ package Test::YAFT {
 
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
+	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
@@ -41,6 +42,7 @@ package Test::YAFT {
 	sub expect_blessed              :Exported(all,expectations) :From(\&Test::Deep::blessed);
 	sub expect_bool                 :Exported(all,expectations) :From(\&Test::Deep::bool);
 	sub expect_code                 :Exported(all,expectations) :From(\&Test::Deep::code);
+	sub expect_compare              :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Compare);
 	sub expect_complement           :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Complement);
 	sub expect_false                :Exported(all,expectations);
 	sub expect_hash                 :Exported(all,expectations) :From(\&Test::Deep::hash);
@@ -430,6 +432,16 @@ Reexported L<Test::Deep/bool>.
 =head3 expect_code
 
 Reexported L<Test::Deep/code>.
+
+=head3 expect_compare
+
+	it "should not exceed maximum value"
+		=> got    => $got
+		=> expect => expect_compare ('<=', $max)
+		;
+
+Similar to L<Test::More/cmp_ok> but provided as an expectation instead
+so it can be combined with other L<Test::Deep>-based expectations.
 
 =head3 expect_complement_to
 

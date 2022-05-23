@@ -9,6 +9,7 @@ package Test::YAFT {
 
 	use Context::Singleton;
 	use Ref::Util qw[];
+	use Scalar::Util qw[];
 	use Safe::Isa qw[];
 	use Scalar::Util qw[];
 
@@ -27,7 +28,9 @@ package Test::YAFT {
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass (;$);
+	sub act (&;@);
 
+	sub act (&;@)                   :Exported(all,helpers);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
 	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
 	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
@@ -109,8 +112,11 @@ package Test::YAFT {
 	# require_ok
 	# use_ok
 
+	my $SINGLETON_ACT = 'Test::YAFT::act';
+
 	sub _build_got;
 	sub _it_params;
+	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
 
@@ -146,7 +152,14 @@ package Test::YAFT {
 			$params{$key} = $value;
 		}
 
+		$params{got} = \& _run_act
+			unless exists $params{got};
+
 		return %params;
+	}
+
+	sub _run_act {
+		deduce deduce $SINGLETON_ACT;
 	}
 
 	sub _run_coderef {
@@ -172,6 +185,23 @@ package Test::YAFT {
 			if Ref::Util::is_arrayref ($diag);
 
 		return Test::More::diag ($diag);
+	}
+
+	sub act (&;@) {
+		my ($act, @dependencies) = @_;
+
+		# As far as Context::Singleton doesn't support frame local contrive (yet)
+		# we have to improvise
+		# - singleton 'Test::YAFT::act' will contain name of frame specific singleton
+		# - and that singleton will contain all dependencies
+
+		my $singleton = "${SINGLETON_ACT}::${\ Scalar::Util::refaddr (current_frame) }";
+
+		proclaim $SINGLETON_ACT => $singleton;
+		contrive $singleton
+			=> dep => \@dependencies
+			=> as  => sub { _build_got ($act, @_) }
+			;
 	}
 
 	sub arrange (&) {

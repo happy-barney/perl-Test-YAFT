@@ -29,6 +29,7 @@ my %module_build_args = (
     "Exporter::Tiny" => 0,
     "Ref::Util" => 0,
     "Safe::Isa" => 0,
+    "Scalar::Util" => 0,
     "Syntax::Construct" => 0,
     "Test::Deep" => 0,
     "Test::Deep::Cmp" => 0,

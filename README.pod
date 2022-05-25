@@ -117,7 +117,7 @@ differences when failed.
 
 When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
 
-Accepted named parameters:
+Accepted named(-like) parameters:
 
 =over
 
@@ -135,9 +135,24 @@ Coderef gets two parameters - Test::Deep stack and value under test.
 
 Expected value.
 
+When specified and C<got { }> block is used, additional expectation that it
+didn't die is executed before any other comparison.
+
 =item got
 
 Value under test.
+
+When C<got { }> block is used, it is evaluated and its error status is checked
+before actual comparison.
+
+=item throws
+
+Expected error.
+
+When specified and C<got { }> block is used, additional expectation that it
+did die is executed before any other comparison.
+
+When both C<expect> and C<throws> parameters are specified, C<throws> takes precedence.
 
 =back
 
@@ -428,6 +443,19 @@ Reexported L<Test::More/done_testing>
 =head3 explain
 
 Reexported L<Test::More/explain>
+
+=head3 got
+
+Can be used to specify code to build test value or to test that given code
+should / shouldn't throw an exception.
+
+	it "should die"
+		=> got { $foo->do_something }
+		=> throws => expect_obj_isa (...)
+		;
+
+When used, C<it> always checks error status first before checking provided
+expectations.
 
 =head3 note
 

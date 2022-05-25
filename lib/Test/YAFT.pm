@@ -10,6 +10,7 @@ package Test::YAFT {
 	use Context::Singleton;
 	use Ref::Util qw[];
 	use Safe::Isa qw[];
+	use Scalar::Util qw[];
 
 	use Test::Deep qw[];
 	use Test::Differences qw[];
@@ -20,8 +21,10 @@ package Test::YAFT {
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
+	use Test::YAFT::Got;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
+	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass (;$);
 
@@ -85,6 +88,7 @@ package Test::YAFT {
 	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
 	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
 	sub fail                        :Exported(all,asserts);
+	sub got (&)                     :Exported(all,helpers);
 	sub had_no_warnings (;$)        :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
 	sub it                          :Exported(all,asserts);
@@ -105,7 +109,55 @@ package Test::YAFT {
 	# require_ok
 	# use_ok
 
+	sub _build_got;
+	sub _it_params;
+	sub _run_coderef;
 	sub _run_diag;
+
+	sub _build_got {
+		my ($builder, @args) = @_;
+
+		return _run_coderef ($builder, @args)
+			if Ref::Util::is_coderef ($builder);
+
+		return +{
+			lives_ok => 1,
+			value    => $builder,
+			error    => undef,
+		};
+	}
+
+	sub _it_params {
+		my %params;
+
+		state $class_map = {
+			'Test::YAFT::Got' => 'got',
+		};
+
+		while (@_) {
+			if (Scalar::Util::blessed ($_[0])) {
+				$params{got} = shift and next
+					if $_[0]->isa (Test::YAFT::Got::);
+				die "Ref ${\ ref $_[0] } not recognized";
+			}
+
+			my ($key, $value) = splice @_, 0, 2;
+
+			$params{$key} = $value;
+		}
+
+		return %params;
+	}
+
+	sub _run_coderef {
+		my ($builder, @args) = @_;
+
+		my $result = { value => undef };
+		$result->{lives_ok} = eval { $result->{value} = $builder->(); 1 };
+		$result->{error} = $@;
+
+		return $result;
+	}
 
 	sub _run_diag {
 		my ($diag, $stack, $got) = @_;
@@ -138,13 +190,29 @@ package Test::YAFT {
 		}
 	}
 
-	sub it {
-		my ($title, %params) = @_;
+	sub got (&) {
+		Test::YAFT::Got->new (@_);
+	}
 
-		my ($ok, $stack, $got);
+	sub it {
+		my ($title, @params) = @_;
+
+		my %params = _it_params @params;
+
+		my ($ok, $stack, $got, $expect);
 		test_frame {
-			$got = $params{got};
-			my $expect = $params{expect};
+			my $result = _build_got ($params{got});
+
+			return fail $title, diag => "Expected to live but died: $result->{error}"
+				if ! $result->{lives_ok} && ! exists $params{throws};
+
+			return fail $title, diag => "Expected to die by lives"
+				if $result->{lives_ok} && exists $params{throws};
+
+			($got, $expect) = $result->{lives_ok}
+				? ($result->{value}, $params{expect})
+				: ($result->{error}, $params{throws})
+				;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
 
@@ -329,7 +397,7 @@ differences when failed.
 
 When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
 
-Accepted named parameters:
+Accepted named(-like) parameters:
 
 =over
 
@@ -347,9 +415,24 @@ Coderef gets two parameters - Test::Deep stack and value under test.
 
 Expected value.
 
+When specified and C<got { }> block is used, additional expectation that it
+didn't die is executed before any other comparison.
+
 =item got
 
 Value under test.
+
+When C<got { }> block is used, it is evaluated and its error status is checked
+before actual comparison.
+
+=item throws
+
+Expected error.
+
+When specified and C<got { }> block is used, additional expectation that it
+did die is executed before any other comparison.
+
+When both C<expect> and C<throws> parameters are specified, C<throws> takes precedence.
 
 =back
 
@@ -640,6 +723,19 @@ Reexported L<Test::More/done_testing>
 =head3 explain
 
 Reexported L<Test::More/explain>
+
+=head3 got
+
+Can be used to specify code to build test value or to test that given code
+should / shouldn't throw an exception.
+
+	it "should die"
+		=> got { $foo->do_something }
+		=> throws => expect_obj_isa (...)
+		;
+
+When used, C<it> always checks error status first before checking provided
+expectations.
 
 =head3 note
 

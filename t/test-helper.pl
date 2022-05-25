@@ -9,4 +9,10 @@ use Test::Warnings qw[ :no_end_test ];
 
 use Test::YAFT;
 
+sub check_test (&;@) {
+	my ($code, %expectations) = @_;
+
+	Test::Tester::check_test $code, \%expectations;
+}
+
 1;

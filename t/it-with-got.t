@@ -68,7 +68,7 @@ subtest "should fail when not expecting 'throws' but code dies" => sub {
 	ok          => 0,
 	actual_ok   => 0,
 	name        => 'got { } block',
-	diag        => qr/Expected to live but died: foo at/,
+	diag        => qr/Expected to live but died/,
 };
 
 had_no_warnings;

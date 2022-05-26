@@ -25,7 +25,7 @@ on 'build' => sub {
 };
 
 on 'test' => sub {
-  requires "Test::Tester" => "0";
+  requires "Test::Tester" => "1.302107";
   requires "require::relative" => "0";
 };
 

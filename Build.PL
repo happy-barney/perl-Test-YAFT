@@ -43,7 +43,7 @@ my %module_build_args = (
     "warnings" => 0
   },
   "test_requires" => {
-    "Test::Tester" => 0,
+    "Test::Tester" => "1.302107",
     "require::relative" => 0
   }
 );
@@ -51,7 +51,7 @@ my %module_build_args = (
 
 my %fallback_build_requires = (
   "Module::Build" => "0.28",
-  "Test::Tester" => 0,
+  "Test::Tester" => "1.302107",
   "require::relative" => 0
 );
 

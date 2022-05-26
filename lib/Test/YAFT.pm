@@ -174,6 +174,10 @@ package Test::YAFT {
 		return Test::More::diag ($diag);
 	}
 
+	sub arrange (&) {
+		return Test::YAFT::Arrange::->new (@_);
+	}
+
 	sub expect_false {
 		Test::Deep::bool (0);
 	}
@@ -402,6 +406,19 @@ When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
 Accepted named(-like) parameters:
 
 =over
+
+=item arrange
+
+	it "should ..."
+		=> arrange { foo => "bar" }
+		=> arrange { bar => "baz" }
+		;
+
+C<arrange { }> blocks are evaluated in context of C<it>-local frame
+before resolving value under test (C<got { }>).
+
+C<arrange { }> blocks are always evaluated, even when value under test
+is provided as an exact value.
 
 =item diag
 
@@ -715,6 +732,40 @@ Functions helping to organize your tests.
 =head3 BAIL_OUT
 
 Reexported L<Test::More/BAIL_OUT>
+
+=head3 arrange
+
+	arrange { foo => "bar" };
+
+	it "should ..."
+		=> arrange { foo => "bar2" }
+		=> got { $foo->method (deduce 'foo') }
+		=> expect => ...
+		;
+
+Arrange block is treated as a function providing arguments for L<Context::Singleton>'s
+C<proclaim>.
+
+Arrange block returns a guard object, which is evaluated in frame valid at the
+time of evaluation (timely evaluation is responsibility of C<it>).
+
+When C<arrange { }> is called in void context, it is evaluated immediately.
+
+Validity of values follows L<Context::Singleton> rules, so for example
+
+	# This is available globally
+	arrange { foo => "global value" };
+
+	subtest "subtest" => sub {
+		# This is available in scope of subtest (it creates its own frame)
+		arrange { foo => "subtest local" };
+
+		# This is available only in scope of 'it' (ie, insite got { })
+		it "should ..."
+			=> got { ... }
+			=> arrange { foo => "assert local" }
+			;
+	};
 
 =head3 diag
 

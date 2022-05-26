@@ -322,6 +322,8 @@ mapped into L<Test::YAFT> workflow.
 
 =over
 
+=item L<Test::YAFT::Test::Exception>
+
 =item L<Test::YAFT::Test::More>
 
 =item L<Test::YAFT::Test::Warnings>
@@ -433,6 +435,8 @@ When specified and C<got { }> block is used, additional expectation that it
 did die is executed before any other comparison.
 
 When both C<expect> and C<throws> parameters are specified, C<throws> takes precedence.
+
+See also L<Test::YAFT::Test::Exception>.
 
 =back
 

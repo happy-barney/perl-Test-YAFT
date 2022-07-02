@@ -10,6 +10,8 @@ use Test::Warnings qw[ :no_end_test ];
 
 use Test::YAFT;
 
+use Context::Singleton;
+
 sub check_test (&;@) {
 	my ($code, %expectations) = @_;
 

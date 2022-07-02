@@ -24,10 +24,12 @@ package Test::YAFT {
 	use Test::YAFT::Got;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
+	sub act (&;@);
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass (;$);
 
+	sub act (&;@)                   :Exported(all,helpers);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
 	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
 	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
@@ -104,20 +106,26 @@ package Test::YAFT {
 	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
 	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
 
+	my $SINGLETON_ACT = 'Test::YAFT::act';
+
 	sub _build_got;
 	sub _it_params;
+	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
 
 	sub _build_got {
-		my ($builder) = @_;
+		my ($params) = @_;
 
-		return _run_coderef ($builder)
-			if Ref::Util::is_coderef ($builder);
+		return _run_act
+			unless exists $params->{got};
+
+		return _run_coderef ($params->{got})
+			if Ref::Util::is_coderef ($params->{got});
 
 		return +{
 			lives_ok => 1,
-			value    => $builder,
+			value    => $params->{got},
 			error    => undef,
 		};
 	}
@@ -144,11 +152,24 @@ package Test::YAFT {
 		return %params;
 	}
 
+	sub _run_act {
+		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
+		my @missing = grep { ! try_deduce $_ } @dependencies;
+
+		return {
+			lives_ok => 0,
+			value    => undef,
+			error    => "Act dependencies not fultified: ${\ join ', ', sort @missing }",
+		} if @missing;
+
+		deduce $act;
+	}
+
 	sub _run_coderef {
 		my ($builder, @args) = @_;
 
 		my $result = { value => undef };
-		$result->{lives_ok} = eval { $result->{value} = $builder->(); 1 };
+		$result->{lives_ok} = eval { $result->{value} = $builder->(@args); 1 };
 		$result->{error} = $@;
 
 		return $result;
@@ -167,6 +188,25 @@ package Test::YAFT {
 			if Ref::Util::is_arrayref ($diag);
 
 		return Test::More::diag ($diag);
+	}
+
+	sub act (&;@) {
+		my ($act, @dependencies) = @_;
+		state $counter = 0;
+
+		# As far as Context::Singleton doesn't support frame local contrive (yet)
+		# we have to improvise
+		# - singleton 'Test::YAFT::act' will contain name of frame specific singleton
+		# - and that singleton will contain all dependencies
+
+		my $singleton = "${SINGLETON_ACT}::${\ ++$counter }";
+
+		contrive $singleton
+			=> dep => \@dependencies
+			=> as  => sub { _run_coderef ($act, @_) }
+			;
+
+		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
 	}
 
 	sub expect_false {
@@ -196,7 +236,7 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
-			my $result = _build_got ($params{got});
+			my $result = _build_got (\ %params);
 
 			return fail $title, diag => "Expected to live but died: $result->{error}"
 				if ! $result->{lives_ok} && ! exists $params{throws};

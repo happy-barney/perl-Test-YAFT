@@ -46,6 +46,8 @@ mapped into L<Test::YAFT> workflow.
 
 =item L<Test::YAFT::Test::More>
 
+=item L<Test::YAFT::Test::Spec>
+
 =item L<Test::YAFT::Test::Warnings>
 
 =back

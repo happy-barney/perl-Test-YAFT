@@ -17,6 +17,7 @@ package Test::YAFT {
 	use Test::More     v0.970 qw[];
 	use Test::Warnings qw[ :no_end_test ];
 
+	use Test::YAFT::Arrange;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Cmp::Compare;
@@ -25,11 +26,13 @@ package Test::YAFT {
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
+	sub arrange (&);
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass (;$);
 
 	sub act (&;@)                   :Exported(all,helpers);
+	sub arrange (&)                 :Exported(all,helpers);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
 	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
 	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
@@ -108,11 +111,36 @@ package Test::YAFT {
 
 	my $SINGLETON_ACT = 'Test::YAFT::act';
 
+	sub _act_arrange;
+	sub _act_dependencies;
+	sub _act_singleton;
 	sub _build_got;
 	sub _it_params;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
+
+	sub _act_arrange {
+		my ($params) = @_;
+
+		proclaim $_->resolve
+			for @{ $params->{arrange} // [] };
+
+		proclaim s/^with_//r => $params->{$_}
+			for grep m/^with_/, keys %$params;
+	}
+
+	sub _act_dependencies {
+		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
+
+		return @dependencies;
+	}
+
+	sub _act_singleton {
+		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
+
+		return $act;
+	}
 
 	sub _build_got {
 		my ($params) = @_;
@@ -133,18 +161,19 @@ package Test::YAFT {
 	sub _it_params {
 		my %params;
 
-		state $class_map = {
-			'Test::YAFT::Got' => 'got',
-		};
-
 		while (@_) {
 			if (Scalar::Util::blessed ($_[0])) {
 				$params{got} = shift and next
 					if $_[0]->isa (Test::YAFT::Got::);
+				push @{ $params{arrange} //= [] }, shift and next
+					if $_[0]->isa (Test::YAFT::Arrange::);
 				die "Ref ${\ ref $_[0] } not recognized";
 			}
 
 			my ($key, $value) = splice @_, 0, 2;
+
+			push @{ $params{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
+				if $key eq 'arrange';
 
 			$params{$key} = $value;
 		}
@@ -162,7 +191,7 @@ package Test::YAFT {
 			error    => "Act dependencies not fultified: ${\ join ', ', sort @missing }",
 		} if @missing;
 
-		deduce $act;
+		deduce _act_singleton;
 	}
 
 	sub _run_coderef {
@@ -209,6 +238,10 @@ package Test::YAFT {
 		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
 	}
 
+	sub arrange (&) {
+		return Test::YAFT::Arrange::->new (@_);
+	}
+
 	sub expect_false {
 		Test::Deep::bool (0);
 	}
@@ -236,6 +269,7 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
+			_act_arrange (\ %params);
 			my $result = _build_got (\ %params);
 
 			return fail $title, diag => "Expected to live but died: $result->{error}"
@@ -439,6 +473,19 @@ When expected value is L<Test::Deep::Bool> then it uses L<Test::More>'s C<ok>.
 Accepted named(-like) parameters:
 
 =over
+
+=item arrange
+
+	it "should ..."
+		=> arrange { foo => "bar" }
+		=> arrange { bar => "baz" }
+		;
+
+C<arrange { }> blocks are evaluated in context of C<it>-local frame
+before resolving value under test (C<got { }>).
+
+C<arrange { }> blocks are always evaluated, even when value under test
+is provided as an exact value.
 
 =item diag
 
@@ -752,6 +799,40 @@ Functions helping to organize your tests.
 =head3 BAIL_OUT
 
 Reexported L<Test::More/BAIL_OUT>
+
+=head3 arrange
+
+	arrange { foo => "bar" };
+
+	it "should ..."
+		=> arrange { foo => "bar2" }
+		=> got { $foo->method (deduce 'foo') }
+		=> expect => ...
+		;
+
+Arrange block is treated as a function providing arguments for L<Context::Singleton>'s
+C<proclaim>.
+
+Arrange block returns a guard object, which is evaluated in frame valid at the
+time of evaluation (timely evaluation is responsibility of C<it>).
+
+When C<arrange { }> is called in void context, it is evaluated immediately.
+
+Validity of values follows L<Context::Singleton> rules, so for example
+
+	# This is available globally
+	arrange { foo => "global value" };
+
+	subtest "subtest" => sub {
+		# This is available in scope of subtest (it creates its own frame)
+		arrange { foo => "subtest local" };
+
+		# This is available only in scope of 'it' (ie, insite got { })
+		it "should ..."
+			=> got { ... }
+			=> arrange { foo => "assert local" }
+			;
+	};
 
 =head3 diag
 

@@ -11,6 +11,7 @@ package Test::YAFT {
 	use Ref::Util qw[];
 	use Safe::Isa qw[];
 	use Scalar::Util qw[];
+	use Sub::Install qw[];
 
 	use Test::Deep qw[];
 	use Test::Differences qw[];
@@ -104,6 +105,7 @@ package Test::YAFT {
 	sub plan                        :Exported(all,helpers)      :From(\&Test::More::plan);
 	sub skip                        :Exported(all,helpers)      :From(\&Test::More::skip);
 	sub subtest                     :Exported(all,helpers);
+	sub test_deep_cmp               :Exportable(all,plumbings);
 	sub test_frame (&)              :Exportable(all,plumbings);
 	sub there                       :Exported(all,asserts)      :From(\&it);
 	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
@@ -330,6 +332,29 @@ package Test::YAFT {
 		test_frame {
 			Test::More::subtest $title, $code;
 		};
+	}
+
+	sub test_deep_cmp {
+		my (%methods) = @_;
+
+		state $serial = 0;
+		my $prefix = 'Test::Deep::Cmp::__ANON__::';
+
+		my $class = $prefix . ++$serial;
+		my $isa = delete $methods{isa} // 'Test::YAFT::Cmp';
+
+		{
+			my @isa = Ref::Util::is_arrayref ($isa) ? @$isa : ($isa);
+			eval "require $_" for @isa;
+
+			no strict 'refs';
+			@{ "$class\::ISA" } = @isa;
+		}
+
+		Sub::Install::install_sub ({ into => $class, as => $_, code => $methods{$_} })
+			for keys %methods;
+
+		return $class;
 	}
 
 	sub test_frame (&) {
@@ -918,6 +943,38 @@ Reexported L<Test::Deep/deep_diag>.
 	}
 
 Reexported L<Test::Deep/eq_deeply>.
+
+=head3 test_deep_cmp
+
+Creates "anonymous" (as far as Perl supports) L<Test::Deep> comparator class.
+Returns created class name.
+
+Typical usage
+
+	sub expect_foo {
+		state $class = test_deep_cmp (
+			isa => ...,
+			descend => ...,
+			renderGot => ...,
+		);
+
+		$class->new (@_);
+	}
+
+
+Accepts named arguments
+
+=over
+
+=item isa => <PACKAGE>
+
+Parent class, default: L<Test::YAFT::Cmp>.
+
+=item <METHOD> => <CODEREF>
+
+Every other named parameter is treated as a method name to install into created namespace.
+
+=back
 
 =head3 test_frame (&)
 

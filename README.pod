@@ -568,6 +568,38 @@ Reexported L<Test::Deep/deep_diag>.
 
 Reexported L<Test::Deep/eq_deeply>.
 
+=head3 test_deep_cmp
+
+Creates "anonymous" (as far as Perl supports) L<Test::Deep> comparator class.
+Returns created class name.
+
+Typical usage
+
+	sub expect_foo {
+		state $class = test_deep_cmp (
+			isa => ...,
+			descend => ...,
+			renderGot => ...,
+		);
+
+		$class->new (@_);
+	}
+
+
+Accepts named arguments
+
+=over
+
+=item isa => <PACKAGE>
+
+Parent class, default: L<Test::YAFT::Cmp>.
+
+=item <METHOD> => <CODEREF>
+
+Every other named parameter is treated as a method name to install into created namespace.
+
+=back
+
 =head3 test_frame (&)
 
 	use Test::YAFT qw[ test_frame ];

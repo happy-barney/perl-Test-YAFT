@@ -44,15 +44,25 @@ my %module_build_args = (
     "warnings" => 0
   },
   "test_requires" => {
+    "HTTP::Response" => 0,
+    "HTTP::Status" => 0,
+    "JSON" => 0,
     "Test::Tester" => "1.302107",
+    "Type::Tiny" => 0,
+    "Types::Common::Numeric" => 0,
     "require::relative" => 0
   }
 );
 
 
 my %fallback_build_requires = (
+  "HTTP::Response" => 0,
+  "HTTP::Status" => 0,
+  "JSON" => 0,
   "Module::Build" => "0.28",
   "Test::Tester" => "1.302107",
+  "Type::Tiny" => 0,
+  "Types::Common::Numeric" => 0,
   "require::relative" => 0
 );
 

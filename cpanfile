@@ -26,7 +26,12 @@ on 'build' => sub {
 };
 
 on 'test' => sub {
+  requires "HTTP::Response" => "0";
+  requires "HTTP::Status" => "0";
+  requires "JSON" => "0";
   requires "Test::Tester" => "1.302107";
+  requires "Type::Tiny" => "0";
+  requires "Types::Common::Numeric" => "0";
   requires "require::relative" => "0";
 };
 

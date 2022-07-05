@@ -70,7 +70,7 @@ first.
 
 =item expect code to live otherwise
 
-=end
+=back
 
 	subtest "method birthday()" => sub {
 		it "should increment person's age"

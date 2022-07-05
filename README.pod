@@ -8,6 +8,20 @@ Test::YAFT - Yet another testing framework
 
 =head1 SYNOPSIS
 
+	use Test::YAFT;
+
+	it "should pass this test"
+		=> got    => scalar do { ... }
+		=> expect => $expected_value
+		;
+
+=head1 DISCLAIMER
+
+Please accept the fact that I'm not English native speaker so this documentation
+may contain improper grammar or wording making it harder to understand.
+
+If you encounter such place, please visit project's issue tracking.
+
 =head1 DESCRIPTION
 
 This module combines features of multiple test libraries providing
@@ -51,6 +65,9 @@ mapped into L<Test::YAFT> workflow.
 =item L<Test::YAFT::Test::Warnings>
 
 =back
+
+This document contains reference manual. If you want some kind of tutorial,
+please visit L<Test::YAFT::Introduction> as well.
 
 =head1 EXPORTED SYMBOLS
 

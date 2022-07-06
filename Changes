@@ -2,5 +2,11 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+v1.0.1     2022-07-06 10:37 UTC
+
+	Fix POD errors - thanks Michal Josef Špaček
+
+v1.0.0     2022-07-06 10:07 UTC
+
     Initial release
 

@@ -12,6 +12,10 @@ on:
   # allow to trigger workflow manually
   workflow_dispatch:
 
+  # once a month check if still runs (newer dependencies - perl, libraries, actions, ...)
+  schedule:
+    - cron: 0 0 1 * *
+
 jobs:
   build:
     name: Build distribution

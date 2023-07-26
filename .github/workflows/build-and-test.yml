@@ -9,6 +9,8 @@ on:
     branches:
       - "*"
 
+  # allow to trigger workflow manually
+  workflow_dispatch:
 
 jobs:
   build:

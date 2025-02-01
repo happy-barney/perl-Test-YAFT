@@ -16,7 +16,8 @@ package Test::YAFT {
 	use Test::Deep qw[];
 	use Test::Differences qw[];
 	use Test::More     v0.970 qw[];
-	use Test::Warnings qw[ :no_end_test ];
+
+	require Test::Warnings;
 
 	use Test::YAFT::Arrange;
 	use Test::YAFT::Attributes;

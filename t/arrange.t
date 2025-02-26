@@ -3,27 +3,27 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
 frame {
 	act { [ @_ ] } qw[ foo bar ];
 
-	arrange { foo => 'foo-1' };
-	arrange { bar => 'bar-1' };
+	arrange { foo => q (foo-1) };
+	arrange { bar => q (bar-1) };
 
-	it "should provide frame act { } block dependencies"
-		=> expect => [ 'foo-1', 'bar-1' ]
+	it q (should provide frame act { } block dependencies)
+		=> expect => [ q (foo-1), q (bar-1) ]
 		;
 
-	it "should override act { } block dependencies per it"
-		=> arrange { foo => 'foo-2' }
-		=> expect => [ 'foo-2', 'bar-1' ]
+	it q (should override act { } block dependencies per it)
+		=> arrange { foo => q (foo-2) }
+		=> expect => [ q (foo-2), q (bar-1) ]
 		;
 
-	it "should accept multiple arrange { } blocks"
-		=> arrange { foo => 'foo-2' }
-		=> arrange { bar => 'bar-2' }
-		=> expect => [ 'foo-2', 'bar-2' ]
+	it q (should accept multiple arrange { } blocks)
+		=> arrange { foo => q (foo-2) }
+		=> arrange { bar => q (bar-2) }
+		=> expect => [ q (foo-2), q (bar-2) ]
 		;
 };
 

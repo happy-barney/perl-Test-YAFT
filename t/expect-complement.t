@@ -3,12 +3,12 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-subtest "should expect different value" => sub {
+subtest q (should expect different value) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 24
 				=> expect => expect_complement (42)
 				;
@@ -16,16 +16,16 @@ subtest "should expect different value" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "success expectation of something else than boolean true" => sub {
+subtest q (success expectation of something else than boolean true) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 0
 				=> expect => ! expect_true
 				;
@@ -33,16 +33,16 @@ subtest "success expectation of something else than boolean true" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "failed expectation of something else than boolean true" => sub {
+subtest q (failed expectation of something else than boolean true) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just fail"
+			it q (should just fail)
 				=> got    => 0
 				=> expect => ! expect_false
 				;
@@ -50,7 +50,7 @@ subtest "failed expectation of something else than boolean true" => sub {
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'should just fail',
+			name        => q (should just fail),
 			diag        => <<'DIAG'
 Compared $data
    got : '0'

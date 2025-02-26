@@ -5,7 +5,7 @@ use warnings;
 use Syntax::Construct qw (package-block package-version);
 
 package Test::YAFT::Cmp::Complement {
-	use parent q (Test::YAFT::Cmp);
+	use parent qw (Test::YAFT::Cmp);
 
 	require Test::Deep;
 	require overload;
@@ -14,8 +14,8 @@ package Test::YAFT::Cmp::Complement {
 
 	BEGIN {
 		Test::Deep::Cmp->overload::OVERLOAD (
-			'!' => \& _build_isnt,
-			'~' => \& _build_isnt,
+			q (!) => \& _build_isnt,
+			q (~) => \& _build_isnt,
 		);
 	}
 
@@ -46,7 +46,7 @@ package Test::YAFT::Cmp::Complement {
 	sub renderExp {
 		my ($self) = @_;
 
-		return "Different value than: " . $self->_val->renderExp;
+		return q (Different value than: ) . $self->_val->renderExp;
 	}
 
 	1;

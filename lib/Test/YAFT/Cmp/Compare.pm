@@ -5,7 +5,7 @@ use warnings;
 use Syntax::Construct qw (package-block package-version);
 
 package Test::YAFT::Cmp::Compare {
-	use parent qw[ Test::Deep::Cmp ];
+	use parent qw (Test::Deep::Cmp);
 
 	sub init {
 		my ($self, $operator, $value) = @_;
@@ -34,7 +34,7 @@ package Test::YAFT::Cmp::Compare {
 		my $expect   = $self->_val;
 
 		my $result;
-		my $status = eval "\$result = (\$got $operator \$expect); 1";
+		my $status = eval qq (\$result = (\$got $operator \$expect); 1);
 		warn $@ unless $status;
 
 		return $result;
@@ -49,7 +49,7 @@ package Test::YAFT::Cmp::Compare {
 	sub renderExp {
 		my ($self) = @_;
 
-		$self->_operator . ' ' . $self->_render_value ($self->_val);
+		$self->_operator . q ( ) . $self->_render_value ($self->_val);
 	}
 
 	1;

@@ -23,7 +23,7 @@ sub constraint (&) {
 		die $rv if $rv;
 
 		1;
-	} 'value';
+	} q (value);
 }
 
 sub this_constraint ($;@) {

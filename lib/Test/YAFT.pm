@@ -5,17 +5,17 @@ use warnings;
 use Syntax::Construct qw (package-block package-version);
 
 package Test::YAFT {
-	use parent 'Exporter::Tiny';
+	use parent qw (Exporter::Tiny);
 
 	use Context::Singleton;
-	use Ref::Util qw[];
-	use Safe::Isa qw[];
-	use Scalar::Util qw[];
-	use Sub::Install qw[];
+	use Ref::Util qw ();
+	use Safe::Isa qw ();
+	use Scalar::Util qw ();
+	use Sub::Install qw ();
 
-	use Test::Deep qw[];
-	use Test::Differences qw[];
-	use Test::More     v0.970 qw[];
+	use Test::Deep qw ();
+	use Test::Differences qw ();
+	use Test::More     v0.970 qw ();
 
 	require Test::Warnings;
 
@@ -111,7 +111,7 @@ package Test::YAFT {
 	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
 	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
 
-	my $SINGLETON_ACT = 'Test::YAFT::act';
+	my $SINGLETON_ACT = q (Test::YAFT::act);
 
 	sub _act_arrange;
 	sub _act_dependencies;
@@ -169,13 +169,13 @@ package Test::YAFT {
 					if $_[0]->isa (Test::YAFT::Got::);
 				push @{ $params{arrange} //= [] }, shift and next
 					if $_[0]->isa (Test::YAFT::Arrange::);
-				die "Ref ${\ ref $_[0] } not recognized";
+				die qq (Ref ${\ ref $_[0] } not recognized);
 			}
 
 			my ($key, $value) = splice @_, 0, 2;
 
 			push @{ $params{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
-				if $key eq 'arrange';
+				if $key eq q (arrange);
 
 			$params{$key} = $value;
 		}
@@ -190,7 +190,7 @@ package Test::YAFT {
 		return {
 			lives_ok => 0,
 			value    => undef,
-			error    => "Act dependencies not fultified: ${\ join ', ', sort @missing }",
+			error    => qq (Act dependencies not fulfilled: ${\ join q (, ), sort @missing }),
 		} if @missing;
 
 		deduce _act_singleton;
@@ -230,7 +230,7 @@ package Test::YAFT {
 		# - singleton 'Test::YAFT::act' will contain name of frame specific singleton
 		# - and that singleton will contain all dependencies
 
-		my $singleton = "${SINGLETON_ACT}::${\ ++$counter }";
+		my $singleton = qq (${SINGLETON_ACT}::${\ ++$counter });
 
 		contrive $singleton
 			=> dep => \@dependencies
@@ -256,7 +256,7 @@ package Test::YAFT {
 		my ($title, %params) = @_;
 
 		test_frame {
-			it $title, diag => '', %params, got => 0, expect => expect_true;
+			it $title, diag => q (), %params, got => 0, expect => expect_true;
 		}
 	}
 
@@ -274,10 +274,10 @@ package Test::YAFT {
 			_act_arrange (\ %params);
 			my $result = _build_got (\ %params);
 
-			return fail $title, diag => "Expected to live but died: $result->{error}"
+			return fail $title, diag => qq (Expected to live but died: $result->{error})
 				if ! $result->{lives_ok} && ! exists $params{throws};
 
-			return fail $title, diag => "Expected to die by lives"
+			return fail $title, diag => q (Expected to die by lives)
 				if $result->{lives_ok} && exists $params{throws};
 
 			($got, $expect) = $result->{lives_ok}
@@ -314,7 +314,7 @@ package Test::YAFT {
 		my ($message, %params) = @_;
 
 		test_frame {
-			it $message, %params, expect => expect_false, diag => ''
+			it $message, %params, expect => expect_false, diag => q ()
 		}
 	}
 
@@ -322,7 +322,7 @@ package Test::YAFT {
 		my ($message, %params) = @_;
 
 		test_frame {
-			it $message, %params, expect => expect_true, diag => ''
+			it $message, %params, expect => expect_true, diag => q ()
 		}
 	}
 
@@ -338,17 +338,17 @@ package Test::YAFT {
 		my (%methods) = @_;
 
 		state $serial = 0;
-		my $prefix = 'Test::Deep::Cmp::__ANON__::';
+		my $prefix = q (Test::Deep::Cmp::__ANON__::);
 
 		my $class = $prefix . ++$serial;
-		my $isa = delete $methods{isa} // 'Test::YAFT::Cmp';
+		my $isa = delete $methods{isa} // q (Test::YAFT::Cmp);
 
 		{
 			my @isa = Ref::Util::is_arrayref ($isa) ? @$isa : ($isa);
-			eval "require $_" for @isa;
+			eval qq (require $_) for @isa;
 
-			no strict 'refs';
-			@{ "$class\::ISA" } = @isa;
+			no strict q (refs);
+			@{ qq ($class\::ISA) } = @isa;
 		}
 
 		Sub::Install::install_sub ({ into => $class, as => $_, code => $methods{$_} })
@@ -386,7 +386,7 @@ Test::YAFT - Yet another testing framework
 
 	use Test::YAFT;
 
-	it "should pass this test"
+	it q (should pass this test)
 		=> got    => scalar do { ... }
 		=> expect => $expected_value
 		;
@@ -451,7 +451,7 @@ This module exports symbols using L<Exporter::Tiny>.
 
 =head2 Asserts
 
-	use Test::YAFT qw[ :asserts ];
+	use Test::YAFT qw (:asserts);
 
 Assert functions are exported by default.
 
@@ -463,13 +463,13 @@ as one, using provided test message, failing early.
 
 Named parameters are provided either via key/value pairs
 
-	ok "test title"
+	ok q (test title)
 		=> got => $value
 		;
 
 or via builder functions
 
-	ok "test title"
+	ok q (test title)
 		=> got { build got }
 		;
 
@@ -478,12 +478,12 @@ with one parameter per line, leading with fat comma.
 
 =head3 fail
 
-	return fail 'what failed';
-	return fail 'what failed'
-		=> diag => "diagnostic message"
+	return fail q (what failed);
+	return fail q (what failed)
+		=> diag => q (diagnostic message)
 		;
-	return fail 'what failed'
-		=> diag => sub { "diagnostic message" }
+	return fail q (what failed)
+		=> diag => sub { q (diagnostic message) }
 		;
 
 Likewise L<Test::More/fail> it also always fails, but it also accepts
@@ -495,13 +495,13 @@ as list of diagnostic messages (passed to C<diag>)
 =head3 had_no_warnings
 
 	had_no_warnings;
-	had_no_warnings 'title';
+	had_no_warnings q (title);
 
 Reexported from L<Test::Warnings>
 
 =head3 it
 
-	it "should be ..."
+	it q (should be ...)
 		=> got    => ...
 		=> expect => ...
 		;
@@ -520,9 +520,9 @@ Accepted named(-like) parameters:
 
 =item arrange
 
-	it "should ..."
-		=> arrange { foo => "bar" }
-		=> arrange { bar => "baz" }
+	it q (should ...)
+		=> arrange { foo => q (bar) }
+		=> arrange { bar => q (baz) }
 		;
 
 C<arrange { }> blocks are evaluated in context of C<it>-local frame
@@ -570,7 +570,7 @@ See also L<Test::YAFT::Test::Exception>.
 
 =head3 nok
 
-	nok "shouldn't be ..."
+	nok q (shouldn't be ...)
 		=> got    => ...
 		;
 
@@ -578,7 +578,7 @@ Simple shortcut to expect value behaving like boolean false.
 
 =head3 ok
 
-	ok "should be ..."
+	ok q (should be ...)
 		=> got    => ...
 		;
 
@@ -587,13 +587,13 @@ Simple shortcut to expect value behaving like boolean true.
 
 =head3 pass
 
-	pass 'what passed';
+	pass q (what passed);
 
 Reexported from L<Test::More>
 
 =head3 there
 
-	there "should be ..."
+	there q (should be ...)
 		=> got    => ...
 		=> expect => ...
 		;
@@ -650,9 +650,9 @@ Reexported L<Test::Deep/code>.
 
 =head3 expect_compare
 
-	it "should not exceed maximum value"
+	it q (should not exceed maximum value)
 		=> got    => $got
-		=> expect => expect_compare ('<=', $max)
+		=> expect => expect_compare (q (<=), $max)
 		;
 
 Similar to L<Test::More/cmp_ok> but provided as an expectation instead
@@ -660,7 +660,7 @@ so it can be combined with other L<Test::Deep>-based expectations.
 
 =head3 expect_complement_to
 
-	it "should be a boring number"
+	it q (should be a boring number)
 		=> got    => $got
 		=> expect => expect_complement_to (42)
 		;
@@ -834,7 +834,7 @@ Reexported L<Test::Deep/ignore>.
 
 =head2 Helper Functions
 
-	use Test::YAFT qw[ :helpers ];
+	use Test::YAFT qw (:helpers);
 
 Helper functions are exported by default.
 
@@ -846,11 +846,11 @@ Reexported L<Test::More/BAIL_OUT>
 
 =head3 arrange
 
-	arrange { foo => "bar" };
+	arrange { foo => q (bar) };
 
-	it "should ..."
-		=> arrange { foo => "bar2" }
-		=> got { $foo->method (deduce 'foo') }
+	it q (should ...)
+		=> arrange { foo => q (bar2) }
+		=> got { $foo->method (deduce q (foo)) }
 		=> expect => ...
 		;
 
@@ -865,16 +865,16 @@ When C<arrange { }> is called in void context, it is evaluated immediately.
 Validity of values follows L<Context::Singleton> rules, so for example
 
 	# This is available globally
-	arrange { foo => "global value" };
+	arrange { foo => q (global value) };
 
-	subtest "subtest" => sub {
+	subtest q (subtest) => sub {
 		# This is available in scope of subtest (it creates its own frame)
-		arrange { foo => "subtest local" };
+		arrange { foo => q (subtest local) };
 
 		# This is available only in scope of 'it' (ie, insite got { })
-		it "should ..."
+		it q (should ...)
 			=> got { ... }
-			=> arrange { foo => "assert local" }
+			=> arrange { foo => q (assert local) }
 			;
 	};
 
@@ -895,7 +895,7 @@ Reexported L<Test::More/explain>
 Can be used to specify code to build test value or to test that given code
 should / shouldn't throw an exception.
 
-	it "should die"
+	it q (should die)
 		=> got { $foo->do_something }
 		=> throws => expect_obj_isa (...)
 		;
@@ -917,7 +917,7 @@ Reexported L<Test::More/skip>
 
 =head3 subtest
 
-	subtest "title" => sub {
+	subtest q (title) => sub {
 		...;
 	}
 
@@ -934,28 +934,28 @@ Reexported L<Test::More/todo_skip>
 
 =head2 Plumbing Functions
 
-	use Test::YAFT qw[ :plumbings ];
+	use Test::YAFT qw (:plumbings);
 
 Functions helping writing your custom asserts, expectations, and/or tools.
 Plumbing functions are not exported by default.
 
 =head3 cmp_details
 
-	use Test::YAFT qw[ cmp_details ];
+	use Test::YAFT qw (cmp_details);
 	my ($ok, $stack) = cmp_details ($a, $b);
 
 Reexported L<Test::Deep/cmp_details>.
 
 =head3 deep_diag
 
-	use Test::YAFT qw[ deep_diag ];
+	use Test::YAFT qw (deep_diag);
 	deep_diag ($stack);
 
 Reexported L<Test::Deep/deep_diag>.
 
 =head3 eq_deeply
 
-	use Test::YAFT qw[ eq_deeply ];
+	use Test::YAFT qw (eq_deeply);
 	if (eq_deeply ($a, $b)) {
 	}
 
@@ -995,7 +995,7 @@ Every other named parameter is treated as a method name to install into created 
 
 =head3 test_frame (&)
 
-	use Test::YAFT qw[ test_frame ];
+	use Test::YAFT qw (test_frame);
 	sub my_assert {
 		test_frame {
 			...

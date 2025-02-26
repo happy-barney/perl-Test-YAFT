@@ -3,12 +3,12 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-subtest "when expecting boolean true" => sub {
+subtest q (when expecting boolean true) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 1
 				=> expect => expect_true
 				;
@@ -16,16 +16,16 @@ subtest "when expecting boolean true" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "when expecting boolean false" => sub {
+subtest q (when expecting boolean false) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 0
 				=> expect => expect_false
 				;
@@ -33,16 +33,16 @@ subtest "when expecting boolean false" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "when failing to expect boolean false" => sub {
+subtest q (when failing to expect boolean false) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 1
 				=> expect => expect_false
 				;
@@ -50,35 +50,35 @@ subtest "when failing to expect boolean false" => sub {
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "when failing with custom diag" => sub {
+subtest q (when failing with custom diag) => sub {
 	Test::Tester::check_test
 		sub {
-			it "when failing with custom diag"
+			it q (when failing with custom diag)
 				=> got    => 1
 				=> expect => expect_false
-				=> diag   => 'it should not fail'
+				=> diag   => q (it should not fail)
 				;
 		},
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'when failing with custom diag',
-			diag        => 'it should not fail',
+			name        => q (when failing with custom diag),
+			diag        => q (it should not fail),
 		},
-		'when failing with custom diag'
+		q (when failing with custom diag)
 	;
 };
 
-subtest "when succeeding with Test::Deep::Cmp" => sub {
+subtest q (when succeeding with Test::Deep::Cmp) => sub {
 	Test::Tester::check_test
 		sub {
-			it "when succeeding with Test::Deep::Cmp"
+			it q (when succeeding with Test::Deep::Cmp)
 				=> got    => [ 1, 2 ]
 				=> expect => Test::Deep::bag (2, 1)
 				;
@@ -86,17 +86,17 @@ subtest "when succeeding with Test::Deep::Cmp" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'when succeeding with Test::Deep::Cmp',
-			diag        => '',
+			name        => q (when succeeding with Test::Deep::Cmp),
+			diag        => q (),
 		},
-		'when succeeding with Test::Deep::Cmp'
+		q (when succeeding with Test::Deep::Cmp)
 	;
 };
 
-subtest "when failing with Test::Deep::Cmp it should diag also using Test::Difference" => sub {
+subtest q (when failing with Test::Deep::Cmp it should diag also using Test::Difference) => sub {
 	Test::Tester::check_test
 		sub {
-			it "when failing with Test::Deep::Cmp"
+			it q (when failing with Test::Deep::Cmp)
 				=> got    => [ 1, 2, 3 ]
 				=> expect => Test::Deep::bag (2, 1)
 				;
@@ -104,7 +104,7 @@ subtest "when failing with Test::Deep::Cmp it should diag also using Test::Diffe
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'when failing with Test::Deep::Cmp',
+			name        => q (when failing with Test::Deep::Cmp),
 			diag        => <<'DIAG'
 +----+------+----+------------------------+
 | Elt|Got   | Elt|Expected                |
@@ -122,26 +122,26 @@ Comparing $data as a Bag
 Extra: '3'
 DIAG
 		},
-		'when failing with Test::Deep::Cmp'
+		q (when failing with Test::Deep::Cmp)
 	;
 };
 
-subtest "when failing with Test::Deep::Cmp and custom diag it should diag just custom diag" => sub {
+subtest q (when failing with Test::Deep::Cmp and custom diag it should diag just custom diag) => sub {
 	Test::Tester::check_test
 		sub {
-			it "when failing with Test::Deep::Cmp"
+			it q (when failing with Test::Deep::Cmp)
 				=> got    => [ 1, 2, 3 ]
 				=> expect => Test::Deep::bag (2, 1)
-				=> diag   => 'custom diag'
+				=> diag   => q (custom diag)
 				;
 		},
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'when failing with Test::Deep::Cmp',
-			diag        => 'custom diag',
+			name        => q (when failing with Test::Deep::Cmp),
+			diag        => q (custom diag),
 		},
-		'when failing with Test::Deep::Cmp'
+		q (when failing with Test::Deep::Cmp)
 	;
 };
 

@@ -3,12 +3,12 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-subtest "expecting value" => sub {
+subtest q (expecting value) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 42
 				=> expect => expect_value (42)
 				;
@@ -16,16 +16,16 @@ subtest "expecting value" => sub {
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "failing to expect value" => sub {
+subtest q (failing to expect value) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 1
 				=> expect => 42
 				;
@@ -33,7 +33,7 @@ subtest "failing to expect value" => sub {
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'should just pass',
+			name        => q (should just pass),
 			diag        => <<'DIAG'
 +---+-----+----------+
 | Ln|Got  |Expected  |

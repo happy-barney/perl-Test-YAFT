@@ -3,22 +3,22 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-use Test::YAFT qw[ test_frame ];
+use Test::YAFT qw (test_frame);
 
 sub custom_assert {
 	test_frame {
-		Test::More::pass 'custom-assert'
+		Test::More::pass q (custom-assert)
 	};
 }
 
-subtest "test_frame() should properly alter Test::Builder::Level" => sub {
+subtest q (test_frame() should properly alter Test::Builder::Level) => sub {
 	Test::Tester::check_test(
 		sub { custom_assert },
 		{
 			ok => 1,
-			name => 'custom-assert',
+			name => q (custom-assert),
 		},
 	);
 };

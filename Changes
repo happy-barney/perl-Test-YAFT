@@ -2,6 +2,10 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+v1.0.2     2025-05-12
+
+	Fix usage of Test::Warnings and its export of done_testing
+
 v1.0.1     2022-07-06 10:37 UTC
 
 	Fix POD errors - thanks Michal Josef Špaček

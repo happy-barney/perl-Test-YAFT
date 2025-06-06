@@ -2,6 +2,8 @@
 use v5.14;
 use warnings;
 
+use Syntax::Construct qw (package-block);
+
 package Test::YAFT::Cmp::Compare {
 	use parent qw[ Test::Deep::Cmp ];
 

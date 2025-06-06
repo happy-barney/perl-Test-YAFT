@@ -2,7 +2,7 @@
 use v5.14;
 use warnings;
 
-use Syntax::Construct 'package-block';
+use Syntax::Construct qw (package-block);
 
 package Test::YAFT::Arrange {
 	use Context::Singleton;

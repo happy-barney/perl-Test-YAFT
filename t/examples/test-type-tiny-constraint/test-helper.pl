@@ -27,12 +27,12 @@ sub constraint (&) {
 }
 
 sub this_constraint ($;@) {
-	my ($message, %params) = @_;
+	my ($message, %args) = @_;
 
 	Test::YAFT::test_frame {
 		it $message
-			=> with_value => delete $params{value}
-			=> %params
+			=> with_value => delete $args{value}
+			=> %args
 		;
 	}
 }

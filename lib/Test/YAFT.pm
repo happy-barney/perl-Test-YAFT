@@ -117,19 +117,19 @@ package Test::YAFT {
 	sub _act_dependencies;
 	sub _act_singleton;
 	sub _build_got;
-	sub _it_params;
+	sub _it_args;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
 
 	sub _act_arrange {
-		my ($params) = @_;
+		my ($args) = @_;
 
 		proclaim $_->resolve
-			for @{ $params->{arrange} // [] };
+			for @{ $args->{arrange} // [] };
 
-		proclaim s/^with_//r => $params->{$_}
-			for grep m/^with_/, keys %$params;
+		proclaim s/^with_//r => $args->{$_}
+			for grep m/^with_/, keys %$args;
 	}
 
 	sub _act_dependencies {
@@ -145,42 +145,42 @@ package Test::YAFT {
 	}
 
 	sub _build_got {
-		my ($params) = @_;
+		my ($args) = @_;
 
 		return _run_act
-			unless exists $params->{got};
+			unless exists $args->{got};
 
-		return _run_coderef ($params->{got})
-			if Ref::Util::is_coderef ($params->{got});
+		return _run_coderef ($args->{got})
+			if Ref::Util::is_coderef ($args->{got});
 
 		return +{
 			lives_ok => 1,
-			value    => $params->{got},
+			value    => $args->{got},
 			error    => undef,
 		};
 	}
 
-	sub _it_params {
-		my %params;
+	sub _it_args {
+		my %args;
 
 		while (@_) {
 			if (Scalar::Util::blessed ($_[0])) {
-				$params{got} = shift and next
+				$args{got} = shift and next
 					if $_[0]->isa (Test::YAFT::Got::);
-				push @{ $params{arrange} //= [] }, shift and next
+				push @{ $args{arrange} //= [] }, shift and next
 					if $_[0]->isa (Test::YAFT::Arrange::);
 				die qq (Ref ${\ ref $_[0] } not recognized);
 			}
 
 			my ($key, $value) = splice @_, 0, 2;
 
-			push @{ $params{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
+			push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
 				if $key eq q (arrange);
 
-			$params{$key} = $value;
+			$args{$key} = $value;
 		}
 
-		return %params;
+		return %args;
 	}
 
 	sub _run_act {
@@ -253,10 +253,10 @@ package Test::YAFT {
 	}
 
 	sub fail {
-		my ($title, %params) = @_;
+		my ($title, %args) = @_;
 
 		test_frame {
-			it $title, diag => q (), %params, got => 0, expect => expect_true;
+			it $title, diag => q (), %args, got => 0, expect => expect_true;
 		}
 	}
 
@@ -265,31 +265,31 @@ package Test::YAFT {
 	}
 
 	sub it {
-		my ($title, @params) = @_;
+		my ($title, @args) = @_;
 
-		my %params = _it_params @params;
+		my %args = _it_args @args;
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
-			_act_arrange (\ %params);
-			my $result = _build_got (\ %params);
+			_act_arrange (\ %args);
+			my $result = _build_got (\ %args);
 
 			return fail $title, diag => qq (Expected to live but died: $result->{error})
-				if ! $result->{lives_ok} && ! exists $params{throws};
+				if ! $result->{lives_ok} && ! exists $args{throws};
 
 			return fail $title, diag => q (Expected to die by lives)
-				if $result->{lives_ok} && exists $params{throws};
+				if $result->{lives_ok} && exists $args{throws};
 
 			($got, $expect) = $result->{lives_ok}
-				? ($result->{value}, $params{expect})
-				: ($result->{error}, $params{throws})
+				? ($result->{value}, $args{expect})
+				: ($result->{error}, $args{throws})
 				;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
 
 			return Test::More::ok ($ok, $title)
 				if $ok
-				|| defined $params{diag}
+				|| defined $args{diag}
 				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
 				;
 
@@ -305,24 +305,24 @@ package Test::YAFT {
 				if ref $got || ref $expect;
 
 			return;
-		} or _run_diag ($params{diag}, $stack, $got);
+		} or _run_diag ($args{diag}, $stack, $got);
 
 		return $ok;
 	}
 
 	sub nok {
-		my ($message, %params) = @_;
+		my ($message, %args) = @_;
 
 		test_frame {
-			it $message, %params, expect => expect_false, diag => q ()
+			it $message, %args, expect => expect_false, diag => q ()
 		}
 	}
 
 	sub ok {
-		my ($message, %params) = @_;
+		my ($message, %args) = @_;
 
 		test_frame {
-			it $message, %params, expect => expect_true, diag => q ()
+			it $message, %args, expect => expect_true, diag => q ()
 		}
 	}
 

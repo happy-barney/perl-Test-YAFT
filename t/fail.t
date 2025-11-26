@@ -3,37 +3,37 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-subtest "when just fails" => sub {
+subtest q (when just fails) => sub {
 	Test::Tester::check_test
 		sub {
-			fail "when just fails";
+			fail q (when just fails);
 		},
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => "when just fails",
-			diag        => "",
+			name        => q (when just fails),
+			diag        => q (),
 		},
-		"when just fails"
+		q (when just fails)
 	;
 };
 
-subtest "when failing with custom diag" => sub {
+subtest q (when failing with custom diag) => sub {
 	Test::Tester::check_test
 		sub {
-			fail "when failing with custom diag"
-				=> diag   => 'custom diag'
+			fail q (when failing with custom diag)
+				=> diag   => q (custom diag)
 				;
 		},
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'when failing with custom diag',
-			diag        => 'custom diag',
+			name        => q (when failing with custom diag),
+			diag        => q (custom diag),
 		},
-		"when failing with custom diag"
+		q (when failing with custom diag)
 	;
 };
 

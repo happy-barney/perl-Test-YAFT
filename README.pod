@@ -10,7 +10,7 @@ Test::YAFT - Yet another testing framework
 
 	use Test::YAFT;
 
-	it "should pass this test"
+	it q (should pass this test)
 		=> got    => scalar do { ... }
 		=> expect => $expected_value
 		;
@@ -75,7 +75,7 @@ This module exports symbols using L<Exporter::Tiny>.
 
 =head2 Asserts
 
-	use Test::YAFT qw[ :asserts ];
+	use Test::YAFT qw (:asserts);
 
 Assert functions are exported by default.
 
@@ -87,13 +87,13 @@ as one, using provided test message, failing early.
 
 Named parameters are provided either via key/value pairs
 
-	ok "test title"
+	ok q (test title)
 		=> got => $value
 		;
 
 or via builder functions
 
-	ok "test title"
+	ok q (test title)
 		=> got { build got }
 		;
 
@@ -102,12 +102,12 @@ with one parameter per line, leading with fat comma.
 
 =head3 fail
 
-	return fail 'what failed';
-	return fail 'what failed'
-		=> diag => "diagnostic message"
+	return fail q (what failed);
+	return fail q (what failed)
+		=> diag => q (diagnostic message)
 		;
-	return fail 'what failed'
-		=> diag => sub { "diagnostic message" }
+	return fail q (what failed)
+		=> diag => sub { q (diagnostic message) }
 		;
 
 Likewise L<Test::More/fail> it also always fails, but it also accepts
@@ -119,13 +119,13 @@ as list of diagnostic messages (passed to C<diag>)
 =head3 had_no_warnings
 
 	had_no_warnings;
-	had_no_warnings 'title';
+	had_no_warnings q (title);
 
 Reexported from L<Test::Warnings>
 
 =head3 it
 
-	it "should be ..."
+	it q (should be ...)
 		=> got    => ...
 		=> expect => ...
 		;
@@ -144,9 +144,9 @@ Accepted named(-like) parameters:
 
 =item arrange
 
-	it "should ..."
-		=> arrange { foo => "bar" }
-		=> arrange { bar => "baz" }
+	it q (should ...)
+		=> arrange { foo => q (bar) }
+		=> arrange { bar => q (baz) }
 		;
 
 C<arrange { }> blocks are evaluated in context of C<it>-local frame
@@ -194,7 +194,7 @@ See also L<Test::YAFT::Test::Exception>.
 
 =head3 nok
 
-	nok "shouldn't be ..."
+	nok q (shouldn't be ...)
 		=> got    => ...
 		;
 
@@ -202,7 +202,7 @@ Simple shortcut to expect value behaving like boolean false.
 
 =head3 ok
 
-	ok "should be ..."
+	ok q (should be ...)
 		=> got    => ...
 		;
 
@@ -211,13 +211,13 @@ Simple shortcut to expect value behaving like boolean true.
 
 =head3 pass
 
-	pass 'what passed';
+	pass q (what passed);
 
 Reexported from L<Test::More>
 
 =head3 there
 
-	there "should be ..."
+	there q (should be ...)
 		=> got    => ...
 		=> expect => ...
 		;
@@ -274,9 +274,9 @@ Reexported L<Test::Deep/code>.
 
 =head3 expect_compare
 
-	it "should not exceed maximum value"
+	it q (should not exceed maximum value)
 		=> got    => $got
-		=> expect => expect_compare ('<=', $max)
+		=> expect => expect_compare (q (<=), $max)
 		;
 
 Similar to L<Test::More/cmp_ok> but provided as an expectation instead
@@ -284,7 +284,7 @@ so it can be combined with other L<Test::Deep>-based expectations.
 
 =head3 expect_complement_to
 
-	it "should be a boring number"
+	it q (should be a boring number)
 		=> got    => $got
 		=> expect => expect_complement_to (42)
 		;
@@ -458,7 +458,7 @@ Reexported L<Test::Deep/ignore>.
 
 =head2 Helper Functions
 
-	use Test::YAFT qw[ :helpers ];
+	use Test::YAFT qw (:helpers);
 
 Helper functions are exported by default.
 
@@ -470,11 +470,11 @@ Reexported L<Test::More/BAIL_OUT>
 
 =head3 arrange
 
-	arrange { foo => "bar" };
+	arrange { foo => q (bar) };
 
-	it "should ..."
-		=> arrange { foo => "bar2" }
-		=> got { $foo->method (deduce 'foo') }
+	it q (should ...)
+		=> arrange { foo => q (bar2) }
+		=> got { $foo->method (deduce q (foo)) }
 		=> expect => ...
 		;
 
@@ -489,16 +489,16 @@ When C<arrange { }> is called in void context, it is evaluated immediately.
 Validity of values follows L<Context::Singleton> rules, so for example
 
 	# This is available globally
-	arrange { foo => "global value" };
+	arrange { foo => q (global value) };
 
-	subtest "subtest" => sub {
+	subtest q (subtest) => sub {
 		# This is available in scope of subtest (it creates its own frame)
-		arrange { foo => "subtest local" };
+		arrange { foo => q (subtest local) };
 
 		# This is available only in scope of 'it' (ie, insite got { })
-		it "should ..."
+		it q (should ...)
 			=> got { ... }
-			=> arrange { foo => "assert local" }
+			=> arrange { foo => q (assert local) }
 			;
 	};
 
@@ -519,7 +519,7 @@ Reexported L<Test::More/explain>
 Can be used to specify code to build test value or to test that given code
 should / shouldn't throw an exception.
 
-	it "should die"
+	it q (should die)
 		=> got { $foo->do_something }
 		=> throws => expect_obj_isa (...)
 		;
@@ -541,7 +541,7 @@ Reexported L<Test::More/skip>
 
 =head3 subtest
 
-	subtest "title" => sub {
+	subtest q (title) => sub {
 		...;
 	}
 
@@ -558,28 +558,28 @@ Reexported L<Test::More/todo_skip>
 
 =head2 Plumbing Functions
 
-	use Test::YAFT qw[ :plumbings ];
+	use Test::YAFT qw (:plumbings);
 
 Functions helping writing your custom asserts, expectations, and/or tools.
 Plumbing functions are not exported by default.
 
 =head3 cmp_details
 
-	use Test::YAFT qw[ cmp_details ];
+	use Test::YAFT qw (cmp_details);
 	my ($ok, $stack) = cmp_details ($a, $b);
 
 Reexported L<Test::Deep/cmp_details>.
 
 =head3 deep_diag
 
-	use Test::YAFT qw[ deep_diag ];
+	use Test::YAFT qw (deep_diag);
 	deep_diag ($stack);
 
 Reexported L<Test::Deep/deep_diag>.
 
 =head3 eq_deeply
 
-	use Test::YAFT qw[ eq_deeply ];
+	use Test::YAFT qw (eq_deeply);
 	if (eq_deeply ($a, $b)) {
 	}
 
@@ -619,7 +619,7 @@ Every other named parameter is treated as a method name to install into created 
 
 =head3 test_frame (&)
 
-	use Test::YAFT qw[ test_frame ];
+	use Test::YAFT qw (test_frame);
 	sub my_assert {
 		test_frame {
 			...

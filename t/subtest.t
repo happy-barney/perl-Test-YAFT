@@ -3,23 +3,23 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
 use Context::Singleton;
 
 contrive foo => value => 10;
 
-subtest "subtest should create its own frame" => sub {
+subtest q (subtest should create its own frame) => sub {
 	proclaim foo => 42;
 
-	it "should use value available in inner frame"
-		=> got    => deduce ('foo')
+	it q (should use value available in inner frame)
+		=> got    => deduce (q (foo))
 		=> expect => 42
 		;
 };
 
-it "should use value available in outer frame"
-	=> got    => deduce ('foo')
+it q (should use value available in outer frame)
+	=> got    => deduce (q (foo))
 	=> expect => 10
 	;
 

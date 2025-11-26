@@ -2,50 +2,52 @@
 use v5.14;
 use warnings;
 
-package Test::YAFT::Cmp::Complement;
+use Syntax::Construct qw (package-block package-version);
 
-use parent 'Test::YAFT::Cmp';
+package Test::YAFT::Cmp::Complement {
+	use parent qw (Test::YAFT::Cmp);
 
-require Test::Deep;
-require overload;
+	require Test::Deep;
+	require overload;
 
-require Safe::Isa;
+	require Safe::Isa;
 
-BEGIN {
-	Test::Deep::Cmp->overload::OVERLOAD (
-		'!' => \& _build_isnt,
-		'~' => \& _build_isnt,
-	);
+	BEGIN {
+		Test::Deep::Cmp->overload::OVERLOAD (
+			q (!) => \& _build_isnt,
+			q (~) => \& _build_isnt,
+		);
+	}
+
+	sub _build_isnt {
+		my ($expect) = @_;
+
+		return $expect->_val
+			if $expect->$Safe::Isa::_isa (__PACKAGE__);
+
+		__PACKAGE__->new ($expect);
+	}
+
+	sub init {
+		my ($self, $value) = @_;
+
+		$value = Test::YAFT::Cmp->new ($value)
+			unless $value->$Safe::Isa::_isa (Test::Deep::Cmp::);
+
+		return $self->SUPER::init ($value);
+	}
+
+	sub descend {
+		my ($self, $got) = @_;
+
+		return ! $self->_val->descend ($got);
+	}
+
+	sub renderExp {
+		my ($self) = @_;
+
+		return q (Different value than: ) . $self->_val->renderExp;
+	}
+
+	1;
 }
-
-sub _build_isnt {
-	my ($expect) = @_;
-
-	return $expect->_val
-		if $expect->$Safe::Isa::_isa (__PACKAGE__);
-
-	__PACKAGE__->new ($expect);
-}
-
-sub init {
-	my ($self, $value) = @_;
-
-	$value = Test::YAFT::Cmp->new ($value)
-		unless $value->$Safe::Isa::_isa (Test::Deep::Cmp::);
-
-	return $self->SUPER::init ($value);
-}
-
-sub descend {
-	my ($self, $got) = @_;
-
-	return ! $self->_val->descend ($got);
-}
-
-sub renderExp {
-	my ($self) = @_;
-
-	return "Different value than: " . $self->_val->renderExp;
-}
-
-1;

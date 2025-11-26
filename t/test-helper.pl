@@ -3,7 +3,7 @@ use v5.14;
 use warnings;
 
 # Test::Tester 1.302107 => Allow regexp in Test::Tester
-use Test::Tester 1.302107 import => [qw[ !check_test ]];
+use Test::Tester 1.302107 import => [qw ( !check_test )];
 
 use Test::YAFT;
 

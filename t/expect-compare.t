@@ -3,37 +3,37 @@
 use v5.14;
 use warnings;
 
-use require::relative "test-helper.pl";
+use require::relative q (test-helper.pl);
 
-subtest "successful compare with > operator" => sub {
+subtest q (successful compare with > operator) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just pass"
+			it q (should just pass)
 				=> got    => 43
-				=> expect => expect_compare ('>', 42)
+				=> expect => expect_compare (q (>), 42)
 				;
 		},
 		{
 			ok          => 1,
 			actual_ok   => 1,
-			name        => 'should just pass',
-			diag        => '',
+			name        => q (should just pass),
+			diag        => q (),
 		}
 	;
 };
 
-subtest "failed compare with > operator" => sub {
+subtest q (failed compare with > operator) => sub {
 	Test::Tester::check_test
 		sub {
-			it "should just fail"
+			it q (should just fail)
 				=> got    => 42
-				=> expect => expect_compare ('>', 42)
+				=> expect => expect_compare (q (>), 42)
 				;
 		},
 		{
 			ok          => 0,
 			actual_ok   => 0,
-			name        => 'should just fail',
+			name        => q (should just fail),
 			diag        => <<'DIAG',
 +----+-----+----+---------------------------------+
 | Elt|Got  | Elt|Expected                         |

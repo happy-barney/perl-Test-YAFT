@@ -2,8 +2,10 @@
 use v5.14;
 use warnings;
 
+use Syntax::Construct qw (package-block package-version);
+
 package Test::YAFT::Cmp {
-	use parent qw[ Test::Deep::Cmp ];
+	use parent qw (Test::Deep::Cmp);
 
 	sub init {
 		my ($self, $val) = @_;
@@ -55,7 +57,7 @@ Test::YAFT::Test::Deep::Cmp - Intermediate class for single param comparators
 =head1 SYNOPSIS
 
 	package My::Comparator {
-		use parent qw[ Test::YAFT::Test::Deep::Cmp ];
+		use parent qw (Test::YAFT::Test::Deep::Cmp);
 
 		sub descend {
 			my ($self, $got) = @_;

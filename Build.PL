@@ -18,7 +18,7 @@ my %module_build_args = (
     "Branislav Zahradn\x{ed}k <barney\@cpan.org>"
   ],
   "dist_name" => "Test-YAFT",
-  "dist_version" => "1.0.1",
+  "dist_version" => "1.0.2",
   "license" => "artistic_2",
   "module_name" => "Test::YAFT",
   "recursive_test_files" => 1,

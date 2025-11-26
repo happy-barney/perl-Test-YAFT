@@ -8,7 +8,7 @@ package Test::YAFT::Attributes {
 	use Attribute::Handlers;
 
 	my %where = (
-		Exported => q (EXPORT),
+		Exported   => q (EXPORT),
 		Exportable => q (EXPORT_OK),
 	);
 
@@ -17,8 +17,14 @@ package Test::YAFT::Attributes {
 		my $target = __PACKAGE__;
 
 		for my $attribute (qw[ Exported Exportable From Cmp_Builder ]) {
-			eval qq (sub ${caller}::${attribute} : ATTR(CODE,BEGIN) { goto &${target}::${attribute} });
-			die qq (cannot install $target attribute $attribute in $caller: $@) if $@;
+			eval qq (
+				sub ${caller}::${attribute} : ATTR(CODE,BEGIN) {
+					goto &${target}::${attribute}
+				}
+			);
+			die qq (cannot install ${target} attribute ${attribute} into ${caller}: $@)
+				if $@
+				;
 		}
 	}
 
@@ -28,10 +34,11 @@ package Test::YAFT::Attributes {
 		my $where = $where{$attr};
 
 		no strict q (refs);
-		push @{qq (${package}::$where)}, *{$symbol}{NAME};
-		if ($data) {
-			push @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, *{$symbol}{NAME} for eval { @$data };
-		}
+		push @{qq (${package}::${where})}, *{$symbol}{NAME};
+
+		push @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, *{$symbol}{NAME}
+				for eval { @{ $data // [] } }
+				;
 	}
 
 	sub Exported {
@@ -59,7 +66,11 @@ package Test::YAFT::Attributes {
 			: $data
 			;
 
-		*{$symbol} = eval qq (sub { $class->new (\@_) });
+		*{$symbol} = eval qq (
+			sub {
+				${class}->new (\@_)
+			}
+		);
 	}
 
 	1;

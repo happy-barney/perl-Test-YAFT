@@ -97,7 +97,7 @@ package Test::YAFT {
 	sub got (&)                     :Exported(all,helpers);
 	sub had_no_warnings             :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
-	sub it                          :Exported(all,asserts);
+	sub it                          :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub nok                         :Exported(all,asserts);
 	sub note                        :Exported(all,helpers)      :From(\&Test::More::note);
 	sub ok                          :Exported(all,asserts);
@@ -107,7 +107,7 @@ package Test::YAFT {
 	sub subtest                     :Exported(all,helpers);
 	sub test_deep_cmp               :Exportable(all,plumbings);
 	sub test_frame (&)              :Exportable(all,plumbings);
-	sub there                       :Exported(all,asserts)      :From(\&it);
+	sub there                       :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
 	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
 
@@ -117,10 +117,10 @@ package Test::YAFT {
 	sub _act_dependencies;
 	sub _act_singleton;
 	sub _build_got;
-	sub _it_args;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
+	sub _test_yaft_assumption_args;
 
 	sub _act_arrange {
 		my ($args) = @_;
@@ -158,29 +158,6 @@ package Test::YAFT {
 			value    => $args->{got},
 			error    => undef,
 		};
-	}
-
-	sub _it_args {
-		my %args;
-
-		while (@_) {
-			if (Scalar::Util::blessed ($_[0])) {
-				$args{got} = shift and next
-					if $_[0]->isa (Test::YAFT::Got::);
-				push @{ $args{arrange} //= [] }, shift and next
-					if $_[0]->isa (Test::YAFT::Arrange::);
-				die qq (Ref ${\ ref $_[0] } not recognized);
-			}
-
-			my ($key, $value) = splice @_, 0, 2;
-
-			push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
-				if $key eq q (arrange);
-
-			$args{$key} = $value;
-		}
-
-		return %args;
 	}
 
 	sub _run_act {
@@ -221,6 +198,77 @@ package Test::YAFT {
 		return Test::More::diag ($diag);
 	}
 
+	sub _test_yaft_assumption {
+		my ($title, @args) = @_;
+
+		my %args = _test_yaft_assumption_args @args;
+
+		my ($ok, $stack, $got, $expect);
+		test_frame {
+			_act_arrange (\ %args);
+			my $result = _build_got (\ %args);
+
+			my $expected_to_live = ! exists $args{throws};
+
+			return fail $title, diag => $expected_to_live
+				? qq (Expected to live but died: $result->{error})
+				: q  (Expected to die by lives)
+				if $expected_to_live xor $result->{lives_ok}
+				;
+
+			($got, $expect) = $result->{lives_ok}
+				? ($result->{value}, $args{expect})
+				: ($result->{error}, $args{throws})
+				;
+
+			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
+
+			return Test::More::ok ($ok, $title)
+				if $ok
+				|| defined $args{diag}
+				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
+				;
+
+			if ($expect->$Safe::Isa::_isa (Test::YAFT::Cmp::Complement::)) {
+				Test::More::ok ($ok, $title);
+				Test::More::diag (Test::Deep::deep_diag ($stack))
+					unless $ok;
+				return $ok;
+			}
+
+			Test::Differences::eq_or_diff $got, $expect, $title;
+			Test::More::diag (Test::Deep::deep_diag ($stack))
+				if ref $got || ref $expect;
+
+			return;
+		} or _run_diag ($args{diag}, $stack, $got);
+
+		return $ok;
+	}
+
+	sub _test_yaft_assumption_args {
+		my %args;
+
+		while (@_) {
+			if (Scalar::Util::blessed ($_[0])) {
+				$args{got} = shift and next
+					if $_[0]->isa (Test::YAFT::Got::);
+				push @{ $args{arrange} //= [] }, shift and next
+					if $_[0]->isa (Test::YAFT::Arrange::);
+				die qq (Ref ${\ ref $_[0] } not recognized);
+			}
+
+			my ($key, $value) = splice @_, 0, 2;
+
+			push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
+				if $key eq q (arrange);
+
+			$args{$key} = $value;
+		}
+
+		return %args;
+	}
+
 	sub act (&;@) {
 		my ($act, @dependencies) = @_;
 		state $counter = 0;
@@ -256,7 +304,12 @@ package Test::YAFT {
 		my ($title, %args) = @_;
 
 		test_frame {
-			it $title, diag => q (), %args, got => 0, expect => expect_true;
+			_test_yaft_assumption $title,
+				diag => q (),
+				%args,
+				got => 0,
+				expect => expect_true,
+				;
 		}
 	}
 
@@ -264,57 +317,15 @@ package Test::YAFT {
 		Test::YAFT::Got->new (@_);
 	}
 
-	sub it {
-		my ($title, @args) = @_;
-
-		my %args = _it_args @args;
-
-		my ($ok, $stack, $got, $expect);
-		test_frame {
-			_act_arrange (\ %args);
-			my $result = _build_got (\ %args);
-
-			return fail $title, diag => qq (Expected to live but died: $result->{error})
-				if ! $result->{lives_ok} && ! exists $args{throws};
-
-			return fail $title, diag => q (Expected to die by lives)
-				if $result->{lives_ok} && exists $args{throws};
-
-			($got, $expect) = $result->{lives_ok}
-				? ($result->{value}, $args{expect})
-				: ($result->{error}, $args{throws})
-				;
-
-			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
-
-			return Test::More::ok ($ok, $title)
-				if $ok
-				|| defined $args{diag}
-				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
-				;
-
-			if ($expect->$Safe::Isa::_isa (Test::YAFT::Cmp::Complement::)) {
-				Test::More::ok ($ok, $title);
-				Test::More::diag (Test::Deep::deep_diag ($stack))
-					unless $ok;
-				return $ok;
-			}
-
-			Test::Differences::eq_or_diff $got, $expect, $title;
-			Test::More::diag (Test::Deep::deep_diag ($stack))
-				if ref $got || ref $expect;
-
-			return;
-		} or _run_diag ($args{diag}, $stack, $got);
-
-		return $ok;
-	}
-
 	sub nok {
 		my ($message, %args) = @_;
 
 		test_frame {
-			it $message, %args, expect => expect_false, diag => q ()
+			_test_yaft_assumption $message,
+				%args,
+				expect => expect_false,
+				diag   => q (),
+				;
 		}
 	}
 
@@ -322,7 +333,11 @@ package Test::YAFT {
 		my ($message, %args) = @_;
 
 		test_frame {
-			it $message, %args, expect => expect_true, diag => q ()
+			_test_yaft_assumption $message,
+				%args,
+				expect => expect_true,
+				diag   => q (),
+				;
 		}
 	}
 

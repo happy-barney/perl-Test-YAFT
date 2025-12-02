@@ -34,6 +34,7 @@ package Test::YAFT {
 
 	sub act (&;@)                   :Exported(all,helpers);
 	sub arrange (&)                 :Exported(all,helpers);
+	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
 	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
 	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
@@ -490,6 +491,15 @@ or via builder functions
 
 Coding style note: I suggest to use coding style as presented in all examples,
 with one parameter per line, leading with fat comma.
+
+=head3 assume
+
+	assume q (meaningful sentence)
+		=> got    => ...
+		=> expect => ...
+		;
+
+For more details see L</it>
 
 =head3 fail
 

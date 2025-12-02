@@ -12,6 +12,7 @@ use Test::YAFT;
 use Context::Singleton;
 
 my @assumptions = sort
+	q (assume),
 	q (it),
 	q (there),
 	;

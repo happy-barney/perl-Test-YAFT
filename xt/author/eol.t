@@ -8,6 +8,7 @@ use Test::EOL;
 
 my @files = (
     'lib/Test/YAFT.pm',
+    'lib/Test/YAFT.pod',
     'lib/Test/YAFT/Arrange.pm',
     'lib/Test/YAFT/Attributes.pm',
     'lib/Test/YAFT/Cmp.pm',

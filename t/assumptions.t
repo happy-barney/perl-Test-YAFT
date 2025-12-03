@@ -5,9 +5,14 @@ use warnings;
 
 use require::relative q (test-helper.pl);
 
-check_test q (when passing expecting boolean true it should behave like 'ok')
+note <<'';
+This test tests all assumption functions (with same functionality) Test::YAFT provides:
+- it
+- there
+
+check_assumptions q (when passing expecting boolean true it should behave like 'ok')
 	=> assumption {
-		it q (should pass like 'ok')
+		assumption_under_test q (should pass like 'ok')
 			=> got    => 1
 			=> expect => expect_true
 			;
@@ -17,49 +22,34 @@ check_test q (when passing expecting boolean true it should behave like 'ok')
 	=> name        => q (should pass like 'ok')
 	;
 
-check_test q (when failing expecting boolean true it should behave like 'ok' (without implicit diag message))
+check_assumptions q (when failing while expecting 'true' it shouldn't provide implicit diag message)
 	=> assumption {
-		it q (should fail like 'ok')
+		assumption_under_test q (should fail like 'ok')
 			=> got    => 0
 			=> expect => expect_true
-			;
 	}
 	=> ok          => 0
 	=> actual_ok   => 0
 	=> name        => q (should fail like 'ok')
 	;
 
-check_test q (when passing expecting boolean false it should behave like 'nok')
+check_assumptions q (when failing while expecting 'false' it shouldn't provide implicit diag message)
 	=> assumption {
-		it q (should pass like 'nok')
-			=> got    => 0
-			=> expect => expect_false
-			;
-	}
-	=> ok          => 1
-	=> actual_ok   => 1
-	=> name        => q (should pass like 'nok')
-	;
-
-check_test q (when failing expecting boolean false it should behave like 'nok' (without implicit diag message))
-	=> assumption {
-		it q (should fail like 'nok')
+		assumption_under_test q (should fail like 'nok')
 			=> got    => 1
 			=> expect => expect_false
-			;
 	}
 	=> ok          => 0
 	=> actual_ok   => 0
 	=> name        => q (should fail like 'nok')
 	;
 
-check_test q (when failing with custom diag it should show it)
+check_assumptions q (when failing with custom diag it should provide it even when assumption doesn't provide any)
 	=> assumption {
-		it q (when failing with custom diag)
+		assumption_under_test q (when failing with custom diag)
 			=> got    => 1
 			=> expect => expect_false
 			=> diag   => q (it should not fail)
-			;
 	}
 	=> ok          => 0
 	=> actual_ok   => 0
@@ -67,24 +57,22 @@ check_test q (when failing with custom diag it should show it)
 	=> diag        => q (it should not fail)
 	;
 
-check_test q (when passing with Test::Deep::Cmp expectation)
+check_assumptions q (assumptions should accept 'Test::Deep' expectations)
 	=> assumption {
-		it q (pass with Test::Deep::Cmp)
+		assumption_under_test q (pass with Test::Deep::Cmp)
 			=> got    => [ 1, 2 ]
 			=> expect => Test::Deep::bag (2, 1)
-			;
 	}
 	=> ok          => 1
 	=> actual_ok   => 1
 	=> name        => q (pass with Test::Deep::Cmp)
 	;
 
-check_test q (when failing with Test::Deep::Cmp expectation it should diag also using Test::Difference)
+check_assumptions q (when failing with 'Test::Deep' expectation it should append 'difference' diag)
 	=> assumption {
-		it q (when failing with Test::Deep::Cmp)
+		assumption_under_test q (when failing with Test::Deep::Cmp)
 			=> got    => [ 1, 2, 3 ]
 			=> expect => Test::Deep::bag (2, 1)
-			;
 	}
 	=> ok          => 0
 	=> actual_ok   => 0
@@ -107,13 +95,12 @@ Extra: '3'
 EXPECTED_DIAG
 	;
 
-check_test q (when failing with Test::Deep::Cmp and custom diag it should show just custom diag)
+check_assumptions q (when failing with 'Test::Deep' expectation and custom diag it should show only custom diag)
 	=> assumption {
-		it q (when failing with Test::Deep::Cmp)
+		assumption_under_test q (when failing with Test::Deep::Cmp)
 			=> got    => [ 1, 2, 3 ]
 			=> expect => Test::Deep::bag (2, 1)
 			=> diag   => q (custom diag)
-			;
 	}
 	=> ok          => 0
 	=> actual_ok   => 0

@@ -2,6 +2,8 @@
 use v5.14;
 use warnings;
 
+use feature qw (state);
+
 # Test::Tester 1.302107 => Allow regexp in Test::Tester
 use Test::Tester 1.302107 import => [qw ( !check_test )];
 
@@ -9,10 +11,44 @@ use Test::YAFT;
 
 use Context::Singleton;
 
+my @assumptions = sort
+	q (it),
+	q (there),
+	;
+
+sub assumption_under_test;
+
 sub assumption (&;@) {
 	my ($code) = shift;
 
 	return check_test => $code, @_;
+}
+
+sub check_assumptions {
+	my ($message, %arguments) = @_;
+
+	my $check_test   = delete $arguments{check_test};
+	my %expectations = (
+		diag   => q (),
+		reason => q (),
+		type   => q (),
+		%arguments,
+	);
+
+	Test::YAFT::test_frame {
+		subtest $message => sub {
+			for my $assumption (@assumptions) {
+				local *assumption_under_test = __PACKAGE__->can ($assumption);
+				subtest qq (using $assumption ()) => sub {
+					Test::Tester::check_test (
+						$check_test,
+						\ %expectations,
+						qq ($assumption ()),
+					);
+				};
+			}
+		};
+	};
 }
 
 sub check_test {

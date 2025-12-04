@@ -23,7 +23,6 @@ it q (should use value available in outer frame)
 	=> expect => 10
 	;
 
-Test::Warnings::had_no_warnings;
-
-Test::More::done_testing;
+had_no_warnings;
+done_testing;
 

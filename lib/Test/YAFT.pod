@@ -1,3 +1,4 @@
+
 =pod
 
 =encoding utf-8
@@ -654,3 +655,4 @@ Branislav Zahradník <barney@cpan.org>
 Test::YAFT distribution is distributed under Artistic Licence 2.0.
 
 =cut
+

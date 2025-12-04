@@ -52,6 +52,7 @@ my %module_build_args = (
     "Test::Tester" => "1.302107",
     "Type::Tiny" => 0,
     "Types::Common::Numeric" => 0,
+    "feature" => 0,
     "require::relative" => 0
   }
 );
@@ -66,6 +67,7 @@ my %fallback_build_requires = (
   "Test::Tester" => "1.302107",
   "Type::Tiny" => 0,
   "Types::Common::Numeric" => 0,
+  "feature" => 0,
   "require::relative" => 0
 );
 

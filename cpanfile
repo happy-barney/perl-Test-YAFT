@@ -34,6 +34,7 @@ on 'test' => sub {
   requires "Test::Tester" => "1.302107";
   requires "Type::Tiny" => "0";
   requires "Types::Common::Numeric" => "0";
+  requires "feature" => "0";
   requires "require::relative" => "0";
 };
 

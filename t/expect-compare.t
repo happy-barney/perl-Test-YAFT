@@ -5,36 +5,29 @@ use warnings;
 
 use require::relative q (test-helper.pl);
 
-subtest q (successful compare with > operator) => sub {
-	Test::Tester::check_test
-		sub {
-			it q (should just pass)
-				=> got    => 43
-				=> expect => expect_compare (q (>), 42)
-				;
-		},
-		{
-			ok          => 1,
-			actual_ok   => 1,
-			name        => q (should just pass),
-			diag        => q (),
-		}
+check_test q (successful compare with '>' operator)
+	=> assumption {
+		it q (should just pass)
+			=> got    => 43
+			=> expect => expect_compare (q (>), 42)
+			;
+	}
+	=> ok          => 1,
+	=> actual_ok   => 1,
+	=> name        => q (should just pass),
 	;
-};
 
-subtest q (failed compare with > operator) => sub {
-	Test::Tester::check_test
-		sub {
-			it q (should just fail)
-				=> got    => 42
-				=> expect => expect_compare (q (>), 42)
-				;
-		},
-		{
-			ok          => 0,
-			actual_ok   => 0,
-			name        => q (should just fail),
-			diag        => <<'DIAG',
+check_test q (failed compare with '>' operator)
+	=> assumption {
+		it q (should just fail)
+			=> got    => 42
+			=> expect => expect_compare (q (>), 42)
+			;
+	}
+	=> ok          => 0,
+	=> actual_ok   => 0,
+	=> name        => q (should just fail),
+	=> diag        => <<'EXPECTED_DIAG',
 +----+-----+----+---------------------------------+
 | Elt|Got  | Elt|Expected                         |
 +----+-----+----+---------------------------------+
@@ -46,11 +39,8 @@ subtest q (failed compare with > operator) => sub {
 Compared $data
    got : '42'
 expect : > '42'
-DIAG
-		}
+EXPECTED_DIAG
 	;
-};
 
 had_no_warnings;
-
 done_testing;

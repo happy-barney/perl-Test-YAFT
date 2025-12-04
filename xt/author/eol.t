@@ -8,6 +8,7 @@ use Test::EOL;
 
 my @files = (
     'lib/Test/YAFT.pm',
+    'lib/Test/YAFT.pod',
     'lib/Test/YAFT/Arrange.pm',
     'lib/Test/YAFT/Attributes.pm',
     'lib/Test/YAFT/Cmp.pm',
@@ -22,6 +23,8 @@ my @files = (
     'lib/Test/YAFT/Test/Warnings.pod',
     't/act.t',
     't/arrange.t',
+    't/assumptions-with-got.t',
+    't/assumptions.t',
     't/examples/test-rest-countries/resource-countries.t',
     't/examples/test-rest-countries/test-helper.pl',
     't/examples/test-type-tiny-constraint/constraint-test.t',
@@ -31,8 +34,6 @@ my @files = (
     't/expect-value.t',
     't/fail.t',
     't/internals-build-got.t',
-    't/it-with-got.t',
-    't/it.t',
     't/nok.t',
     't/ok.t',
     't/subtest.t',

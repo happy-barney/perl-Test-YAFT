@@ -5,141 +5,226 @@
 
 =head1 NAME
 
-Test::YAFT::Test::More - Test::YAFT - Test::More comparison
+Test::YAFT::Test::More - Test::YAFT for Test::More users
 
-=head1 DESCRIPTION
+=head1 IMPORT
 
-L<Test::YAFT> supports most of L<Test::More> features
+L<Test::YAFT> exports via L<Exporter::Tiny> providing all benefits such as renaming symbols.
 
-=head2 Import Parameters
+L<Test::YAFT> does not support plan specification via an import statement.
 
-L<Test::YAFT> doesn't support plan specification via import statement.
+=head1 ASSERTS
 
-L<Test::YAFT> exports via L<Exporter::Tiny>.
+=head2 can_ok
 
-=head2 Exported Functions
+Use expectation L<expect_can|Test::YAFT/expect_can>.
 
-=over
+	assume q (...)
+		=> got    => $package_or_object
+		=> expect => expect_can (qw (create retrieve update delete))
+		;
 
-=item $TODO
+=head2 cmp_ok
 
-Not supported
+Use expectation L<expect_compare|Test::YAFT/expect_compare>.
 
-=item BAIL_OUT
+	assume q (...)
+		=> got    => $number
+		=> expect => expect_compare (q (>=), 0)
+		;
 
-Reexported
+See also:
+L<expect_number_greater_than|Test::YAFT/expect_number_greater_than>,
+L<expect_number_less_than|Test::YAFT/expect_number_less_than>
 
-=item can_ok
+=head2 fail
 
-Not supported
+Available; also supports an optional parameter C<diag> to show a custom diagnostic message
+instead of using the C<fail or diag> pattern.
 
-=item cmp_ok
+	fail q (reason);
 
-Implemented as an expectation C<expect_compare>.
+	fail q (reason)
+		=> diag => q (some diagnostic)
+		;
 
-=item diag
+=head2 is
 
-Reexported
+Superseded by an assumption expecting a literal value.
 
-=item done_testing
+	assume q (...)
+		=> got    => $value
+		=> expect => q (foo)
+		;
 
-Reexported
+=head2 is_deeply
 
-=item eq_array
+Superseded by an assumption expecting a complex data structure.
 
-Replaced with C<it>
+	assume q (...)
+		=> got    => $value
+		=> expect => [
+			{ a => 1 },
+			{ b => 2 },
+		];
 
-=item eq_hash
+=head2 isa_ok
 
-Replaced with C<it>
+Use expectation L<expect_isa|Test::YAFT/expect_isa>.
 
-=item eq_set
+	assume q (...)
+		=> got    => $got
+		=> expect => expect_isa (Expected::Class::)
+		;
 
-Replaced with C<it>
+See also:
+L<expect_blessed|Test::YAFT/expect_blessed>,
+L<expect_blessed_to|Test::YAFT/expect_blessed_to>,
+L<expect_instance_of|Test::YAFT/expect_instance_of>
 
-=item explain
+=head2 isnt
 
-Reexported
+Superseded by an assumption expecting the complemented expectation
+L<expect_value/Test::Diag/expect_value>.
 
-=item fail
+Available also for data structures (aka C<isnt_deeply>).
 
-Extended with C<diag> option
+	assume q (...)
+		=> got    => $got
+		=> expect => ! expect_value ($expect)
+		;
 
-=item is
+=head2 like
 
-Replaced with C<it>
+Superseded by an assumption with the expectation L<expect_like|Test::YAFT/expect_like>.
 
-=item is_deeply
+	assume q (...)
+		=> got    => $got
+		=> expect => expect_like (qr (...))
+		;
 
-Replaced with C<it>
+=head2 new_ok
 
-=item isa_ok
+Not available; use pattern like:
 
-Replaced with L<Test::Deep> based comparators C<expect_isa>, C<expect_obj_isa>
+	my $instance;
+	assume q (can create instance)
+		=> got    { $instance = $class->new (...) }
+		=> expect { expect_instance_of ($class) }
+		;
 
-=item isnt
+=head2 ok
 
-Implemented via expectation C<expect_complement>
+Available with the L<Test::YAFT> calling interface; see L<ok|Test::YAFT/ok>.
 
-=item like
+	ok q (...)
+		=> got { ... }
+		;
 
-Replaced with C<it>
+=head2 pass
 
-=item new_ok
+Available with the same name, interface, and behaviour.
 
-Not supported
+=head2 require_ok
 
-=item note
+Not available; use pattern like:
 
-Reexported
+	assume q (can create instance)
+		=> got    { eval "require $package" // die $@ }
+		=> expect { expect_true }
+		;
 
-=item ok
+=head2 subtest
 
-Replaced with C<it>
+Available with the same name and interface; in addition, each C<subtest> creates
+new L<sub-context|Test::YAFT/Context>.
 
-=item pass
+=head2 unlike
 
-Reexported
+Superseded by an assumption with the complement to the expectation
+L<expect_like|Test::YAFT/expect_like>.
 
-=item plan
+	assume q (...)
+		=> got    => $got
+		=> expect => ! expect_like (qr (...))
+		;
 
-Reexported
+=head2 use_ok
 
-=item require_ok
+Not available; use pattern like:
 
-Not supported
+	assume q (can create instance)
+		=> got    { eval "use $package" // die $@ }
+		=> expect { expect_true }
+		;
 
-=item skip
+=head1 UTILITY FUNCTIONS
 
-Reexported
+=head2 BAIL_OUT
 
-=item subtest
+Available as L<bail_out|Test::YAFT/bail_out>.
 
-Reimplemented, every C<subtest> creates new L<Context::Singleton> frame
+=head2 diag
 
-=item todo
+Available with the same name, behaviour, and interface.
 
-Reexported
+See: L<diag|Test::YAFT/diag>.
 
-=item todo_skip
+=head2 done_testing
 
-Reexported
+Available with the same name, behaviour, and supporting L<Test::More> interface.
 
-=item unlike
+See: L<done_testing|Test::YAFT/done_testing>
 
-Implemented via comparator C<expect_complement>
+=head2 eq_array
 
-=item use_ok
+Superseded by L<eq_deeply|Test::YAFT/eq_deeply>.
 
-Not supported
+	eq_deeply \ @got, \ @expect;
 
-=back
+=head2 eq_hash
+
+Superseded by L<eq_deeply|Test::YAFT/eq_deeply>.
+
+	eq_deeply \ %got, \ %expect;
+
+=head2 eq_set
+
+Superseded by L<eq_deeply|Test::YAFT/eq_deeply> and the expectation L<expect_bag|Test::YAFT/expect_bag>.
+
+	eq_deeply \ @got, expect_bag @expect;
+
+=head2 explain
+
+Available with the same name, interface, and behaviour.
+
+=head2 note
+
+Available with the same name, interface, and behaviour.
+
+=head2 plan
+
+Available with the same name, behaviour, and supporting L<Test::More> interface.
+
+See: L<plan|Test::YAFT/plan>
+
+=head2 skip
+
+Available with the same name, behaviour, and supporting L<Test::More> interface.
+
+See: L<skip|Test::YAFT/skip>
+
+=head2 todo_skip
+
+Available with the same name, behaviour, and supporting L<Test::More> interface.
+
+See: L<todo_skip|Test::YAFT/todo_skip>
 
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>
 
-=head1 COPYRIGHT AND LICENCE
+=head1 COPYRIGHT AND LICENSE
 
 This file is part of L<Test::YAFT> distribution.
 

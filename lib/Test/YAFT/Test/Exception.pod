@@ -5,90 +5,119 @@
 
 =head1 NAME
 
-Test::YAFT::Test::Exception - Test::YAFT - Test::Exception comparison
+Test::YAFT::Test::Exception - Migration guide for Test::Exception users
 
 =head1 DESCRIPTION
 
-L<Test::YAFT> doesn't provide dedicated asserts like L<Test::Exception>.
+L<Test::YAFT> does not provide dedicated exception testing assertions like
+L<Test::Exception> does (C<dies_ok>, C<lives_ok>, C<throws_ok>, etc.).
 
-Instead it uses C<it> and C<got { }> block to achieve same result.
+Instead, Test::YAFT's assumptions automatically capture both the execution
+status and any error when computing the C<got> value. The expected status
+is determined by the C<throws> parameter:
+
+=over
+
+=item When C<throws> is present, the code is expected to die
+
+=item When C<throws> is absent, the code is expected to live
+
+=back
+
+This approach integrates exception testing seamlessly with value assertions.
+
+=head1 IMPORT
+
+L<Test::YAFT> exports symbols via L<Exporter::Tiny>, providing all benefits
+such as renaming symbols.
+
+Unlike L<Test::Exception>, L<Test::YAFT> does not support plan specification
+via the import statement. Use explicit L<plan|Test::YAFT/plan> or
+L<done_testing|Test::YAFT/done_testing> instead.
+
+=head1 MIGRATION GUIDE
 
 =head2 dies_ok
 
-Behaviour of C<dies_ok> is achieved by expecting any exception
-
 	# Test::Exception
-	dies_ok { $foo->method } "should die";
+	dies_ok { $foo->method } q (should die);
 
 	# Test::YAFT
-	it "should die"
-		=> got { $foo->method }
-		=> throws => ignore
-		;
-
-=head2 lives_ok
-
-Behaviour of C<lives_ok> is achieved by expecting anything
-
-	# Test::Exception
-	lives_ok { $foo->method } "should not die";
-
-	# Test::YAFT
-	it "should not die"
-		=> got { $foo->method }
-		=> expect => ignore
+	it q (should die)
+		=> got    { $foo->method }
+		=> throws => not_important
 		;
 
 =head2 lives_and
 
-Behaviour of C<lives_and> implicit behaviour when C<got { }> block is used.
-
 	# Test::Exception
-	lives_and { is $foo->method, 42 } "should not die and result is 42";
+	lives_and { is $foo->method, 42 } q (should not die and result is 42);
 
 	# Test::YAFT
-	it "should not die and result is 42"
-		=> got { $foo->method }
+	it q (should not die and result is 42)
+		=> got    { $foo->method }
 		=> expect => 42
+		;
+
+=head2 lives_ok
+
+	# Test::Exception
+	lives_ok { $foo->method } q (should not die);
+
+	# Test::YAFT
+	it q (should not die)
+		=> got    { $foo->method }
+		=> expect => not_important
 		;
 
 =head2 throws_ok
 
-Behaviour of C<throws_ok> is achieved by providing exception expectations.
-Unline L<Test::Exception> this library uses L<Test::Deep> base expectations
-so instead of C<REGEX> and C<CLASS> one have to use C<expect_re>
-and C<expect_obj_isa>
+L<Test::YAFT> uses the C<throws> parameter to specify exception expectations.
 
-Stringy exceptions
+Unlike L<Test::Exception> which restricts you to C<REGEX> and C<CLASS>,
+L<Test::YAFT> leverages L<Test::Deep>, giving you access to the full repertoire
+of expectation matchers (including custom ones).
+
+With regex matching:
 
 	# Test::Exception
-	throws_ok { $foo->method } qr/division by zero/, "should test string exception";
+	throws_ok { $foo->method } qr (division by zero), q (should throw exception);
 
 	# Test::YAFT
-	it "should test string exception"
-		=> got { $foo->method }
-		=> throws => expect_re (qr/division by zero/)
+	it q (should throw exception)
+		=> got    { $foo->method }
+		=> throws => expect_re (qr (division by zero))
 		;
 
-OOP exceptions
+With class matching:
 
 	# Test::Exception
-	throws_ok { $foo->method } My::X::Division::By::Zero::, "should test OOP exception";
+	throws_ok { $foo->method } My::X::Division_By_Zero::, q (should throw typed exception);
 
 	# Test::YAFT
-	it "should test OOP exception"
-		=> got { $foo->method }
+	it q (should throw typed exception)
+		=> got    { $foo->method }
+		=> throws => expect_blessed_to (My::X::Division_By_Zero::)
+		;
+
+With complex expectations:
+
+L<Test::YAFT>'s L<Test::Deep> integration allows you to verify multiple properties
+of the exception:
+
+	it q (should throw detailed exception)
+		=> got    { $foo->method }
 		=> throws =>
-			& expect_obj_isa (My::X::Division::By::Zero::)
-			& expect_methods (http_status  => HTTP::Status::BAD_REQUEST)
-			& expect_methods (json_content => +{ error => ignore })
+			+ expect_blessed_to (My::X::Division_By_Zero::)
+			+ expect_method (http_status  => HTTP::Status::BAD_REQUEST)
+			+ expect_method (json_content => { error => not_important })
 		;
 
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>
 
-=head1 COPYRIGHT AND LICENCE
+=head1 COPYRIGHT AND LICENSE
 
 This file is part of L<Test::YAFT> distribution.
 

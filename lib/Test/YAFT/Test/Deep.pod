@@ -5,227 +5,285 @@
 
 =head1 NAME
 
-Test::YAFT::Test::Deep - Test::YAFT - Test::Deep comparison
+Test::YAFT::Test::Deep - Test::YAFT for Test::Deep users
 
 =head1 DESCRIPTION
 
-L<Test::YAFT> supports almost all of L<Test::Deep> features
+L<Test::YAFT> is based on L<Test::Deep> and provides almost all of its features.
 
-=head2 Import Parameters
+=head1 IMPORT
 
-L<Test::YAFT> exports via L<Exporter::Tiny>.
+L<Test::YAFT> exports via L<Exporter::Tiny> providing all benefits such as renaming symbols.
 
-=head2 Exported Functions
+=head1 OVERLOADED OPERATORS
+
+L<Test::YAFT> injects new overloaded operators to L<Test::Deep>:
 
 =over
 
-=item Isa
+=item Unary C<!>
 
-Reexported as C<expect_isa>
+=item Unary C<~>
 
-=item all
+=item Unary C<->
 
-Reexported as C<expect_all>
+Returns complement to expectation.
 
-=item any
+=item Binary C<+>
 
-Reexported as C<expect_any>
+Like existing C<&> binary operator, combines expectations so both must pass.
 
-=item array
+=item Binary C<->
 
-Reexported as C<expect_array>
-
-=item array_each
-
-Reexported as C<expect_array_each>
-
-=item arrayelementsonly
-
-Reexported as C<expect_array_elements_only>
-
-=item arraylength
-
-Reexported as C<expect_array_length>
-
-=item arraylengthonly
-
-Reexported as C<expect_array_length_only>
-
-=item bag
-
-Reexported as C<expect_bag>
-
-=item blessed
-
-Reexported as C<expect_blessed>
-
-=item bool
-
-Reexported as C<expect_bool>
-
-=item cmp_bag
-
-Not provided, use C<it> with C<expect_bag>
-
-=item cmp_deeply
-
-Replaced with C<it> (which btw internally uses it)
-
-=item cmp_details
-
-Reexportable (tag C<foundations>)
-
-=item cmp_methods
-
-Not provided, use C<it> with C<expect_methods>
-
-=item cmp_set
-
-Not provided, use C<it> with C<expect_set>
-
-=item code
-
-Reexported as C<expect_code>
-
-=item deep_diag
-
-Reexportable (tag C<foundations>)
-
-=item eq_deeply
-
-Reexportable (tag C<foundations>)
-
-=item hash
-
-Reexported as C<expect_hash>
-
-=item hash_each
-
-Reexported as C<expect_hash_each>
-
-=item hashkeys
-
-Reexported as C<expect_hash_keys>
-
-=item hashkeysonly
-
-Reexported as C<expect_hash_keys_only>
-
-=item ignore
-
-Reexported
-
-=item isa
-
-Only its C<Isa> part available via C<expect_isa>
-
-=item listmethods
-
-Reexported as C<expect_listmethods>
-
-=item methods
-
-Reexported as C<expect_methods>
-
-=item noclass
-
-Reexported as C<expect_no_class>
-
-=item none
-
-Reexported as C<expect_none>
-
-=item noneof
-
-Reexported as C<expect_none_of>
-
-=item num
-
-Reexported as C<expect_num>
-
-=item obj_isa
-
-Reexported as C<expect_obj_isa>
-
-=item re
-
-Reexported as C<expect_re>
-
-=item reftype
-
-Reexported as C<expect_ref_type>
-
-=item regexpmatches
-
-Reexported as C<expect_regexpmatches>
-
-=item regexponly
-
-Reexported as C<expect_regexp_only>
-
-=item regexpref
-
-Reexported as C<expect_regexp_ref>
-
-=item regexprefonly
-
-Reexported as C<expect_regexpref_only>
-
-=item scalarrefonly
-
-Reexported as C<expect_scalarref_only>
-
-=item scalref
-
-Reexported as C<expect_scalarref>
-
-=item set
-
-Reexported as C<expect_set>
-
-=item shallow
-
-Reexported as C<expect_shallow>
-
-=item str
-
-Reexported as C<expect_str>
-
-=item subbagof
-
-Reexported as C<expect_subbag_of>
-
-=item subhashof
-
-Reexported as C<expect_subhash_of>
-
-=item subsetof
-
-Reexported as C<expect_subset_of>
-
-=item superbagof
-
-Reexported as C<expect_superbag_of>
-
-=item superhashof
-
-Reexported as C<expect_superhash_of>
-
-=item supersetof
-
-Reexported as C<expect_superset_of>
-
-=item useclass
-
-Reexported as C<expect_use_class>
+Similar to C<+> binary operator, but second expectation must fail.
 
 =back
+
+=head1 ASSUMPTIONS
+
+=head2 cmp_bag
+
+Not available, use assumptions with explicit L<expect_bag|Test::YAFT/expect_bag>.
+
+	assume q (...)
+		=> got    => [ ... ]
+		=> expect => expect_bag (...)
+		;
+
+=head2 cmp_deeply
+
+Replaced with assumptions.
+
+=head2 cmp_methods
+
+Not available, use assumptions with explicit L<expect_methods|Test::YAFT/expect_methods>.
+
+	assume q (...)
+		=> got    => [ ... ]
+		=> expect => expect_methods (...)
+		;
+
+=head2 cmp_set
+
+Not available, use assumptions with explicit L<expect_set|Test::YAFT/expect_set>.
+
+	assume q (...)
+		=> got    => [ ... ]
+		=> expect => expect_set (...)
+		;
+
+=head1 EXPECTATIONS
+
+L<Test::YAFT> exports simmilar set of expectations as L<Test::Deep> but with
+the C<expect_> prefix and an underline as a word separator.
+
+L<Test::YAFT> recognises L<Test::Deep> expectations as well as its expectations
+can be used by L<Test::Deep>.
+
+L<Test::YAFT> doesn't use / recognize L<noclass|Test::Deep/noclass> nor L<useclass|Test::Deep/useclass>.
+
+
+=head2 Isa
+
+Available as L<expect_isa|Test::YAFT/expect_isa>.
+
+=head2 all
+
+Available as L<expect_all|Test::YAFT/expect_all>.
+
+=head2 any
+
+Available as L<expect_any|Test::YAFT/expect_any>.
+
+=head2 array
+
+Available as L<expect_array|Test::YAFT/expect_array>.
+
+=head2 array_each
+
+Available as L<expect_array_each|Test::YAFT/expect_array_each>.
+
+=head2 arrayelementsonly
+
+Available as L<expect_array_elements_only|Test::YAFT/expect_array_elements_only>.
+
+=head2 arraylength
+
+Available as L<expect_array_length|Test::YAFT/expect_array_length>.
+
+=head2 arraylengthonly
+
+Available as L<expect_array_length_only|Test::YAFT/expect_array_length_only>.
+
+=head2 bag
+
+Available as L<expect_bag|Test::YAFT/expect_bag>.
+
+=head2 blessed
+
+Available as L<expect_blessed|Test::YAFT/expect_blessed>.
+
+=head2 bool
+
+Available as L<expect_bool|Test::YAFT/expect_bool>.
+
+=head2 cmp_details
+
+Reexportable (tag C<foundations>)
+
+=head2 code
+
+Available as L<expect_code|Test::YAFT/expect_code {}> with a slightly modified interface.
+
+=head2 false
+
+Available as L<expect_false|Test::YAFT/expect_false ()>.
+
+=head2 hash
+
+Available as L<expect_hash|Test::YAFT/expect_hash>.
+
+=head2 hash_each
+
+Available as L<expect_hash_each|Test::YAFT/expect_hash_each>.
+
+=head2 hashkeys
+
+Available as L<expect_hash_keys|Test::YAFT/expect_hash_keys>.
+
+=head2 hashkeysonly
+
+Available as L<expect_hash_keys_only|Test::YAFT/expect_hash_keys_only>.
+
+=head2 ignore
+
+Available with same name, interface and behaviour.
+
+=head2 isa
+
+Only its C<Isa> part is available via L<expect_isa|Test::YAFT/expect_isa>.
+
+Two arguments behaviour is not needed due to the non-colliding name.
+
+=head2 listmethods
+
+Available as L<expect_listmethods|Test::YAFT/expect_listmethods>.
+
+=head2 methods
+
+Available as L<expect_methods|Test::YAFT/expect_methods>.
+
+=head2 noclass
+
+Available as L<expect_no_class|Test::YAFT/expect_no_class>.
+
+=head2 none
+
+Available as L<expect_none|Test::YAFT/expect_none>.
+
+=head2 noneof
+
+Available as L<expect_none_of|Test::YAFT/expect_none_of>.
+
+=head2 num
+
+Available as L<expect_num|Test::YAFT/expect_num>.
+
+=head2 obj_isa
+
+Available as L<expect_obj_isa|Test::YAFT/expect_obj_isa>.
+
+=head2 re
+
+Available as L<expect_re|Test::YAFT/expect_re>.
+
+=head2 reftype
+
+Available as L<expect_ref_type|Test::YAFT/expect_ref_type>.
+
+=head2 regexpmatches
+
+Available as L<expect_regexpmatches|Test::YAFT/expect_regexpmatches>.
+
+=head2 regexponly
+
+Available as L<expect_regexp_only|Test::YAFT/expect_regexp_only>.
+
+=head2 regexpref
+
+Available as L<expect_regexp_ref|Test::YAFT/expect_regexp_ref>.
+
+=head2 regexprefonly
+
+Available as L<expect_regexpref_only|Test::YAFT/expect_regexpref_only>.
+
+=head2 scalarrefonly
+
+Available as L<expect_scalarref_only|Test::YAFT/expect_scalarref_only>.
+
+=head2 scalref
+
+Available as L<expect_scalarref|Test::YAFT/expect_scalarref>.
+
+=head2 set
+
+Available as L<expect_set|Test::YAFT/expect_set>.
+
+=head2 shallow
+
+Available as L<expect_shallow|Test::YAFT/expect_shallow>.
+
+=head2 str
+
+Available as L<expect_str|Test::YAFT/expect_str>.
+
+=head2 subbagof
+
+Available as L<expect_subbag_of|Test::YAFT/expect_subbag_of>.
+
+=head2 subhashof
+
+Available as L<expect_subhash_of|Test::YAFT/expect_subhash_of>.
+
+=head2 subsetof
+
+Available as L<expect_subset_of|Test::YAFT/expect_subset_of>.
+
+=head2 superbagof
+
+Available as L<expect_superbag_of|Test::YAFT/expect_superbag_of>.
+
+=head2 superhashof
+
+Available as L<expect_superhash_of|Test::YAFT/expect_superhash_of>.
+
+=head2 supersetof
+
+Available as L<expect_superset_of|Test::YAFT/expect_superset_of>.
+
+=head2 useclass
+
+Available as L<expect_use_class|Test::YAFT/expect_use_class>.
+
+=head2 true
+
+Available as L<expect_true|Test::YAFT/expect_true ()>.
+
+=head1 FOUNDATION FUNCTIONS
+
+=head2 deep_diag
+
+Available on demand, export under tag C<foundations>.
+
+=head2 eq_deeply
+
+Available on demand, export under tag C<foundations>.
 
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>
 
-=head1 COPYRIGHT AND LICENCE
+=head1 COPYRIGHT AND LICENSE
 
 This file is part of L<Test::YAFT> distribution.
 

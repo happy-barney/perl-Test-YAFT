@@ -5,42 +5,46 @@
 
 =head1 NAME
 
-Test::YAFT::Test::Spec - Test::YAFT - Test::Spec comparison
+Test::YAFT::Test::Spec - Test::YAFT for Test::Spec users
 
 =head1 DESCRIPTION
 
-L<Test::YAFT> allows approach similar to one provided by L<Test::Spec>
-with small but significant differences
+L<Test::YAFT> is also inspired by BDD implemented by L<Test::Spec> / C<rspec>.
+
+Unlike L<Test::Spec>:
 
 =over
 
-=item code is executed as/when it appears in the source code
+=item test case is executed as/when it appears in the source code
 
-=item assert's test message is not concatenated
+=item hierarchical test messages are not concatenated
 
 =back
 
 =head2 after
 
-Not supported directly, only via L<Context::Singleton> context expiration
+Not supported. Available only via L<Context::Singleton> context expiration.
 
-=head2 before
+=head2 before all
 
-Use C<arrange {}> block instead.
+Use L<arrange {}|Test::YAFT/arrange {}> block in a context.
 
-C<before all> behaviour can be achieved by using C<arrange {}> block in (subtest)
-context.
+	subtest q (...) => sub {
+		arrange { aka_before_all => ... };
+	};
 
-C<before each> behaviour can be achieved only by putting C<arrange {}> block
-into each assert's arguments.
+=head2 before each
+
+Use L<act {}|Test::YAFT/act {}> in combination with the L<arrange {}|Test::YAFT/arrange {}>
+block in an assumption.
 
 =head2 context
 
-Use C<subtest> instead
+Use L<subtest|Test::YAFT/subtest> instead.
 
 =head2 describe
 
-Use C<subtest> instead
+Use L<subtest|Test::YAFT/subtest> instead.
 
 =head1 AUTHOR
 

@@ -271,6 +271,31 @@ Utility functions (exported by default).
 
 See L<Exporter::Tiny> for more import options.
 
+=head1 MIGRARING TO C<Test::YAFT>
+
+This document is a reference manual.
+
+For introduction or migration patterns from using other libraries there are also documents:
+
+=over
+
+=item L<"Introduction to Test::YAFT"|Test::YAFT::Introduction>
+
+=item L<"Test::YAFT for Test::Deep users"|Test::YAFT::Test::Deep>
+
+=item L<"Test::YAFT for Test::Exception users"|Test::YAFT::Test::Exception>
+
+=item L<"Test::YAFT for Test::More users"|Test::YAFT::Test::More>
+
+=item L<"Test::YAFT for Test::Spec users"|Test::YAFT::Test::Spec>
+
+=item L<"Test::YAFT for Test::Warnings users"|Test::YAFT::Test::Warnings>
+
+=back
+
+This document contains reference manual. If you want some kind of tutorial,
+please visit L<Test::YAFT::Introduction> as well.
+
 =head1 OVERLOADED OPERATORS
 
 L<Test::YAFT> overloads operators for L<Test::Deep> expectations,

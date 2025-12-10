@@ -5,152 +5,321 @@
 
 =head1 NAME
 
-Test::YAFT::Introduction - Introduction to Test::YAFT
+Test::YAFT::Tutorial - Introduction to Test::YAFT
 
 =head1 DESCRIPTION
 
-L<Test::YAFT> is manifestation of (my) opinion that tests should be so
-easy to read and understand that they can (and should) act as entrypoint
-into your project for newbies.
+This tutorial guides you through L<Test::YAFT> testing patterns, from simple
+assertions to advanced context management. Each section builds on previous
+concepts.
 
-=head1 BASIC USAGE
+=head1 TEST STRUCTURE
 
-Basic test structure doesn't differ much from usage of L<Test::Simple> /
-L<Test::More>. Main differences are:
+Basic test structure doesn't differ much from pattern known from L<Test::Simple> /
+L<Test::More>.
 
-=over
-
-=item mandatory test message
-
-Test message is mandatory and is always a first argument of every assumption
-function.
-
-Every other argument is provided using named argument approach.
-
-=item L<Test::Deep> comparison
-
-Every comparison uses L<Test::Deep>
-
-=back
-
-=head1 HOW TO USE IT
-
-=head2 C<assume> assumption
-
-Basic assumption L<Test::YAFT> provides is an C<assume>. Naming expects that
-you have either subtests describing your testing intention or one
-behaviour per test file, so C<it> can be bounded with something from
-your domain.
-
-	subtest "Person" => sub {
-		assume "should have method foo()"
-			=> got    => defined &{ Person->can ('foo') }
-			=> expect => expect_true
-			;
-	};
-
-=head2 Computed C<got>
-
-C<it> can compute C<got> value
-
-	subtest "method birthday()" => sub {
-		it "should increment person's age"
-			=> got { $person->new (age => 41)->birthday; $person->age }
-			=> expect => 42
-			;
-	}
-
-When using computed C<got> approach L<Test::YAFT> always executes given block
-in C<eval> and verifies its status, so it fails with "expected to live / die"
-first.
+Main differences are:
 
 =over
 
-=item expect code to die, if C<throws> parameter exists
+=item Test message is mandatory
 
-=item expect code to live otherwise
+The test message is always the first positional argument of every assumption.
+
+=item Named arguments
+
+All other arguments use named argument style, either as key-value pairs or via
+builders (explained later).
+
+=item L<Test::Deep> integration
+
+Every assumption accepts L<Test::Deep> expectation(s).
 
 =back
 
-	subtest "method birthday()" => sub {
-		it "should increment person's age"
-			=> got { $person->new (age => 41)->birthday; $person->age }
-			=> expect => 42
+=head1 UNCONDITIONAL ASSUMPTIONS
+
+The simplest assumptions are C<pass> and C<fail>:
+
+	pass q (initialization successful);
+
+	fail q (should not reach this point);
+
+=head1 LOGICAL VALUE TESTING
+
+Test logical value (truthiness) of values with C<ok> and C<nok>:
+
+	ok q (user should be authenticated)
+		=> got => $user->is_authenticated
+		;
+
+	nok q (guest should not have admin rights)
+		=> got => $guest->is_admin
+		;
+
+=head1 SIMPLE ASSERTIONS
+
+=head2 Compare scalar value
+
+L<Test::More>:
+
+	is ($person->name, q (Alice), q (person name should be Alice));
+
+L<Test::YAFT>:
+
+	assume q (person name should be 'Alice')
+		=> expect => q (Alice)
+		=> got    => $person->name
+		;
+
+=head2 Compare complex values
+
+L<Test::More>:
+
+	is_deeply ($person->address, { city => q (Prague) }, q (address check));
+
+L<Test::YAFT>:
+
+	assume q (address check)
+		=> expect => { city => q (Prague) }
+		=> got    => $person->address
+		;
+
+=head2 Use L<Test::Deep> comparison
+
+	use Test::Deep;
+
+	assume "person should have valid age"
+		=> got    => $person->age
+		=> expect => code (sub { $_[0] > 0 && $_[0] < 150 })
+		;
+
+	assume "response should contain user data"
+		=> got    => $response
+		=> expect => superhashof ({
+			user => {
+				name  => re (qr (^[A-Z])),
+				email => re (qr [@]),
+			}
+		})
+		;
+
+=head2 Use L<Test::YAFT> expectations
+
+	use Test::Deep;
+
+	assume "person should have valid age"
+		=> got    => $person->age
+		=> expect => expect_code (sub { $_[0] > 0 && $_[0] < 150 })
+		;
+
+	assume "response should contain user data"
+		=> got    => $response
+		=> expect => expect_superhash_of ({
+			user => {
+				name  => expect_re (qr (^[A-Z])),
+				email => expect_re (qr [@]),
+			}
+		})
+		;
+
+=head1 COMPUTED got { }
+
+When your tested value is build by function call(s) you can use C<got { }>.
+The C<got { }> block is always evaluated inside C<eval> and in scalar context.
+L<Test::YAFT> first verifies the block's execution status before checking expectations.
+
+L<Test::YAFT> combines capabilities of L<Test::Exception> into assumptions
+and uses them automatically when tested value is build using C<got { }> or C<act { }>.
+
+=head2 Expecting success with C<expect>
+
+When you provide C<expect> parameter, the code is expected to live and it's
+return value is validates.
+
+	assume q (birthday increments person's age)
+		=> got    { Person::->new (age => 41)->birthday->age }
+		=> expect => 42
+		;
+
+If the block dies, the test fails with "expected to live" message.
+
+=head2 Expecting failure with C<throws>
+
+When you provide C<throws> parameter, the code is expected to die:
+
+	assume q (should throw exception when called too fast)
+		=> got    { Person::->new (age => 41)->birthday->birthday }
+		=> throws => expect_re (qr (Person cannot be born twice a day))
+		;
+
+The C<throws> parameter accepts any supported expectation, allowing flexible
+exception matching:
+
+	assume q (should throw specific exception type)
+		=> got    { $api->call_invalid_endpoint }
+		=> throws => expect_obj_isa (q (My::API::Exception))
+		;
+
+	assume q (should throw with error code)
+		=> got { $api->call_with_bad_auth }
+		=> throws => expect_methods (
+			code	=> 401,
+			message => expect_re (qr (unauthorized)i),
+		);
+
+=head1 SHARED act { }
+
+When multiple assertions should perform the same computation with different
+inputs, use a shared C<act { }> block instead of repeating C<got { }>.
+
+	subtest q (API endpoint /countries/:continent) => sub {
+		act { GET qq (/countries/$_[0]) }
+			q (continent),
 			;
 
-		it "should throw an exception when called too fast"
-			=> got { $person->new (age => 41)->birthday->birthday; $person->age }
-			=> throws => expect_re (qr/Person cannot be born twice a day/)
-			;
-	}
-
-=head2 Shared C<got> computation (with arguments)
-
-Often there are test scenarios when you share computation of C<got> value
-but with different arguments for each assumption.
-
-L<Test::YAFT> provides simple tool for that - C<act { }> block
-
-	subtest "resource /countries/:continent provides alphabetical sorted list countries on the continent" => sub {
-		act { GET "/countries/$_[0]" } 'continent';
-
-		it "should list North America continental countries"
-			=> with_continent => 'north-america'
-			=> expect         =>
-				& expect_http_success
-				& expect_json_content_type
-				& expect_json_content {
-					countries => [
-						'Canada',
-						'Mexico',
-						'USA',
-					]
+		assume q (should list North American countries)
+			=> with_continent => q (north-america)
+			=> expect => expect_all (
+				expect_http_success,
+				expect_json_content_type,
+				expect_json_content {
+					countries => [qw [Canada Mexico USA]],
 				}
-			;
+			);
 
-		it "should list Australia continental countries"
-			=> with_continent => 'australia'
-			=> expect         =>
-				& expect_http_success
-				& expect_json_content_type
-				& expect_json_content {
-					countries => [
-						'Australia',
-					]
+		assume q (should list European countries)
+			=> with_continent => q (europe)
+			=> expect => expect_all (
+				expect_http_success,
+				expect_json_content_type,
+				expect_json_content {
+					countries => expect_bag (qw [France Germany Spain]),
 				}
-			;
-
-		it "should list no country in Antarctica"
-			=> with_continent => 'antarctica'
-			=> expect         =>
-				& expect_http_success
-				& expect_json_content_type
-				& expect_json_content {
-					countries => [
-					]
-				}
-			;
+			);
 	};
 
 =head2 Arrange {} block
 
-C<act {}> block dependencies can be provided via similar C<arrange {}> block.
+C<act {}> block dependencies can be provided also via C<arrange {}> block.
 
-		it "should list no country in Antarctica"
-			=> arrange { continent => 'antarctica' }
-			=> expect         =>
-				& expect_http_success
-				& expect_json_content_type
-				& expect_json_content {
-					countries => [
-					]
-				}
+	act { GET qq (/countries/$_[0]) }
+		q (continent),
+		;
+
+	assume q (should list North American countries)
+		=> arrange { continent => q (north-america) }
+		=> expect => expect_all (
+			expect_http_success,
+			expect_json_content {
+				countries => [qw [Canada Mexico USA]],
+			}
+		);
+
+	subtest q (north-america) => sub {
+		# context-wide - will be used as default value for every assumption in context
+		arrange { continent => q (north-america) };
+
+		assume q (should list European countries)
+			=> expect => expect_http_success
 			;
 
-Difference is that C<arrange {}> block is executed inside context of C<it>.
-There can be multiple arrange blocks, executed in order of definition.
-Each block should return C<<singleton => value>> pairs, one singleton can be
-arranged only once.
+		assume q (should list European countries)
+			=> expect => expect_json_content {
+				countries => expect_bag (qw [France Germany Spain ]),
+			};
+	};
+
+=head1 UNDERSTANDING CONTEXTS AND ARRANGE
+
+L<Test::YAFT> uses a context system to manage test data and shared computations.
+
+=head2 What is a context?
+
+A context is a scope that holds properties (named values). Every assumption
+call creates its own subcontext. Subtests also create new subcontexts.
+
+Think of contexts as a hierarchy:
+
+	Main test file context
+	├── Subtest context
+	│   ├── assume context
+	│   └── assume context
+	└── subtest context
+	    └── assume context
+
+=head2 The C<arrange { }> block
+
+The C<arrange { }> block populates properties in a context.
+It should return key-value pair:
+
+	arrange { user     => q (alice) };
+	arrange { password => q (secret123) };
+
+Properties can be specified only once per context - attempting to set the
+same property twice causes an error.
+
+=head2 C<arrange> as a statement
+
+When used as a statement in the main test or subtest, C<arrange> populates
+the caller's context:
+
+	act { authenticate (@_) } qw (user password);
+
+	subtest q (user authentication) => sub {
+		arrange { user     => q (alice) };
+		arrange { password => q (secret123) };
+
+		assume q (user should authenticate successfully)
+			=> expect => expect_true
+			;
+	};
+
+=head2 C<arrange> as an assumption parameter
+
+When used as a parameter to an assumption, C<arrange> populates that
+assumption's subcontext:
+
+	act { authenticate (@_) } qw (user password);
+
+	assume "admin should have elevated privileges"
+		=> arrange { user     => q (alice) }
+		=> arrange { password => q (secret123) }
+		=> expect => expect_true
+		;
+
+=head2 C<arrange { }> vs C<with_*> argument
+
+=head2 The difference in execution context
+
+=over
+
+=item C<with_*> builder is executed in the caller's context
+
+	it q (...)
+		=> with_property => builder ()
+		;
+
+=item C<arrange> block is executed in the assumption's subcontext
+
+=back
+
+For most cases, they're interchangeable - choose based on readability.
+
+=head1 ASSUMPTION C<diag>
+
+You can provide additional diagnostic message (or message builder), saving some lines
+when writing patterns like:
+
+	my $rv = fail q (...);
+	diag q (some diag message);
+	return $rv;
+
+You can write just:
+
+	return fail q (...)
+		=> diag => q (some diag message)
+		;
 
 =head2 Mocking and Overriding with L<<C<override { }>|Test::YAFT/override { }>>
 

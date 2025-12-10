@@ -205,7 +205,29 @@ L<Test::YAFT> exports symbols using L<Exporter::Tiny>.
 
 This document contains reference manual.
 
-For some use cases look at following documents:
+Library provides C<Arrange> and C<Act> as functions with same name.
+
+C<Assert> is split into two concepts - assumption and expectation.
+
+=head2 BDD inspired
+
+Every assumption function takes test message as first and positional argument which,
+along with assumption function name, should inspire user to provide meaningful test
+message forming reasonable English sentence.
+
+As consequence of using L<Exporter::Tiny> one can even export assumption functions
+under localized names to form local-language sentences.
+
+=head2 Context oriented
+
+Every subtest, as well as every assumption call creates new sub-context allowing
+to declare properties shared in current context and its subcontext (C<act>, C<arrange>).
+
+=head1 MIGRARING TO C<Test::YAFT>
+
+This document is a reference manual.
+
+For tutorial or migration patterns from using other libraries there are also documents:
 
 =over
 
@@ -247,6 +269,31 @@ Utility functions (exported by default).
     use Test::YAFT qw (!fail);
 
 See L<Exporter::Tiny> for more import options.
+
+=head1 MIGRARING TO C<Test::YAFT>
+
+This document is a reference manual.
+
+For introduction or migration patterns from using other libraries there are also documents:
+
+=over
+
+=item L<"Introduction to Test::YAFT"|Test::YAFT::Introduction>
+
+=item L<"Test::YAFT for Test::Deep users"|Test::YAFT::Test::Deep>
+
+=item L<"Test::YAFT for Test::Exception users"|Test::YAFT::Test::Exception>
+
+=item L<"Test::YAFT for Test::More users"|Test::YAFT::Test::More>
+
+=item L<"Test::YAFT for Test::Spec users"|Test::YAFT::Test::Spec>
+
+=item L<"Test::YAFT for Test::Warnings users"|Test::YAFT::Test::Warnings>
+
+=back
+
+This document contains reference manual. If you want some kind of tutorial,
+please visit L<Test::YAFT::Introduction> as well.
 
 =head1 OVERLOADED OPERATORS
 

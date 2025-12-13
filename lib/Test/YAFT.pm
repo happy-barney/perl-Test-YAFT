@@ -66,6 +66,7 @@ package Test::YAFT {
 	sub expect_placeholder ($;$);
 	sub expect_plain_ref ();
 	sub expect_re ($);
+	sub expect_ref_type ($);
 	sub expect_starts_with ($);
 	sub expect_str ($);
 	sub expect_string ($);
@@ -124,8 +125,8 @@ package Test::YAFT {
 	sub expect_isa ($)                  :Expectation(\&Test::Deep::Isa);
 	sub expect_like ($)                 :Expectation(\&Test::Deep::re);
 	sub expect_listmethods              :Expectation(\&Test::Deep::listmethods);
+	sub expect_method ($$)              :Expectation(\&Test::Deep::methods);
 	sub expect_methods                  :Expectation(\&Test::Deep::methods);
-	sub expect_no_class                 :Expectation(\&Test::Deep::noclass);
 	sub expect_none                     :Expectation(\&Test::Deep::none);
 	sub expect_none_of                  :Expectation(\&Test::Deep::noneof);
 	sub expect_num                      :Expectation(\&Test::Deep::num);
@@ -136,7 +137,7 @@ package Test::YAFT {
 	sub expect_placeholder ($;$)        :Expectation(Test::YAFT::Cmp::Placeholder);
 	sub expect_plain_ref ()             :Expectation(Test::YAFT::Expect::Plain_Ref);
 	sub expect_re ($)                   :Expectation(\&Test::Deep::re);
-	sub expect_ref_type                 :Expectation(\&Test::Deep::reftype);
+	sub expect_ref_type ($)             :Expectation(\&Test::Deep::reftype);
 	sub expect_regexp_matches           :Expectation(\&Test::Deep::regexpmatches);
 	sub expect_regexp_only              :Expectation(\&Test::Deep::regexponly);
 	sub expect_regexpref                :Expectation(\&Test::Deep::regexpref);
@@ -163,7 +164,6 @@ package Test::YAFT {
 	sub expect_true ()                  :Expectation(\&Test::Deep::bool, 1);
 	sub expect_undef ()                 :Expectation(Test::YAFT::Cmp::Defined, 0);
 	sub expect_undefined ()             :Expectation(Test::YAFT::Cmp::Defined, 0);
-	sub expect_use_class                :Expectation(\&Test::Deep::useclass);
 	sub expect_value                    :Expectation(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);
 	sub fail                            :Assumption;
@@ -234,6 +234,19 @@ package Test::YAFT {
 		return $class;
 	}
 
+	sub _build_expectation_array {
+		my ($array) = @_;
+
+		expect_use_class (
+			+ expect_array_length (scalar @$array)
+			+ Test::Deep::arrayelementsonly (@$array)
+		);
+	}
+
+	sub _build_expectation_hash {
+		expect_use_class (Test::Deep::hash (@_));
+	}
+
 	sub _build_got {
 		my ($args) = @_;
 
@@ -262,6 +275,12 @@ package Test::YAFT {
 			;
 
 		return $args->{todo};
+	}
+
+	sub _expect_array {
+		my ($builder, @data) = @_;
+
+		$builder->(\ @data);
 	}
 
 	sub _expect_hash {

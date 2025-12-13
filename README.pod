@@ -1882,6 +1882,443 @@ Contributions are welcome!
 
 =back
 
+=head1 EXPORTED SYMBOLS
+
+L<Test::YAFT> exports all assumptions, expectations, and utilities by default.
+
+=head2 Export Tags
+
+=head3 C<:all>
+
+Export all exportable symbols.
+
+=head3 C<:assumptions>
+
+Export all assumption functions.
+
+=head3 C<:expectations>
+
+Export all expectation functions.
+
+=head3 C<:foundations>
+
+Export all foundation functions.
+
+=head3 C<:utils>
+
+Export all utility functions.
+
+=head1 ASSUMPTIONS
+
+Assumption functions are used to verify expectations for a test case.
+
+While I personally prefer every assumption to be C<assume> or have the C<assume_> prefix,
+this library supports a few more.
+
+Every assumption supports a common calling style where the test message is the first positional
+argument, followed by a common set of named arguments (some may not be used by certain assumptions).
+
+Named parameters can be provided via key-value pair syntax:
+
+	assume q (...)
+		=> got => $value
+		;
+
+or via builder function:
+
+	assume q (...)
+		=> got { build got }
+		;
+
+=over
+
+=item C<got>
+
+	assume q (...)
+		=> got     => $got
+		=> got     { $got }
+
+Specifies the C<$got> value.
+
+When C<$got> is not explicitly provided and L<got {}|/got {}> is specified,
+it is used to build the C<$got> value.
+
+If still not available, it uses L<act {}|/act {}> available in the current context.
+
+When the C<$got> value is built either by L<got {}|/got {}> or L<act {}|/act {}>,
+the assumption also stores any error (C<$@>) for later evaluation.
+
+=item C<expect>
+
+	assume q (...)
+		=> expect  => $expectation
+		=> expect  { $expectation }
+
+Specifies the expectation.
+
+When not explicitly provided and L<expect {}|/expect {}> is specified,
+it is used to build the expectation.
+
+If C<$got> was built and there was an error (C<$@> is stored), the assumption fails
+without using this expectation.
+
+=item C<throws>
+
+	assume q (...)
+		=> throws  => $expectation
+		=> throws  { $expectation }
+
+Specifies the error expectation.
+
+When not explicitly provided and L<throws {}|/throws {}> is specified,
+it is used to build the error expectation.
+
+If C<$got> was built and there was no error (C<$@> is not set), the assumption fails
+without using this expectation.
+
+When both C<expect> and C<throws> are specified, C<throws> takes precedence.
+
+=item C<diag>
+
+	assume q (...)
+		=> diag    => q (diagnostic message)
+		=> diag    => sub { q (diagnostic message builder) }
+
+Allows you to specify an additional diagnostic message.
+
+Can be either a string or a coderef returning a list of strings, which will be concatenated.
+
+The diagnostic message is output only if the assumption fails.
+
+=item C<with_*>, C<arrange {}>
+
+	assume q (...)
+		=> arrange       { property => $value }
+		=> with_property => $value
+
+Populates properties in the assumption subcontext.
+Properties are populated regardless of whether they are needed or not.
+
+=back
+
+=head2 assume
+
+	assume q (...)
+		=> got    => ...
+		=> expect => ...
+		;
+
+The basic, most flexible assumption.
+
+Internally it uses L<Test::Deep>'s C<cmp_deeply> to compare values.
+
+When the expected value is L<Test::Deep::Bool>, it uses L<Test::More>'s C<ok>.
+
+In addition to C<Test::Deep>'s stack, it currently also uses L<Test::Difference>
+to report differences when the comparison fails.
+
+=head2 fail
+
+	return fail q (what failed);
+
+	return fail q (what failed)
+		=> diag => q (diagnostic message)
+		;
+
+	return fail q (what failed)
+		=> diag => sub { q (diagnostic message) }
+		;
+
+Likewise L<Test::More/fail>, it also always fails, but it accepts C<diag> parameter.
+
+=head3 had_no_warnings
+
+	had_no_warnings;
+	had_no_warnings q (test message);
+
+Re-exported from L<Test::Warnings>.
+
+=head2 it
+
+An alias for L<assume|/assume>.
+
+Available to provide a convenient word to form a reasonable English sentence.
+
+	it q (should ...)
+
+=head2 nok
+
+	nok q (...)
+		=> got    => ...
+		;
+
+Simple shortcut to expect a value behaving like boolean false.
+
+Accepts all common arguments except C<expect>.
+
+=head3 ok
+
+	ok q (should ...)
+		=> got    => ...
+		;
+
+Simple shortcut to expect a value behaving like boolean true.
+
+Accepts all common arguments except C<expect>.
+
+=head3 pass
+
+	pass q (test message);
+
+Re-exported from L<Test::More>.
+
+=head2 there
+
+An alias for L<assume|/assume>.
+
+Available to provide a convenient word to form a reasonable English sentence.
+
+	there q (should be ...)
+
+=head1 EXPECTATIONS
+
+Every expectation returns an object extending L<Test::Deep::Cmp>.
+
+Expectation function provides object (L<Test::Deep::Cmp>) describing
+expected value.
+
+=head2 expect_all
+
+Evaluates that C<$got> matches all of the provided expectations.
+
+	expect_all (
+		expectation_1,
+		expectation_2,
+	);
+
+=head2 expect_any
+
+Evaluates that C<$got> matches at least one of the provided expectations.
+
+	expect_any (
+		expectation_1,
+		expectation_2,
+	);
+
+=head2 expect_array
+
+Evaluates that C<$got> is an arrayref (blessed or unblessed) containing values.
+
+	expect_array (
+		array_item_0_expectation,
+		array_item_1_expectation,
+	);
+
+=head2 expect_array_each
+
+Evaluates that each element of arrayref C<$got> matches the provided expectation.
+
+	expect_array_each (
+		array_item_expectation
+	);
+
+=head2 expect_array_length
+
+Evaluates that the arrayref C<$got> has the given length.
+
+	expect_array_length (42)
+
+=head2 expect_bag
+
+Evaluates that C<$got> is an unblessed arrayref and contains exactly the provided expectations,
+ignoring order. Each expectation can match only one item in C<$got>.
+
+	# Matches:
+	# - [ 1, 2 ]
+	# - [ 2, 1 ]
+	#
+	# Does not match (due to duplicate item '1' and missing '2'):
+	# - [ 1, 1 ]
+	#
+	# Does not match (due to extra item '2'):
+	# - [ 2, 1, 2 ]
+	expect_bag ( 1, 2 )
+
+=head2 expect_blessed_to
+
+Evaluates that C<$got> is blessed exactly to the provided class name.
+
+	expect_blessed (Foo::)
+
+See also:
+L<expect_instance_of|/expect_instance_of>
+L<expect_isa|/expect_isa>
+L<expect_obj_isa|/expect_obj_isa>
+
+=head2 expect_bool
+
+Evaluates that C<$got> is logically equivalent to the truthiness of provided argument.
+
+	expect_bool (0)
+	expect_bool (1)
+
+See also:
+L<expect_false|/expect_false ()>
+L<expect_true|/expect_true ()>
+
+=head2 expect_can
+
+Evaluates that C<$got> responds to the method(s).
+
+	expect_can (q (foo));
+	expect_can (qw (foo bar));
+
+=head2 expect_code {}
+
+Evaluates that C<$got> matches the behaviour described in the code block.
+C<$got> value is available inside the block as C<$_> as well as C<$_[0]>.
+
+In addition to the success truth value, the code block can optionally return a diagnostic message as the second value.
+
+	expect_code {
+		# truth value - is it odd?
+		$_ % 2 == 1,
+
+		# optional diagnostic message
+		q (Expect even number),
+	}
+
+=head2 expect_compare
+
+The expectation takes the operator (as a string) and the value,
+and evaluates that C<$got> satisfies the operator against the value.
+
+	expect_compare (q (<=), $max)
+
+=head2 expect_complement_to
+
+Evaluates that C<$got> does not match complemented expectation.
+
+	expect_complement_to (42)
+
+Note: It is usually easier to use the overloaded complement operators:
+
+	! expectation
+	~ expectation
+	- expectation
+
+=head2 expect_data_contract
+
+Evaluates that the C<$got> value conforms to the provided data contract.
+
+The expectation recognises contracts defined using L<Type::Tiny> and L<Moose>.
+It is expected that the necessary libraries are loaded and available
+when you are providing a corresponding data contract.
+
+	# With Type::Tiny (passing the type constraint object)
+	expect_data_contract (Str)
+
+	# With Moose (passing the type constraint name as a string)
+	expect_data_contract (q (Str))
+
+=head2 expect_data_contract_coerce
+
+This is an extension of L<expect_data_contract|/expect_data_contract>,
+coercing the value to the expected type before checking.
+
+	# With Type::Tiny (passing the type constraint object)
+	expect_data_contract_coerce (Str)
+
+	# With Moose (passing the type constraint name as a string)
+	expect_data_contract_coerce (q (Str))
+
+=head2 expect_defined ()
+
+Evaluates that C<$got> contains a defined value.
+
+	expect_defined
+
+=head2 expect_false ()
+
+Evaluates that C<$got> is logically C<false>.
+
+	expect_false
+
+See also:
+L<expect_bool|/expect_bool>
+L<expect_true|/expect_true ()>
+
+=head2 expect_greater_than
+
+Evaluates that C<$got> is numerically greater than the provided value.
+
+	expect_greater_than ($min)
+
+See also:
+L<expect_compare|/expect_compare>
+L<expect_less_than|/expect_less_than>
+
+=head2 expect_hash
+
+Evaluates that C<$got> (treated as hashref, blessed or unblessed) contains
+exactly the same keys and values as provided.
+The presence of additional or the absence of required keys is considered a failure.
+
+This expectation accepts arguments either as a single hashref or as hash content (key-value pairs).
+
+	expect_hash ({ a => 1, b => 2 })
+	expect_hash (  a => 1, b => 2  )
+
+=head2 expect_hash_each
+
+Evaluates that each value of C<$got> (treated as hashref, blessed or unblessed)
+matches the provided expectation.
+
+	expect_hash_each (expect_uuid)
+
+=head2 expect_hash_keys
+
+Evaluates that C<$got> (treated as hashref, blessed or unblessed)
+contains exactly the provided keys.
+
+	expect_hash_keys (qw (id public_id login name))
+
+=head2 expect_instance_of
+
+Evaluates that C<$got> is an instance of the provided class or any of its subclasses.
+
+	expect_instance_of (q (My::Class));
+
+See also:
+L<expect_blessed_to|/expect_blessed_to>
+L<expect_isa|/expect_isa>
+L<expect_obj_isa|/expect_obj_isa>
+
+=head2 expect_isa
+
+Evaluates C<$got> using C<UNIVERSAL::isa>.
+
+	expect_isa (Foo::)
+
+=head2 expect_less_than
+
+Evaluates that C<$got> is numerically less than the provided value.
+
+	expect_less_than ($max);
+
+=head2 expect_like
+
+Expect C<$got> value matches regex:
+
+	assume q (...)
+		=> got    => $got
+		=> expect => expect_like (qr ($regex))
+		;
+
+=head1 UTILITIES
+
+=head1 FOUNDATIONS
+
 =head1 LINKS
 
 =over

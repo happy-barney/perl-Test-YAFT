@@ -55,6 +55,7 @@ package Test::YAFT {
 	sub expect_does ($);
 	sub expect_ends_with ($);
 	sub expect_exists ();
+	sub expect_false ();
 	sub expect_instance_of ($);
 	sub expect_isa ($);
 	sub expect_like ($);
@@ -70,6 +71,7 @@ package Test::YAFT {
 	sub expect_string ($);
 	sub expect_undef ();
 	sub expect_undefined ();
+	sub expect_true ();
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub ignore ();

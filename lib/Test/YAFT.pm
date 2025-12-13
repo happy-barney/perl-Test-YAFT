@@ -164,8 +164,8 @@ package Test::YAFT {
 	sub plan                            :Util;
 	sub skip ($$)                       :Util;
 	sub subtest                         :Util;
-	sub test_deep_cmp                   :Foundation(\& test_yaft_cmp);
-	sub test_yaft_cmp                   :Foundation;
+	sub test_deep_cmp                   :Foundation(\& anonymous_cmp);
+	sub test_yaft_cmp                   :Foundation(\& anonymous_cmp);
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
 	sub throws (&)                      :Util(Test::YAFT::Argument::Throws);
@@ -193,6 +193,29 @@ package Test::YAFT {
 		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
 
 		return $act;
+	}
+
+	sub  anonymous_cmp {
+		my (%methods) = @_;
+
+		state $serial = 0;
+		my $prefix = q (Test::Deep::Cmp::__ANON__::);
+
+		my $class = $prefix . ++$serial;
+		my $isa = delete $methods{isa} // q (Test::YAFT::Cmp);
+
+		{
+			my @isa = Ref::Util::is_arrayref ($isa) ? @$isa : ($isa);
+			eval qq (require $_) for @isa;
+
+			no strict q (refs);
+			@{ qq ($class\::ISA) } = @isa;
+		}
+
+		Sub::Install::install_sub ({ into => $class, as => $_, code => $methods{$_} })
+			for keys %methods;
+
+		return $class;
 	}
 
 	sub _build_got {
@@ -476,29 +499,6 @@ package Test::YAFT {
 		test_frame {
 			Test::More::subtest $title, $code;
 		};
-	}
-
-	sub test_yaft_cmp {
-		my (%methods) = @_;
-
-		state $serial = 0;
-		my $prefix = q (Test::Deep::Cmp::__ANON__::);
-
-		my $class = $prefix . ++$serial;
-		my $isa = delete $methods{isa} // q (Test::YAFT::Cmp);
-
-		{
-			my @isa = Ref::Util::is_arrayref ($isa) ? @$isa : ($isa);
-			eval qq (require $_) for @isa;
-
-			no strict q (refs);
-			@{ qq ($class\::ISA) } = @isa;
-		}
-
-		Sub::Install::install_sub ({ into => $class, as => $_, code => $methods{$_} })
-			for keys %methods;
-
-		return $class;
 	}
 
 	sub test_frame (&) {

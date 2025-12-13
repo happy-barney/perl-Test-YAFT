@@ -47,6 +47,7 @@ package Test::YAFT {
 	sub expect_blessed_to ($);
 	sub expect_bool ($);
 	sub expect_code (&);
+	sub expect_compare ($$);
 	sub expect_complement ($);
 	sub expect_data_contract ($);
 	sub expect_data_contract_coerce ($);
@@ -103,7 +104,7 @@ package Test::YAFT {
 	sub expect_bool ($)                 :Expectation(\&Test::Deep::bool);
 	sub expect_can                      :Expectation(Test::YAFT::Expect::Can);
 	sub expect_code (&)                 :Expectation(Test::YAFT::Expect::Code);
-	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
+	sub expect_compare ($$)             :Expectation(Test::YAFT::Cmp::Compare);
 	sub expect_complement ($)           :Expectation(Test::YAFT::Expect::Complement);
 	sub expect_data_contract ($)        :Expectation(Test::YAFT::Cmp::Data_Contract);
 	sub expect_data_contract_coerce ($) :Expectation(Test::YAFT::Cmp::Data_Contract_Coerce);

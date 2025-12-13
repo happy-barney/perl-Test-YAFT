@@ -627,10 +627,10 @@ In addition to the success truth value, the code block can optionally return a d
 
 =head2 expect_compare
 
-	expect_compare (q (<=), $max)
+The expectation takes the operator (as a string) and the value,
+and evaluates that C<$got> satisfies the operator against the value.
 
-Similar to L<Test::More/cmp_ok> but provided as an expectation, allowing
-combination with other L<Test::YAFT> expectations.
+	expect_compare (q (<=), $max)
 
 See also:
 L<expect_number_greater_than|/expect_number_greater_than>
@@ -638,10 +638,15 @@ L<expect_number_less_than|/expect_number_less_than>
 
 =head2 expect_complement_to
 
+Evaluates that C<$got> does not match complemented expectation.
+
 	expect_complement_to (42)
 
-Negative expectation. Usually it is easier to use the overloaded
-complement operators C<!> or C<~>.
+Note: It is usually easier to use the overloaded complement operators:
+
+	! expectation
+	~ expectation
+	- expectation
 
 =head2 expect_data_contract
 

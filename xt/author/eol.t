@@ -29,6 +29,7 @@ my @files = (
     'lib/Test/YAFT/Cmp/Data_Contract_Coerce/Moose.pm',
     'lib/Test/YAFT/Cmp/Data_Contract_Coerce/Type/Tiny.pm',
     'lib/Test/YAFT/Cmp/Defined.pm',
+    'lib/Test/YAFT/Cmp/Hash.pm',
     'lib/Test/YAFT/Cmp/Placeholder.pm',
     'lib/Test/YAFT/Dumper.pm',
     'lib/Test/YAFT/Expect/Complement.pm',

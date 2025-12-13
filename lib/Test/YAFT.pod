@@ -765,7 +765,14 @@ L<expect_true|/expect_true ()>
 
 =head2 expect_hash
 
-Re-exported from L<Test::Deep/hash>.
+Evaluates that C<$got> hashref (blessed or unblessed) contains exactly the same keys
+and values as provided. The presence of additional or the absence of required keys is
+considered a failure.
+
+This expectation accepts arguments either as a single hashref or as hash content (key-value pairs).
+
+	expect_hash ({ a => 1, b => 2 })
+	expect_hash (  a => 1, b => 2  )
 
 =head2 expect_hash_each
 

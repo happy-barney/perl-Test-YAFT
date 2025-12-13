@@ -112,7 +112,7 @@ package Test::YAFT {
 	sub expect_does ($)                 :Expectation(Test::YAFT::Expect::Does);
 	sub expect_ends_with ($)            :Expectation(Test::YAFT::Expect::Ends_With);
 	sub expect_false ()                 :Expectation(\&Test::Deep::bool, 0);
-	sub expect_hash                     :Expectation(\&Test::Deep::hash);
+	sub expect_hash                     :Expectation(Test::YAFT::Hash);
 	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
 	sub expect_hash_keys                :Expectation(\&Test::Deep::hashkeys);
 	sub expect_hash_keys_only           :Expectation(\&Test::Deep::hashkeysonly);

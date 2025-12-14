@@ -87,6 +87,7 @@ my @files = (
     't/expect-defined.t',
     't/expect-does.t',
     't/expect-ends-with.t',
+    't/expect-exists.t',
     't/expect-false.t',
     't/expect-hash-each.t',
     't/expect-hash-keys-only.t',

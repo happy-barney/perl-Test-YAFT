@@ -112,6 +112,7 @@ package Test::YAFT {
 	sub expect_defined ()               :Expectation(Test::YAFT::Cmp::Defined, 1);
 	sub expect_does ($)                 :Expectation(Test::YAFT::Expect::Does);
 	sub expect_ends_with ($)            :Expectation(Test::YAFT::Expect::Ends_With);
+	sub expect_exists ()                :Expectation(Test::YAFT::Cmp::Exists);
 	sub expect_false ()                 :Expectation(\&Test::Deep::bool, 0);
 	sub expect_hash                     :Expectation(Test::YAFT::Cmp::Hash);
 	sub expect_hash_each                :Expectation(Test::YAFT::Cmp::Hash_Each);

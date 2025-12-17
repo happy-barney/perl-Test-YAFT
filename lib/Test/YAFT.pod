@@ -776,15 +776,17 @@ This expectation accepts arguments either as a single hashref or as hash content
 
 =head2 expect_hash_each
 
-Re-exported from L<Test::Deep/hash_each>.
+Evaluates that each value of C<$got> (treated as hashref, blessed or unblessed)
+matches the provided expectation.
+
+	expect_hash_each (expect_uuid)
 
 =head2 expect_hash_keys
 
-Re-exported from L<Test::Deep/hashkeys>.
+Evaluates that C<$got> (treated as hashref, blessed or unblessed)
+contains exactly the provided keys.
 
-=head2 expect_hash_keys_only
-
-Re-exported from L<Test::Deep/hashkeysonly>.
+	expect_hash_keys (qw (id public_id login name))
 
 =head2 expect_instance_of
 

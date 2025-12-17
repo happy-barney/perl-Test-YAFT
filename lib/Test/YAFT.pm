@@ -54,6 +54,7 @@ package Test::YAFT {
 	sub expect_defined ();
 	sub expect_does ($);
 	sub expect_ends_with ($);
+	sub expect_exists ();
 	sub expect_instance_of ($);
 	sub expect_isa ($);
 	sub expect_like ($);
@@ -113,7 +114,7 @@ package Test::YAFT {
 	sub expect_ends_with ($)            :Expectation(Test::YAFT::Expect::Ends_With);
 	sub expect_false ()                 :Expectation(\&Test::Deep::bool, 0);
 	sub expect_hash                     :Expectation(Test::YAFT::Cmp::Hash);
-	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
+	sub expect_hash_each                :Expectation(Test::YAFT::Cmp::Hash_Each);
 	sub expect_hash_keys                :Expectation(\&Test::Deep::hashkeys);
 	sub expect_hash_keys_only           :Expectation(\&Test::Deep::hashkeysonly);
 	sub expect_instance_of ($)          :Expectation(\&Test::Deep::obj_isa);

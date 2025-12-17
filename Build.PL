@@ -42,6 +42,7 @@ my %module_build_args = (
     "Test::Deep::Cmp" => 0,
     "Test::Deep::Code" => 0,
     "Test::Deep::Hash" => 0,
+    "Test::Deep::Hash_Each" => 0,
     "Test::Differences" => 0,
     "Test::More" => "v0.970.0",
     "Test::Warnings" => "v0.38.0",

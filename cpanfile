@@ -20,6 +20,7 @@ requires "Test::Deep::Blessed" => "0";
 requires "Test::Deep::Cmp" => "0";
 requires "Test::Deep::Code" => "0";
 requires "Test::Deep::Hash" => "0";
+requires "Test::Deep::Hash_Each" => "0";
 requires "Test::Differences" => "0";
 requires "Test::More" => "v0.970.0";
 requires "Test::Warnings" => "v0.38.0";

@@ -1184,11 +1184,24 @@ L<expect_superbag|/expect_superbag>
 
 =head2 expect_subhash
 
-Re-exported from L<Test::Deep/subhashof>.
+Expects that C<$got> is a hashref and contains only some of the specified keys with the
+specified values. Additional keys in the expected hash are ignored.
+
+Accepts either a single hashref or hash content (key-value pairs).
+
+	assume q (hash contains expected keys)
+		=> got    => { a => 1, b => 2 }
+		=> expect => expect_subhash ({ a => 1, b => 2, c => 3 })
+		;
+
+	assume q (hash contains expected keys with hash content)
+		=> got    => { a => 1, b => 2 }
+		=> expect => expect_subhash (a => 1, b => 2, c => 3)
+		;
 
 =head2 expect_subhash_of
 
-Re-exported from L<Test::Deep/subhashof>.
+Alias for L<expect_subhash|/expect_subhash>.
 
 =head2 expect_subset
 
@@ -1224,11 +1237,24 @@ L<expect_subbag|/expect_subbag>
 
 =head2 expect_superhash
 
-Re-exported from L<Test::Deep/superhashof>.
+Expects that C<$got> is a hashref and contains at least the specified keys with
+the specified values. Additional keys in the received hash are ignored.
+
+Accepts either a single hashref or hash content (key-value pairs).
+
+	assume q (hash contains expected keys)
+		=> got    => { a => 1, b => 2, c => 3 }
+		=> expect => expect_superhash ({ a => 1, b => 2 })
+		;
+
+	assume q (hash contains expected keys with hash content)
+		=> got    => { a => 1, b => 2, c => 3 }
+		=> expect => expect_superhash (a => 1, b => 2)
+		;
 
 =head2 expect_superhash_of
 
-Re-exported from L<Test::Deep/superhashof>.
+Alias for L<expect_superhash|/expect_superhash>.
 
 =head2 expect_superset
 

@@ -21,5 +21,29 @@ expect_superhash (
 END_OF_EXPECTED
 	;
 
+check_test q (success with hashref argument)
+	=> assumption {
+		it q (should pass with hashref)
+			=> got    => { a => 1, b => 2 }
+			=> expect => expect_superhash ({ a => 1 })
+			;
+	}
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should pass with hashref)
+	;
+
+check_test q (success with hash content)
+	=> assumption {
+		it q (should pass with hash)
+			=> got    => { a => 1, b => 2 }
+			=> expect => expect_superhash (a => 1)
+			;
+	}
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should pass with hash)
+	;
+
 had_no_warnings;
 done_testing;

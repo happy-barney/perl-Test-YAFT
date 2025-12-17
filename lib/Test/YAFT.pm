@@ -150,14 +150,14 @@ package Test::YAFT {
 	sub expect_string ($)               :Expectation(\&Test::Deep::str);
 	sub expect_subbag                   :Expectation(\&Test::Deep::subbagof);
 	sub expect_subbag_of                :Expectation(\&Test::Deep::subbagof);
-	sub expect_subhash                  :Expectation(\&Test::Deep::subhashof);
-	sub expect_subhash_of               :Expectation(\&Test::Deep::subhashof);
+	sub expect_subhash                  :Expectation(\&_expect_hash,\&Test::Deep::subhashof);
+	sub expect_subhash_of               :Expectation(\&_expect_hash,\&Test::Deep::subhashof);
 	sub expect_subset                   :Expectation(\&Test::Deep::subsetof);
 	sub expect_subset_of                :Expectation(\&Test::Deep::subsetof);
 	sub expect_superbag                 :Expectation(\&Test::Deep::superbagof);
 	sub expect_superbag_of              :Expectation(\&Test::Deep::superbagof);
-	sub expect_superhash                :Expectation(\&Test::Deep::superhashof);
-	sub expect_superhash_of             :Expectation(\&Test::Deep::superhashof);
+	sub expect_superhash                :Expectation(\&_expect_hash,\&Test::Deep::superhashof);
+	sub expect_superhash_of             :Expectation(\&_expect_hash,\&Test::Deep::superhashof);
 	sub expect_superset                 :Expectation(\&Test::Deep::supersetof);
 	sub expect_superset_of              :Expectation(\&Test::Deep::supersetof);
 	sub expect_true ()                  :Expectation(\&Test::Deep::bool, 1);
@@ -264,10 +264,15 @@ package Test::YAFT {
 		return $args->{todo};
 	}
 
-	sub _expectation_arrayref {
-		my ($expectation, @data) = @_;
+	sub _expect_hash {
+		my ($builder, @hash_data) = @_;
 
-		return $expectation->(\ @data);
+		my $hashref = @hash_data == 1
+			? $hash_data[0]
+			: { @hash_data }
+			;
+
+		$builder->($hashref);
 	}
 
 	sub _resolve_argument {

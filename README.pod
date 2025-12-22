@@ -867,6 +867,57 @@ Evaluates that C<$got> is not a blessed reference (an object).
 See also:
 L<expect_blessed_ref|/expect_blessed_ref>
 
+=head2 expect_placeholder
+
+Often there are related tests which uses unpredictable value as a value which
+connects multiple test scenarios.
+
+For such use cases you can use a context placeholder, identified by name
+
+	expect_placeholder (q (name));
+	expect_placeholder (q (name), first time expectation);
+
+When first time evaluated, the expectation stores the given value it is compared with.
+If a first-time expectation is specified, it also evaluates it and returns evaluation result;
+otherwise it returns C<true>.
+
+Any subsequent evaluation compares given value with stored value.
+
+The value is stored in the context in which the first declaration appeared.
+
+Example:
+
+	assume q (value is duplicated)
+		=> got    => [ 42, 42 ]
+		=> expect => [
+			expect_placeholder (q (x)),
+			expect_placeholder (q (x)),
+		];
+
+Example - testing inserted row and its aggregation:
+
+	assume_db_row q (user should be created)
+		=> table  => q (user)
+		=> where  => { login => $user_login }
+		=> expect => expect_superhash_of ({
+			id => expect_placeholder (q (user-id)),
+			...,
+		});
+
+	# use placeholder as expected value
+	assume_db_row q (user preferences should be stored)
+		=> table  => q (user_preference)
+		=> expect => expect_superhash_of (
+			{ user => expect_placeholder (q (user-id)) }
+		);
+
+	# use placeholder to fetch stored value
+	assume_db_row q (user preferences should be stored)
+		=> table  => q (user_preference)
+		=> where  => { user => expect_placeholder (q (user-id))->value }
+		=> expect => ...
+		;
+
 =head2 expect_re
 
 	assume q (error message should contain specific text)

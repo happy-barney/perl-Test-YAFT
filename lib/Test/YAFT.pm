@@ -47,6 +47,7 @@ package Test::YAFT {
 	sub expect_complement ($);
 	sub expect_data_contract ($);
 	sub expect_data_contract_coerce ($);
+	sub expect_defined ();
 	sub expect_does ($);
 	sub expect_ends_with ($);
 	sub expect_instance_of ($);
@@ -62,6 +63,8 @@ package Test::YAFT {
 	sub expect_starts_with ($);
 	sub expect_str ($);
 	sub expect_string ($);
+	sub expect_undef ();
+	sub expect_undefined ();
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub ignore ();
@@ -103,6 +106,7 @@ package Test::YAFT {
 	sub expect_complement ($)           :Expectation(Test::YAFT::Expect::Complement);
 	sub expect_data_contract ($)        :Expectation(Test::YAFT::Cmp::Data_Contract);
 	sub expect_data_contract_coerce ($) :Expectation(Test::YAFT::Cmp::Data_Contract_Coerce);
+	sub expect_defined ()               :Expectation(Test::YAFT::Cmp::Defined, 1);
 	sub expect_does ($)                 :Expectation(Test::YAFT::Expect::Does);
 	sub expect_ends_with ($)            :Expectation(Test::YAFT::Expect::Ends_With);
 	sub expect_false                    :Expectation(\&Test::Deep::bool, 0);
@@ -151,6 +155,8 @@ package Test::YAFT {
 	sub expect_superset                 :Expectation(\&Test::Deep::supersetof);
 	sub expect_superset_of              :Expectation(\&Test::Deep::supersetof);
 	sub expect_true                     :Expectation(\&Test::Deep::bool, 1);
+	sub expect_undef ()                 :Expectation(Test::YAFT::Cmp::Defined, 0);
+	sub expect_undefined ()             :Expectation(Test::YAFT::Cmp::Defined, 0);
 	sub expect_use_class                :Expectation(\&Test::Deep::useclass);
 	sub expect_value                    :Expectation(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);

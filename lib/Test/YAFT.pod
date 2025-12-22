@@ -660,6 +660,15 @@ behaves like L<expect_data_contract|/expect_data_contract>.
 See also:
 L<expect_data_contract|/expect_data_contract>
 
+=head2 expect_defined ()
+
+Expected value must be defined.
+
+	assume q (...)
+		=> got    { q () }
+		=> expect { expect_defined }
+		;
+
 =head2 expect_does
 
 	assume q (object should perform required role)
@@ -1096,6 +1105,17 @@ Re-exported from L<Test::Deep/supersetof>.
 =head2 expect_true
 
 Boolean expectation for true values.
+
+=head2 expect_undef ()
+
+=head3 expect_undefined ()
+
+Expected value must be undefined.
+
+	assume q (...)
+		=> got    { undef }
+		=> expect { expect_undefined }
+		;
 
 =head2 expect_use_class
 

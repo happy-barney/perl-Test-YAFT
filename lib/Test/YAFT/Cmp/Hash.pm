@@ -9,6 +9,8 @@ package Test::YAFT::Cmp::Hash {
 
 	use mro;
 
+	require Scalar::Util;
+
 	sub init {
 		my ($self, @hash_data) = @_;
 

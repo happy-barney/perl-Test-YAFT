@@ -20,6 +20,7 @@ my @files = (
     'lib/Test/YAFT/Argument/Todo.pm',
     'lib/Test/YAFT/Attributes.pm',
     'lib/Test/YAFT/Cmp.pm',
+    'lib/Test/YAFT/Cmp/Array.pm',
     'lib/Test/YAFT/Cmp/Compare.pm',
     'lib/Test/YAFT/Cmp/Data_Contract.pm',
     'lib/Test/YAFT/Cmp/Data_Contract/Moose.pm',

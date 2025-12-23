@@ -37,6 +37,7 @@ my %module_build_args = (
     "Sub::Util" => 0,
     "Syntax::Construct" => 0,
     "Test::Deep" => 0,
+    "Test::Deep::Array" => 0,
     "Test::Deep::Blessed" => 0,
     "Test::Deep::Cmp" => 0,
     "Test::Deep::Code" => 0,

@@ -40,6 +40,8 @@ package Test::YAFT {
 	sub done_testing (;$$);
 	sub eq_deeply ($$);
 	sub expect (&);
+	sub expect_array_each ($);
+	sub expect_array_length ($);
 	sub expect_blessed ($);
 	sub expect_blessed_ref ();
 	sub expect_blessed_to ($);
@@ -91,10 +93,9 @@ package Test::YAFT {
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
 	sub expect_array                    :Expectation(\&Test::Deep::array);
-	sub expect_array_each               :Expectation(\&Test::Deep::array_each);
-	sub expect_array_elements_only      :Expectation(\&Test::Deep::arrayelementsonly);
-	sub expect_array_length             :Expectation(\&Test::Deep::arraylength);
-	sub expect_array_length_only        :Expectation(\&Test::Deep::arraylengthonly);
+	sub expect_array                    :Expectation(Test::YAFT::Cmp::Array);
+	sub expect_array_each ($)           :Expectation(\&Test::Deep::array_each);
+	sub expect_array_length ($)         :Expectation(\&Test::Deep::arraylength);
 	sub expect_bag                      :Expectation(\&Test::Deep::bag);
 	sub expect_blessed ($)              :Expectation(Test::YAFT::Expect::Blessed);
 	sub expect_blessed_ref ()           :Expectation(Test::YAFT::Expect::Blessed_Ref);
@@ -256,6 +257,12 @@ package Test::YAFT {
 			;
 
 		return $args->{todo};
+	}
+
+	sub _expectation_arrayref {
+		my ($expectation, @data) = @_;
+
+		return $expectation->(\ @data);
 	}
 
 	sub _resolve_argument {

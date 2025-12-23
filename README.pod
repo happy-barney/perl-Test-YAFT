@@ -455,23 +455,27 @@ Evaluates that C<$got> matches at least one of the provided expectations.
 
 =head2 expect_array
 
-Re-exported from L<Test::Deep/array>.
+Evaluates that C<$got> (treated as arrayref, blessed or unblessed) containing provided values.
+
+	expect_array (
+		expect_item_0,
+		expect_item_1,
+		expect_item_2,
+	);
 
 =head2 expect_array_each
 
-Re-exported from L<Test::Deep/array_each>.
+Evaluates that each element of arrayref C<$got> matches the provided expectation.
 
-=head2 expect_array_elements_only
-
-Re-exported from L<Test::Deep/arrayelementsonly>.
+	expect_array_each (
+		array_item_expectation
+	);
 
 =head2 expect_array_length
 
-Re-exported from L<Test::Deep/arraylength>.
+Evaluates that the arrayref C<$got> has the given length.
 
-=head2 expect_array_length_only
-
-Re-exported from L<Test::Deep/arraylengthonly>.
+	expect_array_length (42)
 
 =head2 expect_bag
 
@@ -611,39 +615,63 @@ complement operators C<!> or C<~>.
 
 =head2 expect_data_contract
 
-Expectation checks whether the C<$got> value conforms to the data contract.
-
-The expectation recognizes L<Type::Tiny> and L<Moose> contracts and expects that if
-you are providing a data contract to check, the required libraries are already available.
-
-	# With Type::Tiny
-	assume q (...)
-		=> got    => $value
-		=> expect => expect_data_contract (Str)
+	assume q (age should be valid integer)
+		=> got    => $user->{age}
+		=> expect => expect_data_contract (Int)
 		;
 
-	# With Moose
-	assume q (...)
-		=> got    => $value
+	assume q (username should be non-empty string)
+		=> got    => $user->{name}
 		=> expect => expect_data_contract (q (Str))
 		;
 
+Verifies that C<$got> conforms to the specified data contract.
+
+Supports both L<Type::Tiny> and L<Moose> data contract systems:
+
+=over
+
+=item Type::Tiny contracts
+
+Pass a Type::Tiny type object. The appropriate type library must be loaded.
+
+	use Types::Standard qw (Int Str ArrayRef);
+
+	expect_data_contract (Int)
+	expect_data_contract (ArrayRef[Str])
+
+=item Moose type constraints
+
+Pass the type name as a string. L<Moose::Util::TypeConstraints> must be available.
+
+	expect_data_contract (q (Int))
+	expect_data_contract (q (Str))
+
+=back
+
+See also:
+L<expect_data_contract_coerce|/expect_data_contract_coerce>
+
 =head2 expect_data_contract_coerce
 
-Similar to L<expect_data_contract|/expect_data_contract> except it tries to coerce
-value before check.
-
-	# With Type::Tiny
-	assume q (...)
-		=> got    => $value
-		=> expect => expect_data_contract_coerce (Str)
+	assume q (count should be coercible to integer)
+		=> got    => $input
+		=> expect => expect_data_contract_coerce ($Coercible)
 		;
 
-	# With Moose
-	assume q (...)
-		=> got    => $value
-		=> expect => expect_data_contract_coerce (q (Str))
+	assume q (value should be valid after coercion)
+		=> got    => $user_input
+		=> expect => expect_data_contract_coerce (q (Coercible))
 		;
+
+Verifies that C<$got> conforms to the specified data contract after attempting coercion.
+
+Similar to L<expect_data_contract|/expect_data_contract>, but applies type coercion
+rules before validation. The type must have coercion rules defined, otherwise it
+behaves like L<expect_data_contract|/expect_data_contract>.
+
+See also:
+L<expect_data_contract|/expect_data_contract>
 
 =head2 expect_defined ()
 

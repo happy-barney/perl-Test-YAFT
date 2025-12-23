@@ -37,17 +37,18 @@ package Test::YAFT::Attributes {
 			unless $data
 			;
 
-		my ($builder) = @$data;
+		my ($builder, @arguments) = @$data;
 
 		if (Ref::Util::is_coderef ($builder)) {
-			return $builder;
+
+			return $builder
+				unless @arguments
+				;
+
+			return sub { $builder->(@arguments, @_) };
 		}
 
-		return eval qq (
-			sub {
-				${builder}->new (\@_)
-			}
-		);
+		return sub { $builder->new (@arguments, @_) };
 	}
 
 	sub _exported {

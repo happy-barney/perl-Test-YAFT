@@ -54,7 +54,7 @@ package Test::YAFT {
 	sub expect_code                 :Exported(all,expectations) :From(\&Test::Deep::code);
 	sub expect_compare              :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Compare);
 	sub expect_complement           :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Complement);
-	sub expect_false                :Exported(all,expectations);
+	sub expect_false                :Exported(all,expectations) :From(\&Test::Deep::bool, 0);
 	sub expect_hash                 :Exported(all,expectations) :From(\&Test::Deep::hash);
 	sub expect_hash_each            :Exported(all,expectations) :From(\&Test::Deep::hash_each);
 	sub expect_hash_keys            :Exported(all,expectations) :From(\&Test::Deep::hashkeys);
@@ -90,7 +90,7 @@ package Test::YAFT {
 	sub expect_superhash_of         :Exported(all,expectations) :From(\&Test::Deep::superhashof);
 	sub expect_superset             :Exported(all,expectations) :From(\&Test::Deep::supersetof);
 	sub expect_superset_of          :Exported(all,expectations) :From(\&Test::Deep::supersetof);
-	sub expect_true                 :Exported(all,expectations);
+	sub expect_true                 :Exported(all,expectations) :From(\&Test::Deep::bool, 1);
 	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
 	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
 	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
@@ -291,14 +291,6 @@ package Test::YAFT {
 
 	sub arrange (&) {
 		return Test::YAFT::Arrange::->new (@_);
-	}
-
-	sub expect_false {
-		Test::Deep::bool (0);
-	}
-
-	sub expect_true {
-		Test::Deep::bool (1);
 	}
 
 	sub fail {

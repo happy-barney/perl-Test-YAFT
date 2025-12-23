@@ -463,6 +463,10 @@ Evaluates that C<$got> (treated as arrayref, blessed or unblessed) containing pr
 		expect_item_2,
 	);
 
+See also:
+L<expect_bag|/expect_bag>
+.
+
 =head2 expect_array_each
 
 Evaluates that each element of arrayref C<$got> matches the provided expectation.
@@ -479,7 +483,25 @@ Evaluates that the arrayref C<$got> has the given length.
 
 =head2 expect_bag
 
-Re-exported from L<Test::Deep/bag>.
+Evaluates that C<$got> is an unblessed arrayref and contains exactly the provided expectations,
+ignoring order. Each expectation can match only one item in C<$got>.
+
+	# Matches:
+	# - [ 1, 2 ]
+	# - [ 2, 1 ]
+	#
+	# Does not match (due to duplicate item '1' and missing '2'):
+	# - [ 1, 1 ]
+	#
+	# Does not match (due to extra item '2'):
+	# - [ 2, 1, 2 ]
+	expect_bag ( 1, 2 )
+
+See also:
+L<expect_array|/expect_array>
+L<expect_superbag|/expect_superbag>
+L<expect_subbag|/expect_subbag>
+.
 
 =head2 expect_blessed ($)
 
@@ -1074,11 +1096,28 @@ L<Test::Deep/str>
 
 =head2 expect_subbag
 
-Re-exported from L<Test::Deep/subbagof>.
+Evaluates that C<$got> is an unblessed arrayref and consists only of elements
+matching provided expectations, each only once.
 
-=head2 expect_subbag_of
+	# Matches:
+	# - [ 1, 2 ]
+	# - [ 2, 1 ]
+	# - [ 1 ]
+	# - [ 2 ]
+	#
+	# Does not match ('2' can appear only once):
+	# - [ 1, 2, 2 ]
+	#
+	# Does not match ('3' is not provided):
+	# - [ 1, 2, 3 ]
 
-Re-exported from L<Test::Deep/subbagof>.
+	expect_subbag (1, 2)
+
+See also:
+L<expect_array|/expect_array>
+L<expect_bag|/expect_bag>
+L<expect_superbag|/expect_superbag>
+.
 
 =head2 expect_subhash
 
@@ -1098,11 +1137,27 @@ Re-exported from L<Test::Deep/subsetof>.
 
 =head2 expect_superbag
 
-Re-exported from L<Test::Deep/superbagof>.
+Evaluates that C<$got> is an unblessed arrayref and contains elements
+matching each of the provided expectations, each expectation matching a different element.
 
-=head2 expect_superbag_of
+	# Matches:
+	# - [ 1, 2 ]
+	# - [ 2, 1 ]
+	# - [ 2, 3, 1 ]
+	#
+	# Does not match ('2' can appear only once):
+	# - [ 2, 2 ]
+	#
+	# Does not match ('2' is missing):
+	# - [ 1 ]
 
-Re-exported from L<Test::Deep/superbagof>.
+	expect_superbag (1, 2)
+
+See also:
+L<expect_array|/expect_array>
+L<expect_bag|/expect_bag>
+L<expect_subbag|/expect_subbag>
+.
 
 =head2 expect_superhash
 

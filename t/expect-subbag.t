@@ -21,5 +21,109 @@ expect_subbag (
 END_OF_EXPECTED
 	;
 
+check_test q (pass with exact match)
+	=> assumption {
+		it q (should pass)
+			=> got    => [ 1, 2 ]
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 1,
+	=> actual_ok   => 1,
+	=> name        => q (should pass),
+	;
+
+check_test q (pass with different order)
+	=> assumption {
+		it q (should pass)
+			=> got    => [ 2, 1 ]
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 1,
+	=> actual_ok   => 1,
+	=> name        => q (should pass),
+	;
+
+check_test q (pass with subset)
+	=> assumption {
+		it q (should pass)
+			=> got    => [ 1 ]
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 1,
+	=> actual_ok   => 1,
+	=> name        => q (should pass),
+	;
+
+check_test q (pass with empty array)
+	=> assumption {
+		it q (should pass)
+			=> got    => []
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 1,
+	=> actual_ok   => 1,
+	=> name        => q (should pass),
+	;
+
+check_test q (fail with duplicate)
+	=> assumption {
+		it q (should fail)
+			=> got    => [ 1, 2, 2, 2 ]
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 0,
+	=> actual_ok   => 0,
+	=> name        => q (should fail),
+	=> diag        => <<'END_OF_DIAG'
++----+------+----+------------------------+
+| Elt|Got   | Elt|Expected                |
++----+------+----+------------------------+
+*   0|[     *   0|bless( {                *
+*   1|  1,  *   1|  IgnoreDupes => 0,     *
+*   2|  2,  *   2|  SubSup => 'sub',      *
+*   3|  2,  *   3|  val => [              *
+*   4|  2   *   4|    1,                  *
+*   5|]     *   5|    2                   *
+|    |      *   6|  ]                     *
+|    |      *   7|}, 'Test::Deep::Set' )  *
++----+------+----+------------------------+
+Comparing $data as a SubBag
+Extra: '2', '2'
+END_OF_DIAG
+	;
+
+check_test q (fail with unexpected element)
+	=> assumption {
+		it q (should fail)
+			=> got    => [ 1, 2, 3 ]
+			=> expect => expect_subbag (1, 2)
+			;
+	}
+	=> ok          => 0,
+	=> actual_ok   => 0,
+	=> name        => q (should fail),
+	=> diag        => <<'END_OF_DIAG'
++----+------+----+------------------------+
+| Elt|Got   | Elt|Expected                |
++----+------+----+------------------------+
+*   0|[     *   0|bless( {                *
+*   1|  1,  *   1|  IgnoreDupes => 0,     *
+*   2|  2,  *   2|  SubSup => 'sub',      *
+*   3|  3   *   3|  val => [              *
+*   4|]     *   4|    1,                  *
+|    |      *   5|    2                   *
+|    |      *   6|  ]                     *
+|    |      *   7|}, 'Test::Deep::Set' )  *
++----+------+----+------------------------+
+Comparing $data as a SubBag
+Extra: '3'
+END_OF_DIAG
+	;
+
 had_no_warnings;
 done_testing;

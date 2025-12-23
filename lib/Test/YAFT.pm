@@ -92,7 +92,6 @@ package Test::YAFT {
 	sub expect (&)                      :Util(Test::YAFT::Argument::Expect);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
-	sub expect_array                    :Expectation(\&Test::Deep::array);
 	sub expect_array                    :Expectation(Test::YAFT::Cmp::Array);
 	sub expect_array_each ($)           :Expectation(\&Test::Deep::array_each);
 	sub expect_array_length ($)         :Expectation(\&Test::Deep::arraylength);

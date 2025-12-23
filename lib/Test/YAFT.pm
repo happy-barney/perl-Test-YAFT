@@ -45,6 +45,7 @@ package Test::YAFT {
 	sub expect_blessed ($);
 	sub expect_blessed_ref ();
 	sub expect_blessed_to ($);
+	sub expect_bool ($);
 	sub expect_code (&);
 	sub expect_complement ($);
 	sub expect_data_contract ($);
@@ -99,7 +100,7 @@ package Test::YAFT {
 	sub expect_blessed ($)              :Expectation(Test::YAFT::Expect::Blessed);
 	sub expect_blessed_ref ()           :Expectation(Test::YAFT::Expect::Blessed_Ref);
 	sub expect_blessed_to ($)           :Expectation(\&Test::Deep::blessed);
-	sub expect_bool                     :Expectation(\&Test::Deep::bool);
+	sub expect_bool ($)                 :Expectation(\&Test::Deep::bool);
 	sub expect_can                      :Expectation(Test::YAFT::Expect::Can);
 	sub expect_code (&)                 :Expectation(Test::YAFT::Expect::Code);
 	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
@@ -109,7 +110,7 @@ package Test::YAFT {
 	sub expect_defined ()               :Expectation(Test::YAFT::Cmp::Defined, 1);
 	sub expect_does ($)                 :Expectation(Test::YAFT::Expect::Does);
 	sub expect_ends_with ($)            :Expectation(Test::YAFT::Expect::Ends_With);
-	sub expect_false                    :Expectation(\&Test::Deep::bool, 0);
+	sub expect_false ()                 :Expectation(\&Test::Deep::bool, 0);
 	sub expect_hash                     :Expectation(\&Test::Deep::hash);
 	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
 	sub expect_hash_keys                :Expectation(\&Test::Deep::hashkeys);
@@ -154,7 +155,7 @@ package Test::YAFT {
 	sub expect_superhash_of             :Expectation(\&Test::Deep::superhashof);
 	sub expect_superset                 :Expectation(\&Test::Deep::supersetof);
 	sub expect_superset_of              :Expectation(\&Test::Deep::supersetof);
-	sub expect_true                     :Expectation(\&Test::Deep::bool, 1);
+	sub expect_true ()                  :Expectation(\&Test::Deep::bool, 1);
 	sub expect_undef ()                 :Expectation(Test::YAFT::Cmp::Defined, 0);
 	sub expect_undefined ()             :Expectation(Test::YAFT::Cmp::Defined, 0);
 	sub expect_use_class                :Expectation(\&Test::Deep::useclass);

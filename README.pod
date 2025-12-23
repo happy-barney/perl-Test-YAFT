@@ -561,7 +561,14 @@ L<Test::Deep::blessed|/Test::Deep#blessed>
 
 =head2 expect_bool
 
-Re-exported from L<Test::Deep/bool>.
+Evaluates that C<$got> is logically equivalent to the truthiness of provided argument.
+
+	expect_bool (0)
+	expect_bool (1)
+
+See also:
+L<expect_false|/expect_false ()>
+L<expect_true|/expect_true ()>
 
 =head2 expect_can
 
@@ -740,9 +747,15 @@ L<expect_re|/expect_re>,
 L<expect_starts_with|/expect_starts_with>,
 L<expect_string|/expect_string>
 
-=head2 expect_false
+=head2 expect_false ()
 
-Boolean expectation for false values.
+Evaluates that C<$got> is logically C<false>.
+
+	expect_false
+
+See also:
+L<expect_bool|/expect_bool>
+L<expect_true|/expect_true ()>
 
 =head2 expect_hash
 
@@ -1175,9 +1188,15 @@ Re-exported from L<Test::Deep/supersetof>.
 
 Re-exported from L<Test::Deep/supersetof>.
 
-=head2 expect_true
+=head2 expect_true ()
 
-Boolean expectation for true values.
+Evaluates that C<$got> is logically C<true>.
+
+	expect_true
+
+See also:
+L<expect_bool|/expect_bool>
+L<expect_false|/expect_false ()>
 
 =head2 expect_undef ()
 

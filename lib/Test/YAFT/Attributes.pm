@@ -7,7 +7,7 @@ use Syntax::Construct qw (package-block package-version);
 package Test::YAFT::Attributes {
 	use Attribute::Handlers;
 
-	use Ref::Util;
+	require Ref::Util;
 
 	my %where = (
 		Exported   => q (EXPORT),
@@ -18,7 +18,7 @@ package Test::YAFT::Attributes {
 		my $caller = scalar caller;
 		my $target = __PACKAGE__;
 
-		for my $attribute (qw[ Exported Exportable From Cmp_Builder ]) {
+		for my $attribute (qw[ Exported Exportable Build From Cmp_Builder ]) {
 			eval qq (
 				sub ${caller}::${attribute} : ATTR(CODE,BEGIN) {
 					goto &${target}::${attribute}

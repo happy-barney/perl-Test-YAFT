@@ -10,21 +10,24 @@ package Test::YAFT::Attributes {
 	require Ref::Util;
 	require Sub::Util;
 
-	my %where = (
-		Exported   => q (EXPORT),
-		Exportable => q (EXPORT_OK),
+	my %attributes = (
+		Exported    => q (EXPORT),
+		Exportable  => q (EXPORT_OK),
+		From        => undef,
+		Cmp_Builder => undef,
 	);
 
 	sub import {
 		my $caller = scalar caller;
 		my $target = __PACKAGE__;
 
-		for my $attribute (qw[ Exported Exportable Build From Cmp_Builder ]) {
+		for my $attribute (keys %attributes) {
 			eval qq (
 				sub ${caller}::${attribute} : ATTR(CODE,BEGIN) {
 					goto &${target}::${attribute}
 				}
 			);
+
 			die qq (cannot install ${target} attribute ${attribute} into ${caller}: $@)
 				if $@
 				;
@@ -55,7 +58,7 @@ package Test::YAFT::Attributes {
 	sub _exported {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
-		my $where = $where{$attr};
+		my $where = $attributes{$attr};
 
 		no strict q (refs);
 		push @{qq (${package}::${where})}, &_symbol_name;

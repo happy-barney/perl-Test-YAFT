@@ -10,6 +10,7 @@ requires "Ref::Util" => "0";
 requires "Safe::Isa" => "0";
 requires "Scalar::Util" => "0";
 requires "Sub::Install" => "0";
+requires "Sub::Util" => "0";
 requires "Syntax::Construct" => "0";
 requires "Test::Deep" => "0";
 requires "Test::Deep::Cmp" => "0";

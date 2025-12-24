@@ -8,6 +8,7 @@ package Test::YAFT::Attributes {
 	use Attribute::Handlers;
 
 	require Ref::Util;
+	require Sub::Util;
 
 	my %where = (
 		Exported   => q (EXPORT),
@@ -40,12 +41,12 @@ package Test::YAFT::Attributes {
 		my ($builder, @arguments) = @$data;
 
 		if (Ref::Util::is_coderef ($builder)) {
-
-			return $builder
-				unless @arguments
+			return sub { $builder->(@arguments, @_) }
+				if @arguments
+				|| _is_distinct_prototype ($referent, $builder)
 				;
 
-			return sub { $builder->(@arguments, @_) };
+			return $builder;
 		}
 
 		return sub { $builder->new (@arguments, @_) };
@@ -74,7 +75,23 @@ package Test::YAFT::Attributes {
 			unless my $coderef = &_build_coderef
 			;
 
+		if (defined (my $prototype = Sub::Util::prototype ($referent))) {
+			Sub::Util::set_prototype $prototype => $coderef;
+		}
+
 		*{$symbol} = $coderef;
+	}
+
+	sub _is_distinct_prototype {
+		my ($target, $source) = @_;
+
+		my $lhs = Sub::Util::prototype ($target);
+		my $rhs = Sub::Util::prototype ($source);
+
+		return 0
+			|| (defined $lhs xor defined $rhs)
+			|| (defined $lhs && $lhs ne $rhs)
+			;
 	}
 
 	sub _symbol_name {

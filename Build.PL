@@ -32,6 +32,7 @@ my %module_build_args = (
     "Safe::Isa" => 0,
     "Scalar::Util" => 0,
     "Sub::Install" => 0,
+    "Sub::Util" => 0,
     "Syntax::Construct" => 0,
     "Test::Deep" => 0,
     "Test::Deep::Cmp" => 0,

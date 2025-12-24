@@ -33,7 +33,7 @@ package Test::YAFT {
 	sub pass (;$);
 
 	sub act (&;@)                   :Exported(all,helpers);
-	sub arrange (&)                 :Exported(all,helpers);
+	sub arrange (&)                 :Exported(all,helpers)      :Cmp_Builder(Test::YAFT::Arrange::);
 	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
 	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
@@ -95,7 +95,7 @@ package Test::YAFT {
 	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
 	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
 	sub fail                        :Exported(all,asserts);
-	sub got (&)                     :Exported(all,helpers);
+	sub got (&)                     :Exported(all,helpers)      :Cmp_Builder(Test::YAFT::Got::);
 	sub had_no_warnings             :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
 	sub it                          :Exported(all,asserts)      :From(\&_test_yaft_assumption);
@@ -289,10 +289,6 @@ package Test::YAFT {
 		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
 	}
 
-	sub arrange (&) {
-		return Test::YAFT::Arrange::->new (@_);
-	}
-
 	sub fail {
 		my ($title, %args) = @_;
 
@@ -304,10 +300,6 @@ package Test::YAFT {
 				expect => expect_true,
 				;
 		}
-	}
-
-	sub got (&) {
-		Test::YAFT::Got->new (@_);
 	}
 
 	sub nok {

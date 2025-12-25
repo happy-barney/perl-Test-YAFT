@@ -34,6 +34,8 @@ package Test::YAFT::Attributes {
 		}
 	}
 
+	sub _push_unique_string (\@;@);
+
 	sub _build_coderef {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
@@ -61,12 +63,10 @@ package Test::YAFT::Attributes {
 		my $where = $attributes{$attr};
 
 		no strict q (refs);
-		push @{qq (${package}::${where})}, &_symbol_name;
-		push @{qq (${package}::EXPORT_OK)}, &_symbol_name
-			if $where eq q (EXPORT)
-			;
+		_push_unique_string @{qq (${package}::${where})}, &_symbol_name;
+		_push_unique_string @{qq (${package}::EXPORT_OK)}, &_symbol_name;
 
-		push @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, &_symbol_name
+		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, &_symbol_name
 				for eval { @{ $data // [] } }
 				;
 	}
@@ -95,6 +95,15 @@ package Test::YAFT::Attributes {
 			|| (defined $lhs xor defined $rhs)
 			|| (defined $lhs && $lhs ne $rhs)
 			;
+	}
+
+	sub _push_unique_string (\@;@) {
+		my $push_into = shift;
+
+		my %exists;
+		@exists{@$push_into} = ();
+
+		push @$push_into, grep { ! exists $exists{$_} } @_;
 	}
 
 	sub _symbol_name {

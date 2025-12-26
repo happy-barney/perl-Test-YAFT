@@ -16,7 +16,8 @@ package Test::YAFT::Attributes {
 		From        => undef,
 		Cmp_Builder => undef,
 
-		Foundation  => { EXPORT_OK => [qw [all         foundations  plumbings]] },
+		Foundation  => { EXPORT_OK => [qw [all foundations  plumbings]] },
+		Util        => { EXPORT    => [qw [all utils        helpers  ]] },
 	);
 
 	sub import {
@@ -139,6 +140,11 @@ package Test::YAFT::Attributes {
 	}
 
 	sub Foundation {
+		&_exported;
+		&_install_coderef;
+	}
+
+	sub Util {
 		&_exported;
 		&_install_coderef;
 	}

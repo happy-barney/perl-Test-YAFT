@@ -74,6 +74,7 @@ sub assume_test_yaft_exports {
 		foundations  => 0,
 		helpers      => 0,
 		plumbings    => 0,
+		utils        => 0,
 	);
 
 	for my $tag (@{ $args{by_tag} // [] }) {

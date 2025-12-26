@@ -464,11 +464,11 @@ Wraps any value as an expectation.
 
 Reexported L<Test::Deep/ignore>.
 
-=head2 Helper Functions
+=head2 Utilities
 
-	use Test::YAFT qw (:helpers);
+	use Test::YAFT qw (:utils);
 
-Helper functions are exported by default.
+Utility functions are exported by default.
 
 Functions helping to organize your tests.
 

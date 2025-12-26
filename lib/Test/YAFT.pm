@@ -32,14 +32,14 @@ package Test::YAFT {
 	sub got (&);
 	sub pass (;$);
 
-	sub act (&;@)                   :Exported(all,helpers);
-	sub arrange (&)                 :Exported(all,helpers)      :Cmp_Builder(Test::YAFT::Arrange::);
+	sub act (&;@)                       :Util;
+	sub arrange (&)                     :Util(Test::YAFT::Arrange::);
 	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
+	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
-	sub diag                        :Exported(all,helpers)      :From(\&Test::More::diag);
-	sub done_testing                :Exported(all,helpers)      :From(\&Test::More::done_testing);
+	sub diag                            :Util(\&Test::More::diag);
+	sub done_testing                    :Util(\&Test::More::done_testing);
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
 	sub expect_all                  :Exported(all,expectations) :From(\&Test::Deep::all);
 	sub expect_any                  :Exported(all,expectations) :From(\&Test::Deep::any);
@@ -93,24 +93,24 @@ package Test::YAFT {
 	sub expect_true                 :Exported(all,expectations) :From(\&Test::Deep::bool, 1);
 	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
 	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
-	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
+	sub explain                         :Util(\&Test::More::explain);
 	sub fail                        :Exported(all,asserts);
-	sub got (&)                     :Exported(all,helpers)      :Cmp_Builder(Test::YAFT::Got::);
+	sub got (&)                         :Util(Test::YAFT::Got::);
 	sub had_no_warnings             :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
 	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
 	sub it                          :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub nok                         :Exported(all,asserts);
-	sub note                        :Exported(all,helpers)      :From(\&Test::More::note);
+	sub note                            :Util(\&Test::More::note);
 	sub ok                          :Exported(all,asserts);
 	sub pass (;$)                   :Exported(all,asserts)      :From(\&Test::More::pass);
-	sub plan                        :Exported(all,helpers)      :From(\&Test::More::plan);
-	sub skip                        :Exported(all,helpers)      :From(\&Test::More::skip);
-	sub subtest                     :Exported(all,helpers);
+	sub plan                            :Util(\&Test::More::plan);
+	sub skip                            :Util(\&Test::More::skip);
+	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
 	sub there                       :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
-	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
+	sub todo                            :Util(\&Test::More::todo);
+	sub todo_skip                       :Util(\&Test::More::todo_skip);
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 

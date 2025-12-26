@@ -8,7 +8,7 @@ use require::relative q (test-helper.pl);
 assume_test_yaft_exports subtest
 	=> by_default => 1
 	=> on_demand  => 1
-	=> by_tag     => [qw [all default helpers]]
+	=> by_tag     => [qw [all default utils helpers]]
 	;
 
 use Context::Singleton;

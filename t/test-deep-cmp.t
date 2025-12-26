@@ -8,7 +8,7 @@ use require::relative q (test-helper.pl);
 assume_test_yaft_exports test_deep_cmp
 	=> by_default => 0
 	=> on_demand  => 1
-	=> by_tag     => [qw [all plumbings]]
+	=> by_tag     => [qw [all foundations plumbings]]
 	;
 
 had_no_warnings;

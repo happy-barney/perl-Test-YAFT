@@ -15,6 +15,8 @@ package Test::YAFT::Attributes {
 		Exportable  => { EXPORT_OK => [ ] },
 		From        => undef,
 		Cmp_Builder => undef,
+
+		Foundation  => { EXPORT_OK => [qw [all         foundations  plumbings]] },
 	);
 
 	sub import {
@@ -70,10 +72,21 @@ package Test::YAFT::Attributes {
 		_push_unique_string @{qq (${package}::EXPORT_OK)}, $name;
 
 		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, $name
-			for (
-				@{ $tags // [] },
-				@{ $data // [] },
-			);
+			for @{ $tags // [] }
+			;
+	}
+
+	sub _exported_with_tags {
+		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
+
+		&_exported;
+
+		my $name = &_symbol_name;
+
+		no strict q (refs);
+		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, $name
+			for @{ $data // [] }
+			;
 	}
 
 	sub _install_coderef {
@@ -118,11 +131,16 @@ package Test::YAFT::Attributes {
 	}
 
 	sub Exported {
-		goto &_exported;
+		goto &_exported_with_tags;
 	}
 
 	sub Exportable {
-		goto &_exported;
+		goto &_exported_with_tags;
+	}
+
+	sub Foundation {
+		&_exported;
+		&_install_coderef;
 	}
 
 	sub From {

@@ -41,10 +41,9 @@ Assert function performs actual value comparison.
 Expectation function provides object (L<Test::Deep::Cmp>) describing
 expected value.
 
-=item plumbing
+=item foundation
 
-Similar concept to git, plumbing functions are used to build
-higher level asserts, expectations, and/or tools.
+Foundation functions are used to build higher level asserts, expectations, and/or tools.
 
 =back
 
@@ -566,12 +565,13 @@ Reexported L<Test::More/todo>
 
 Reexported L<Test::More/todo_skip>
 
-=head2 Plumbing Functions
+=head2 Foundation Functions
 
-	use Test::YAFT qw (:plumbings);
+	use Test::YAFT qw (:foundations);
 
-Functions helping writing your custom asserts, expectations, and/or tools.
-Plumbing functions are not exported by default.
+These functions help you write your custom asserts, expectations, and/or tools.
+
+Foundation functions are not exported by default.
 
 =head3 cmp_details
 

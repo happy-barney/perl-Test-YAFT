@@ -70,8 +70,9 @@ sub assume_test_yaft_exports {
 		all          => 1,
 		default      => 0,
 		asserts      => 0,
-		helpers      => 0,
 		expectations => 0,
+		foundations  => 0,
+		helpers      => 0,
 		plumbings    => 0,
 	);
 

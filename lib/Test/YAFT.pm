@@ -36,11 +36,11 @@ package Test::YAFT {
 	sub arrange (&)                 :Exported(all,helpers)      :Cmp_Builder(Test::YAFT::Arrange::);
 	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
-	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
-	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
+	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
+	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                        :Exported(all,helpers)      :From(\&Test::More::diag);
 	sub done_testing                :Exported(all,helpers)      :From(\&Test::More::done_testing);
-	sub eq_deeply                   :Exportable(all,plumbings)  :From(\&Test::Deep::eq_deeply);
+	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
 	sub expect_all                  :Exported(all,expectations) :From(\&Test::Deep::all);
 	sub expect_any                  :Exported(all,expectations) :From(\&Test::Deep::any);
 	sub expect_array                :Exported(all,expectations) :From(\&Test::Deep::array);
@@ -106,8 +106,8 @@ package Test::YAFT {
 	sub plan                        :Exported(all,helpers)      :From(\&Test::More::plan);
 	sub skip                        :Exported(all,helpers)      :From(\&Test::More::skip);
 	sub subtest                     :Exported(all,helpers);
-	sub test_deep_cmp               :Exportable(all,plumbings);
-	sub test_frame (&)              :Exportable(all,plumbings);
+	sub test_deep_cmp                   :Foundation;
+	sub test_frame (&)                  :Foundation;
 	sub there                       :Exported(all,asserts)      :From(\&_test_yaft_assumption);
 	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
 	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);

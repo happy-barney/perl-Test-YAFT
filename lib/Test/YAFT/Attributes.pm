@@ -16,6 +16,7 @@ package Test::YAFT::Attributes {
 		From        => undef,
 		Cmp_Builder => undef,
 
+		Assumption  => { EXPORT    => [qw [all assumptions  asserts  ]] },
 		Foundation  => { EXPORT_OK => [qw [all foundations  plumbings]] },
 		Util        => { EXPORT    => [qw [all utils        helpers  ]] },
 	);
@@ -137,6 +138,11 @@ package Test::YAFT::Attributes {
 
 	sub Exportable {
 		goto &_exported_with_tags;
+	}
+
+	sub Assumption {
+		&_exported;
+		&_install_coderef;
 	}
 
 	sub Foundation {

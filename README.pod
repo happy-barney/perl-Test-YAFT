@@ -33,7 +33,7 @@ its own, BDD inspired, Context oriented, testing approach.
 
 =item assert
 
-Assert function performs actual value comparison.
+Assumption function performs actual value comparison.
 
 =item expectation
 
@@ -42,7 +42,7 @@ expected value.
 
 =item foundation
 
-Foundation functions are used to build higher level asserts, expectations, and/or tools.
+Foundation functions are used to build higher level assumptions, expectations, and/or tools.
 
 =back
 
@@ -74,14 +74,14 @@ This module exports symbols using L<Exporter::Tiny>.
 
 =head2 Asserts
 
-	use Test::YAFT qw (:asserts);
+	use Test::YAFT qw (:assumptions);
 
-Assert functions are exported by default.
+Assumption functions are exported by default.
 
-Every assert accepts (if any) test message as a first (positional) parameter,
+Every assumption accepts (if any) test message as a first (positional) parameter,
 with restof parameters using named approach.
 
-When assert performs multiple expectations internally, it always reports
+When assumption performs multiple expectations internally, it always reports
 as one, using provided test message, failing early.
 
 Named parameters are provided either via key/value pairs
@@ -506,7 +506,7 @@ Validity of values follows L<Context::Singleton> rules, so for example
 		# This is available only in scope of 'it' (ie, insite got { })
 		it q (should ...)
 			=> got { ... }
-			=> arrange { foo => q (assert local) }
+			=> arrange { foo => q (assumption local) }
 			;
 	};
 
@@ -568,7 +568,7 @@ Reexported L<Test::More/todo_skip>
 
 	use Test::YAFT qw (:foundations);
 
-These functions help you write your custom asserts, expectations, and/or tools.
+These functions help you write your custom assumptions, expectations, and/or tools.
 
 Foundation functions are not exported by default.
 
@@ -629,7 +629,7 @@ Every other named parameter is treated as a method name to install into created 
 =head3 test_frame (&)
 
 	use Test::YAFT qw (test_frame);
-	sub my_assert {
+	sub my_assumption {
 		test_frame {
 			...
 		};

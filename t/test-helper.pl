@@ -70,6 +70,7 @@ sub assume_test_yaft_exports {
 		all          => 1,
 		default      => 0,
 		asserts      => 0,
+		assumptions  => 0,
 		expectations => 0,
 		foundations  => 0,
 		helpers      => 0,
@@ -159,23 +160,3 @@ sub check_test {
 }
 
 1;
-
-__END__
-
-=head2 check_test (&;@)
-
-Simple wrapper around L<Test::Tester/check_test> using prototype to get rid of sub
-and allow expectations to be specified as key-value pairs.
-
-Suggested usage:
-
-	subtest q (...) => sub {
-        # check_test generates lot of asserts, group them together by subtest
-        check_test
-            { assert to test }
-            ok => 1,
-            actual_ok => 1,
-            ...
-            ;
-    }
-

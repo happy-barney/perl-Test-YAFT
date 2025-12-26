@@ -30,11 +30,11 @@ package Test::YAFT {
 	sub act (&;@);
 	sub arrange (&);
 	sub got (&);
-	sub pass (;$);
+	sub pass ($);
 
 	sub act (&;@)                       :Util;
 	sub arrange (&)                     :Util(Test::YAFT::Arrange::);
-	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
+	sub assume                          :Assumption(\&_test_yaft_assumption);
 	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
@@ -91,24 +91,24 @@ package Test::YAFT {
 	sub expect_superset             :Exported(all,expectations) :From(\&Test::Deep::supersetof);
 	sub expect_superset_of          :Exported(all,expectations) :From(\&Test::Deep::supersetof);
 	sub expect_true                 :Exported(all,expectations) :From(\&Test::Deep::bool, 1);
-	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
+	sub expect_use_class            :Exported(all,expectations) :From(\&Test::Deep::useclass);
 	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);
-	sub fail                        :Exported(all,asserts);
+	sub fail                            :Assumption;
 	sub got (&)                         :Util(Test::YAFT::Got::);
-	sub had_no_warnings             :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
+	sub had_no_warnings                 :Assumption(\&Test::Warnings::had_no_warnings);
 	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
-	sub it                          :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub nok                         :Exported(all,asserts);
+	sub it                              :Assumption(\&_test_yaft_assumption);
+	sub nok                             :Assumption;
 	sub note                            :Util(\&Test::More::note);
-	sub ok                          :Exported(all,asserts);
-	sub pass (;$)                   :Exported(all,asserts)      :From(\&Test::More::pass);
+	sub ok                              :Assumption;
+	sub pass ($)                        :Assumption(\&Test::More::pass);
 	sub plan                            :Util(\&Test::More::plan);
 	sub skip                            :Util(\&Test::More::skip);
 	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
-	sub there                       :Exported(all,asserts)      :From(\&_test_yaft_assumption);
+	sub there                           :Assumption(\&_test_yaft_assumption);
 	sub todo                            :Util(\&Test::More::todo);
 	sub todo_skip                       :Util(\&Test::More::todo_skip);
 

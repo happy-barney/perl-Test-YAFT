@@ -8,7 +8,7 @@ use require::relative q (test-helper.pl);
 assume_test_yaft_exports expect_use_class
 	=> by_default => 1
 	=> on_demand  => 1
-	=> by_tag     => [qw [all default asserts]]
+	=> by_tag     => [qw [all default expectations]]
 	;
 
 had_no_warnings;

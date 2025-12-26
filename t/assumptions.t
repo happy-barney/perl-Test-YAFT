@@ -8,19 +8,19 @@ use require::relative q (test-helper.pl);
 assume_test_yaft_exports assume
 	=> by_default => 1
 	=> on_demand  => 1
-	=> by_tag     => [qw [all default asserts]]
+	=> by_tag     => [qw [all default assumptions asserts]]
 	;
 
 assume_test_yaft_exports it
 	=> by_default => 1
 	=> on_demand  => 1
-	=> by_tag     => [qw [all default asserts]]
+	=> by_tag     => [qw [all default assumptions asserts]]
 	;
 
 assume_test_yaft_exports there
 	=> by_default => 1
 	=> on_demand  => 1
-	=> by_tag     => [qw [all default asserts]]
+	=> by_tag     => [qw [all default assumptions asserts]]
 	;
 
 note <<'';

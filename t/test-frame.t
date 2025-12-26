@@ -13,18 +13,18 @@ assume_test_yaft_exports test_frame
 
 use Test::YAFT qw (test_frame);
 
-sub custom_assert {
+sub custom_assumption {
 	test_frame {
-		Test::More::pass q (custom-assert)
+		Test::More::pass q (custom-assumption)
 	};
 }
 
 check_test q (test_frame() should properly alter $Test::Builder::Level)
 	=> assumption {
-		custom_assert
+		custom_assumption
 	}
 	=> ok   => 1
-	=> name => q (custom-assert)
+	=> name => q (custom-assumption)
 	;
 
 had_no_warnings;

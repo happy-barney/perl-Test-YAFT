@@ -11,8 +11,8 @@ package Test::YAFT::Attributes {
 	require Sub::Util;
 
 	my %attributes = (
-		Exported    => q (EXPORT),
-		Exportable  => q (EXPORT_OK),
+		Exported    => { EXPORT    => [ ] },
+		Exportable  => { EXPORT_OK => [ ] },
 		From        => undef,
 		Cmp_Builder => undef,
 	);
@@ -60,15 +60,20 @@ package Test::YAFT::Attributes {
 	sub _exported {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
-		my $where = $attributes{$attr};
+		my $name = &_symbol_name;
+		my $config = $attributes{$attr};
+
+		my ($where, $tags) = %$config;
 
 		no strict q (refs);
-		_push_unique_string @{qq (${package}::${where})}, &_symbol_name;
-		_push_unique_string @{qq (${package}::EXPORT_OK)}, &_symbol_name;
+		_push_unique_string @{qq (${package}::${where})}, $name;
+		_push_unique_string @{qq (${package}::EXPORT_OK)}, $name;
 
-		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, &_symbol_name
-				for eval { @{ $data // [] } }
-				;
+		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, $name
+			for (
+				@{ $tags // [] },
+				@{ $data // [] },
+			);
 	}
 
 	sub _install_coderef {

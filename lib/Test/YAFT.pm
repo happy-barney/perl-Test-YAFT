@@ -25,6 +25,7 @@ package Test::YAFT {
 	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Argument::Override;
 	use Test::YAFT::Argument::Throws;
+	use Test::YAFT::Argument::Todo;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Dumper;
@@ -66,6 +67,7 @@ package Test::YAFT {
 	sub pass ($);
 	sub skip ($$);
 	sub throws (&);
+	sub todo (&);
 	sub todo_skip ($$);
 
 	sub act (&;@)                       :Util;
@@ -165,6 +167,7 @@ package Test::YAFT {
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
 	sub throws (&)                      :Util(Test::YAFT::Argument::Throws);
+	sub todo (&)                        :Util(Test::YAFT::Argument::Todo::);
 	sub todo_skip ($$)                  :Util;
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
@@ -208,6 +211,16 @@ package Test::YAFT {
 			value    => $args->{got},
 			error    => undef,
 		};
+	}
+
+	sub _build_todo {
+		my ($args) = @_;
+
+		return $args->{todo}->resolve
+			if $args->{todo}->$Safe::Isa::_isa (Test::YAFT::Argument::Todo::)
+			;
+
+		return $args->{todo};
 	}
 
 	sub _resolve_argument {
@@ -271,6 +284,15 @@ package Test::YAFT {
 		my $guard = Sub::Override::->new (
 			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
 		);
+
+		my ($caller) = caller;
+
+		no strict q (refs);
+		local ${qq (${caller}::TODO)} = exists $args{todo}
+			? _build_todo (\ %args)
+			: ${qq (${caller}::TODO)}
+			;
+		use strict q (refs);
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {

@@ -355,6 +355,10 @@ When both C<expect> and C<throws> are specified, C<throws> takes precedence.
 
 See also L<Test::YAFT::Test::Exception>.
 
+=item todo
+
+When specified, marks assumption as "todo".
+
 =back
 
 =head2 fail

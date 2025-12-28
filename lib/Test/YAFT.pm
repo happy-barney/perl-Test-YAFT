@@ -294,6 +294,10 @@ package Test::YAFT {
 			;
 		use strict q (refs);
 
+		my $guard = Sub::Override::->new (
+			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
+		);
+
 		my ($ok, $stack, $got, $expect);
 		test_frame {
 			_resolve_argument $args{override};

@@ -11,12 +11,8 @@ package Test::YAFT::Attributes {
 	require Sub::Util;
 
 	my %attributes = (
-		Exported    => { EXPORT    => [ ] },
-		Exportable  => { EXPORT_OK => [ ] },
-		From        => undef,
-		Cmp_Builder => undef,
-
 		Assumption  => { EXPORT    => [qw [all assumptions  asserts  ]] },
+		Expectation => { EXPORT    => [qw [all expectations          ]] },
 		Foundation  => { EXPORT_OK => [qw [all foundations  plumbings]] },
 		Util        => { EXPORT    => [qw [all utils        helpers  ]] },
 	);
@@ -78,19 +74,6 @@ package Test::YAFT::Attributes {
 			;
 	}
 
-	sub _exported_with_tags {
-		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
-
-		&_exported;
-
-		my $name = &_symbol_name;
-
-		no strict q (refs);
-		_push_unique_string @{ ${qq (${package}::EXPORT_TAGS)}{$_} //= [] }, $name
-			for @{ $data // [] }
-			;
-	}
-
 	sub _install_coderef {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
@@ -132,15 +115,12 @@ package Test::YAFT::Attributes {
 		*{$symbol}{NAME};
 	}
 
-	sub Exported {
-		goto &_exported_with_tags;
-	}
-
-	sub Exportable {
-		goto &_exported_with_tags;
-	}
-
 	sub Assumption {
+		&_exported;
+		&_install_coderef;
+	}
+
+	sub Expectation {
 		&_exported;
 		&_install_coderef;
 	}

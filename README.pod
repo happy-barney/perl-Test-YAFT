@@ -10,17 +10,44 @@ Test::YAFT - Yet another testing framework
 
 	use Test::YAFT;
 
-	it q (should pass this test)
+	assume q (match tested value with expectation)
 		=> got    => scalar do { ... }
 		=> expect => $expected_value
 		;
 
+	assume q (compute tested value, expect failure, and match error)
+		=> got    { ... }
+		=> throws =>
+			+ expect_instance_of (My::Project::X::)
+			+ expect_method (status_code => 400)
+			+ expect_method (reason      => q (Not Found))
+		;
+
+	# Using shared act
+	act {
+		User::->new (login => $_[0])->authenticate ($_[1])
+	}
+		q (user),
+		q (password),
+		;
+
+	arrange { user => q (admin) };
+
+	assume q (user is authenticated with valid password)
+		=> arrange { password => q (valid) }
+		=> expect  => expect_true
+		;
+
+	assume q (authentication attempt with invalid password should throw an exception)
+		=> arrange { password => q (invalid) }
+		=> throws  => expect_instance_of (My::Project::X::Not_Authorized::)
+		;
+
 =head1 DISCLAIMER
 
-Please accept the fact that I'm not English native speaker so this documentation
-may contain improper grammar or wording making it harder to understand.
-
-If you encounter such place, please visit project's issue tracking.
+I am not a native English speaker, if you spot poor grammar, unclear wording,
+or an expression that is hard to understand, please suggest improvements via
+links below.
 
 =head1 DESCRIPTION
 
@@ -176,6 +203,10 @@ L<Test::YAFT> exports symbols using L<Exporter::Tiny>.
 
 =head2 Export Tags
 
+This document contains reference manual.
+
+For some use cases look at following documents:
+
 =over
 
 =item C<:all>
@@ -268,6 +299,8 @@ Equivalent to C<+ !>.
 =back
 
 =head1 ASSUMPTIONS
+
+Assumption function performs actual value comparison.
 
 	use Test::YAFT qw (:assumptions);
 
@@ -434,6 +467,9 @@ English sentences.
 
 Expectation functions return L<Test::Deep::Cmp> objects describing
 expected values. They are exported by default.
+
+Expectation function provides object (L<Test::Deep::Cmp>) describing
+expected value.
 
 =head2 expect_all
 
@@ -1817,6 +1853,24 @@ Contributions are welcome!
 =item Report issues: L<https://github.com/happy-barney/perl-Test-YAFT/issues>
 
 =item Questions and ideas: L<https://github.com/happy-barney/perl-Test-YAFT/discussions>
+
+=back
+
+=head1 LINKS
+
+=over
+
+=item Source code
+
+L<https://github.com/happy-barney/perl-Test-YAFT/>
+
+=item Reporting bugs
+
+L<https://github.com/happy-barney/perl-Test-YAFT/issues>
+
+=item Discuss usage, ideas, ...
+
+L<https://github.com/happy-barney/perl-Test-YAFT/discussions>
 
 =back
 

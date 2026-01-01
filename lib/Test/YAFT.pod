@@ -438,11 +438,21 @@ expected values. They are exported by default.
 
 =head2 expect_all
 
-Re-exported from L<Test::Deep/all>.
+Evaluates that C<$got> matches all of the provided expectations.
+
+	expect_all (
+		expectation_1,
+		expectation_2,
+	);
 
 =head2 expect_any
 
-Re-exported from L<Test::Deep/any>.
+Evaluates that C<$got> matches at least one of the provided expectations.
+
+	expect_any (
+		expectation_1,
+		expectation_2,
+	);
 
 =head2 expect_array
 
@@ -798,7 +808,12 @@ Re-exported from L<Test::Deep/noclass>.
 
 =head2 expect_none
 
-Re-exported from L<Test::Deep/none>.
+Evaluates that C<$got> matches none one of the provided expectations.
+
+	expect_none (
+		expectation_1,
+		expectation_2,
+	);
 
 =head2 expect_none_of
 

@@ -1302,6 +1302,15 @@ L<expect {}|/expect {}>,
 L<override {}|/override {}>
 L<throws {}|/throws {}>
 
+Unlike L<act {}|/act {}>, there is no option to specify mandatory properties.
+
+See also:
+L<act {}|/act {}>
+L<arrange {}|/arrange {}>
+L<arranged|/arranged>
+L<expect {}|/expect {}>
+L<throws {}|/throws {}>
+
 =head2 note
 
 	note q (some note);

@@ -41,7 +41,7 @@ check_test q (expect {} block should execute block in execution context)
 		arrange { foo => q (bar) };
 		it q (should just pass)
 			=> arrange { foo => q (foo) }
-			=> expect  { deduce q (foo) }
+			=> expect  { arranged q (foo) }
 			=> got     { q (foo) }
 			;
 	}

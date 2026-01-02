@@ -797,8 +797,12 @@ Assumption without an explicit C<got> invokes C<act {}> automatically.
 All dependencies must be provided before invocation.
 
 See also:
-L</arrange { }>,
-L</got { }>
+L</arrange {}>,
+L</arranged>,
+L</expect {}>,
+L</got {}>,
+L</override {}>,
+L</throws {}>
 
 =head2 arrange {}
 
@@ -831,6 +835,50 @@ arrange the same property twice in the same context will fail.
 
 See also:
 L<act {}|/act {}>,
+L<expect {}|/expect {}>,
+L<got {}|/got {}>,
+L<override {}|/override {}>,
+L<throws {}|/throws {}>
+
+=head2 arranged
+
+	act {
+		my ($discount) = @_;
+		calculate_total (arranged q (tax_rate) // 0.20, $discount);
+	}
+		q (discount)
+		;
+
+	arrange { discount => 0.10 };
+
+	assume q (uses default tax rate)
+		=> expect => calculate_total (0.20, 0.10)
+		;
+
+	assume q (uses custom tax rate)
+		=> arrange { tax_rate => 0.15 }
+		=> expect  => calculate_total (0.15, 0.10)
+		;
+
+Alternative usage in C<got { }> block:
+
+	assume q (uses arranged configuration)
+		=> arrange { api_timeout => 30 }
+		=> got     { fetch_data (arranged q (api_timeout)) }
+		=> expect  => ...
+		;
+
+Returns the arranged value of the specified property.
+
+Useful for accessing optional arranged values inside C<got {}> and
+C<act {}> blocks. Mandatory dependencies for C<act {}> are passed
+via C<@_> in definition order.
+
+Returns C<undef> if the property has not been arranged yet.
+
+See also:
+L<act {}|/act {}>,
+L<arrange {}|/arrange {}>,
 L<expect {}|/expect {}>,
 L<got {}|/got {}>,
 L<override {}|/override {}>,
@@ -876,6 +924,7 @@ vs.
 See also:
 L<act {}|/act {}>,
 L<arrange {}|/arrange {}>,
+L<arranged|/arranged>,
 L<got {}|/got {}>,
 L<override {}|/override {}>,
 L<throws {}|/throws {}>
@@ -959,6 +1008,7 @@ precedence, previous override available via C<original::*>.
 See also:
 L<act {}|/act {}>,
 L<arrange {}|/arrange {}>,
+L<arranged|/arranged>,
 L<expect {}|/expect {}>,
 L<got {}|/got {}>,
 L<throws {}|/throws {}>
@@ -992,6 +1042,7 @@ Similar to L<expect {}/expect {}> but for C<throws> assumptions argument.
 See also:
 L<act {}|/act {}>,
 L<arrange {}|/arrange {}>,
+L<arranged|/arranged>,
 L<expect {}|/expect {}>,
 L<got {}|/got {}>,
 L<override {}|/override {}>

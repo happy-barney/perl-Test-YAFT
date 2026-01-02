@@ -33,6 +33,7 @@ my @files = (
     'lib/Test/YAFT/Test/Warnings.pod',
     't/act.t',
     't/arrange.t',
+    't/arranged.t',
     't/assumptions-with-got.t',
     't/assumptions.t',
     't/bail-out.t',

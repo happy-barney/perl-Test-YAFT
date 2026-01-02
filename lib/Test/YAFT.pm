@@ -38,6 +38,7 @@ package Test::YAFT {
 	sub BAIL_OUT ($);
 	sub bail_out ($);
 	sub done_testing (;$$);
+	sub eq_deeply ($$);
 	sub expect (&);
 	sub expect_blessed ($);
 	sub expect_blessed_ref ();
@@ -80,7 +81,7 @@ package Test::YAFT {
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                            :Util(\&Test::More::diag);
 	sub done_testing (;$$)              :Util;
-	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
+	sub eq_deeply ($$)                  :Foundation(\&Test::Deep::eq_deeply);
 	sub expect (&)                      :Util(Test::YAFT::Argument::Expect);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
@@ -163,7 +164,8 @@ package Test::YAFT {
 	sub plan                            :Util;
 	sub skip ($$)                       :Util;
 	sub subtest                         :Util;
-	sub test_deep_cmp                   :Foundation;
+	sub test_deep_cmp                   :Foundation(\& test_yaft_cmp);
+	sub test_yaft_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
 	sub throws (&)                      :Util(Test::YAFT::Argument::Throws);
@@ -476,7 +478,7 @@ package Test::YAFT {
 		};
 	}
 
-	sub test_deep_cmp {
+	sub test_yaft_cmp {
 		my (%methods) = @_;
 
 		state $serial = 0;

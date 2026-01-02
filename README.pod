@@ -1518,28 +1518,32 @@ and tools. They are B<not> exported by default.
 
 =head2 cmp_details
 
-	use Test::YAFT qw (cmp_details);
-	my ($ok, $stack) = cmp_details ($got, $expected);
+	use Test::YAFT qw (:foundations);
 
-Re-exported from L<Test::Deep/cmp_details>.
+	my ($ok, $stack) = cmp_details ($a, $b);
+
+Re-exported L<Test::Deep::cmp_details|Test::Deep/cmp_details>.
+
+L<Test::YAFT> is built on top of L<Test::Deep>.
 
 =head2 deep_diag
 
-	use Test::YAFT qw (deep_diag);
+	use Test::YAFT qw (:foundations);
+
 	deep_diag ($stack);
 
-Re-exported from L<Test::Deep/deep_diag>.
+Re-exported L<Test::Deep::deep_diag|Test::Deep/deep_diag>.
 
 =head2 eq_deeply
 
-	use Test::YAFT qw (eq_deeply);
-	if (eq_deeply ($got, $expected)) {
-		...
+	use Test::YAFT qw (:foundations);
+
+	if (eq_deeply ($value, $expectation)) {
 	}
 
-Re-exported from L<Test::Deep/eq_deeply>.
+Re-exported L<Test::Deep::eq_deeply|Test::Deep/eq_deeply>.
 
-=head2 test_deep_cmp
+=head2 test_yaft_cmp
 
 Creates an anonymous L<Test::YAFT> comparator class. Returns the
 created class name.
@@ -1568,9 +1572,10 @@ Every other parameter is treated as a method to install.
 
 =back
 
-=head2 test_frame (&)
+=head2 test_frame {}
 
-	use Test::YAFT qw (test_frame);
+	use Test::YAFT qw (:foundations);
+
 	sub my_assumption {
 		test_frame {
 			...
@@ -1583,7 +1588,7 @@ Utility for building custom assumptions. Handles:
 
 =item Adjusting L<Test::Builder/level>
 
-=item Creating L<Context::Singleton/frame>
+=item Creating new subcontext, see L<Context::Singleton/frame>
 
 =back
 

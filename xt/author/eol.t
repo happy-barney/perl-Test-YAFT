@@ -143,6 +143,7 @@ my @files = (
     't/test-deep-cmp.t',
     't/test-frame.t',
     't/test-helper.pl',
+    't/test-yaft-cmp.t',
     't/throws.t',
     't/todo-skip.t'
 );

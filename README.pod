@@ -962,7 +962,18 @@ L<throws {}|/throws {}>
 
 =head2 explain
 
-Re-exported from L<Test::More/explain>.
+	diag explain \ %hash;
+	diag explain @array;
+	diag explain $scalar;
+
+Converts any value into a human-readable string representation.
+
+Particularly useful for displaying the contents of complex data
+structures in diagnostic messages.
+
+Returns a string (or list of strings) suitable for printing.
+
+See also: L<Test::More::explain|Test::More/explain>
 
 =head2 got { }
 

@@ -1138,12 +1138,38 @@ L<Test::More::skip|Test::More/skip>
 
 =head2 subtest
 
-    subtest q (title) => sub {
-        ...;
-    };
+	subtest q (title) => sub {
+		...;
+	};
 
-Similar to L<Test::More/subtest> but also creates a new
-L<Context::Singleton> frame for each subtest.
+Groups related tests together with an isolated execution context.
+
+Similar to L<Test::More::subtest|Test::More/subtest>, but creates a new
+sub-context for each subtest. This means L<arrange {}|/arrange {}>,
+L<act {}|/act {}>, and L<override {}|/override {}> blocks defined within
+the subtest are scoped to that subtest only.
+
+	act { ... } qw (foo bar);
+	arrange { foo => 1 };
+	arrange { bar => 2 };
+
+	subtest q (with different arrangement) => sub {
+		arrange { foo => 99 };
+
+		assume q (uses parent's act but overridden foo)
+			=> expect => [99, 2]
+			;
+	};
+
+	assume q (parent context unchanged)
+		=> expect => [1, 2]
+		;
+
+This scoping enables test isolation and allows subtests to override
+parent context without affecting sibling tests.
+
+See also:
+L<Test::More::subtest|Test::More/subtest>
 
 =head2 throws {}
 

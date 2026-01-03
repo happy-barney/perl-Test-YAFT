@@ -36,6 +36,7 @@ package Test::YAFT {
 	sub arranged ($);
 	sub BAIL_OUT ($);
 	sub bail_out ($);
+	sub done_testing (;$$);
 	sub expect (&);
 	sub expect_blessed ($);
 	sub expect_blessed_ref ();
@@ -57,7 +58,7 @@ package Test::YAFT {
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                            :Util(\&Test::More::diag);
-	sub done_testing                    :Util(\&Test::More::done_testing);
+	sub done_testing (;$$)              :Util;
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
 	sub expect (&)                      :Util(Test::YAFT::Argument::Expect);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
@@ -347,6 +348,14 @@ package Test::YAFT {
 			;
 
 		return undef;
+	}
+
+	sub done_testing (;$$) {
+		shift
+			if @_ > 1
+			;
+
+		goto &Test::More::done_testing;
 	}
 
 	sub fail {

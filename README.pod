@@ -913,7 +913,19 @@ See also: L<Test::More::diag|Test::More/diag>.
 
 =head2 done_testing
 
-Re-exported from L<Test::More/done_testing>.
+	done_testing;
+	done_testing (42);
+	done_testing (tests => 42);
+
+Declares that testing is complete.
+
+When called without arguments, the number of tests run is automatically
+determined.
+
+When called with a numeric argument, verifies that exactly that many
+tests were executed. If the actual count differs, the test suite fails.
+
+See also:  L<Test::More::done_testing|Test::More/done_testing>.
 
 =head2 expect {}
 

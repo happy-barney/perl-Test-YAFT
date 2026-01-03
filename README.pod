@@ -897,7 +897,19 @@ L<Test2::V0::bail_out|Test2::Tools::Basic/bail_out>
 
 =head2 diag
 
-Re-exported from L<Test::More/diag>.
+	diag q (diagnostic message);
+	diag @diagnostic_messages;
+
+Prints diagnostic messages that won't interfere with test output.
+
+Diagnostic messages from C<diag> always appear in test output, making them
+suitable for reporting problems that require immediate attention.
+
+Accepts a list of values that are concatenated together.
+
+Returns false.
+
+See also: L<Test::More::diag|Test::More/diag>.
 
 =head2 done_testing
 

@@ -127,7 +127,7 @@ package Test::YAFT {
 	sub ok                              :Assumption;
 	sub override (&)                    :Util(Test::YAFT::Argument::Override::);
 	sub pass ($)                        :Assumption(\&Test::More::pass);
-	sub plan                            :Util(\&Test::More::plan);
+	sub plan                            :Util;
 	sub skip                            :Util(\&Test::More::skip);
 	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
@@ -393,6 +393,14 @@ package Test::YAFT {
 				diag   => q (),
 				;
 		}
+	}
+
+	sub plan {
+		unshift @_, q (tests)
+			if @_ == 1
+			;
+
+		goto \& Test::More::plan;
 	}
 
 	sub subtest {

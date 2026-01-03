@@ -1093,7 +1093,25 @@ L<throws {}|/throws {}>
 
 =head2 plan
 
-Re-exported from L<Test::More/plan>.
+	plan 42;
+	plan tests => 42;
+
+	plan skip_all => q (reason);
+
+Declares the test plan - how many tests will be run or why all tests
+are being skipped.
+
+When called with a number, declares that exactly that many tests will
+be executed. The test suite fails if the actual count differs.
+
+When called with C<skip_all>, skips the entire test file with the
+provided reason. No tests will be run.
+
+Use L<done_testing|/done_testing> instead if you don't know the test count in advance.
+
+See also:
+L<done_testing|/done_testing>,
+L<Test::More::plan|Test::More/plan>
 
 =head2 skip
 

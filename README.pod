@@ -1013,7 +1013,19 @@ L<throws {}|/throws {}>
 
 =head2 note
 
-Re-exported from L<Test::More/note>.
+	note q (some note);
+	note @messages;
+
+Prints informational messages that appear only in verbose test output.
+
+Notes are not shown during normal test runs, making them suitable for debugging
+information or additional context that isn't critical for understanding test failures.
+
+Accepts a list of values that are concatenated together.
+
+See also:
+L<diag|/diag>,
+L<Test::More::note|Test::More/note>
 
 =head2 override {}
 

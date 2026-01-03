@@ -48,7 +48,7 @@ L<Test::YAFT> provides the Arrange-Act-Assert pattern:
 
 =over
 
-=item B<Arrange> - Set up test context using C<arrange { }>
+=item B<Arrange> - Set up test context using C<arrange {}>
 
 =item B<Act> - Execute code under test using C<got { }> or C<act {}>
 
@@ -303,10 +303,10 @@ Accepted parameters:
 		...
 		;
 
-L<<C<arrange { }>|/arrange { }>> blocks are evaluated in the context of the
+L<<C<arrange {}>|/arrange {}>> blocks are evaluated in the context of the
 assumption's sub-context before resolving the value under test.
 
-Multiple L<<C<arrange { }>|/arrange { }>> blocks are evaluated in order.
+Multiple L<<C<arrange {}>|/arrange {}>> blocks are evaluated in order.
 
 =item diag
 
@@ -800,23 +800,41 @@ See also:
 L</arrange { }>,
 L</got { }>
 
-=head2 arrange { }
+=head2 arrange {}
+
+	act { ... } q (foo);
 
 	arrange { foo => q (bar) };
 
-	it q (should ...)
-		=> arrange { foo => q (bar2) }
-		=> got     { $foo->method (deduce q (foo)) }
+	assume q (uses arranged value)
+		=> expect => ...
+		;
+
+	assume q (overrides arranged value in local context)
+		=> arrange { foo => q (bar-2) }
 		=> expect  => ...
 		;
 
-Sets up test context by providing values to L<Context::Singleton>.
+Provides the "Arrange" step of the Arrange-Act-Assert testing approach.
 
-When called in void context, values are proclaimed immediately.
-When used as a parameter, values are proclaimed in the test-local frame.
+Sets up test context values.
 
-Returns a guard object evaluated in the frame valid at the time
-of evaluation.
+The block is evaluated in list context and should return pairs of
+property names and values.
+
+When called in void context, value is populated immediately in current context.
+When used as an assumption parameter, value is populated within that assumption's
+sub-context.
+
+Each property can only be arranged once per context. Attempting to
+arrange the same property twice in the same context will fail.
+
+See also:
+L<act {}|/act {}>,
+L<expect {}|/expect {}>,
+L<got {}|/got {}>,
+L<override {}|/override {}>,
+L<throws {}|/throws {}>
 
 =head2 BAIL_OUT
 

@@ -49,7 +49,7 @@ L<Test::YAFT> provides the Arrange-Act-Assert pattern:
 
 =item B<Arrange> - Set up test context using C<arrange {}>
 
-=item B<Act> - Execute code under test using C<got { }> or C<act {}>
+=item B<Act> - Execute code under test using C<got {}> or C<act {}>
 
 =item B<Assert> - Verify results using C<expect> or C<throws>
 
@@ -109,7 +109,7 @@ Additionally, L<Test::Differences> is used to report differences when tests fail
 
 =head2 Computed C<got> Value
 
-The C<got { }> block computes the value under test within an C<eval>,
+The C<got {}> block computes the value under test within an C<eval>,
 automatically checking for unexpected exceptions:
 
 	it q (should calculate total)
@@ -322,7 +322,7 @@ check verifies the code did not die before comparison.
 
 =item got
 
-Value under test. When L<<C<got { }>|/got { }>> is used, the block is evaluated
+Value under test. When L<<C<got {}>|/got {}>> is used, the block is evaluated
 and its error status is checked before comparison.
 
 =item override
@@ -859,7 +859,7 @@ L<throws {}|/throws {}>
 		=> expect  => calculate_total (0.15, 0.10)
 		;
 
-Alternative usage in C<got { }> block:
+Alternative usage in C<got {}> block:
 
 	assume q (uses arranged configuration)
 		=> arrange { api_timeout => 30 }
@@ -975,17 +975,41 @@ Returns a string (or list of strings) suitable for printing.
 
 See also: L<Test::More::explain|Test::More/explain>
 
-=head2 got { }
+=head2 got {}
 
-    it q (should die)
-        => got { $foo->do_something }
-        => throws => expect_obj_isa (...)
-        ;
+	assume q (should return valid result)
+		=> got    { $calculator->divide (10, 2) }
+		=> expect => 5
+		;
 
-Specifies code to compute the test value. The block is evaluated
-in an C<eval>, and C<it> checks the error status before comparison.
+	assume q (should throw exception on invalid input)
+		=> got    { $calculator->divide (10, 0) }
+		=> throws => expect_re (qr (division by zero))
+		;
 
-Use with C<throws> to test that code should die.
+Specifies code to compute the value under test.
+
+The block is evaluated in an C<eval> to capture both the return value
+and any exceptions thrown.
+
+When C<throws> is not specified the assumption fails if the code dies unexpectedly.
+
+When C<throws> is specified, the assumption fails if the code lives instead of dying.
+
+After checking the live/die status, the assumption compares either
+the return value (with C<expect>) or the exception (with C<throws>)
+against the expected value.
+
+Unlike L<act {}|/act {}>, there is no option to specify dependencies.
+Use L<arranged|/arranged> to access arranged values within the block.
+
+See also:
+L<act {}|/act {}>,
+L<arrange {}|/arrange {}>,
+L<arranged|/arranged>,
+L<expect {}|/expect {}>,
+L<override {}|/override {}>
+L<throws {}|/throws {}>
 
 =head2 note
 

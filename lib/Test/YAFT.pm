@@ -47,6 +47,7 @@ package Test::YAFT {
 	sub had_no_warnings (;$);
 	sub override (&);
 	sub pass ($);
+	sub skip ($$);
 	sub throws (&);
 
 	sub act (&;@)                       :Util;
@@ -128,7 +129,7 @@ package Test::YAFT {
 	sub override (&)                    :Util(Test::YAFT::Argument::Override::);
 	sub pass ($)                        :Assumption(\&Test::More::pass);
 	sub plan                            :Util;
-	sub skip                            :Util(\&Test::More::skip);
+	sub skip ($$)                       :Util;
 	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
@@ -401,6 +402,14 @@ package Test::YAFT {
 			;
 
 		goto \& Test::More::plan;
+	}
+
+	sub skip ($$) {
+		my ($how_many, $reason) = @_;
+
+		@_ = ($reason, $how_many);
+
+		goto \& Test::More::skip;
 	}
 
 	sub subtest {

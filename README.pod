@@ -1115,7 +1115,25 @@ L<Test::More::plan|Test::More/plan>
 
 =head2 skip
 
-Re-exported from L<Test::More/skip>.
+	SKIP: {
+		skip 10 => q (skip reason)
+			if $condition
+			;
+	}
+
+Skips a specified number of tests with a reason.
+
+Function places the number of tests first, followed by the reason.
+This follows the "small value first" convention used throughout L<Test::YAFT>.
+
+	# Test::YAFT
+	skip 10 => q (some explanatory reason, potentially very long);
+
+	# Test::More
+	skip q (some explanatory reason, potentially very long), 10;
+
+See also:
+L<Test::More::skip|Test::More/skip>
 
 =head2 subtest
 

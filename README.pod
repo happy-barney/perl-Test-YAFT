@@ -1189,7 +1189,25 @@ L<override {}|/override {}>
 
 =head2 todo_skip
 
-Re-exported from L<Test::More/todo_skip>.
+	TODO: {
+		local $TODO = q (reason why this is TODO);
+		todo_skip 10 => q (skip reason);
+	}
+
+Skips a specified number of TODO tests with a reason.
+
+Function places the number of tests first, followed by the reason.
+This follows the "small value first" convention used throughout L<Test::YAFT>.
+
+	# Test::YAFT
+	todo_skip 10 => q (some explanatory reason);
+
+	# Test::More
+	todo_skip q (some explanatory reason), 10;
+
+See also:
+L<skip|/skip>
+L<Test::More::todo_skip|Test::More/todo_skip>
 
 =head1 FOUNDATIONS
 

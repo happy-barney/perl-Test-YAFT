@@ -49,6 +49,7 @@ package Test::YAFT {
 	sub pass ($);
 	sub skip ($$);
 	sub throws (&);
+	sub todo_skip ($$);
 
 	sub act (&;@)                       :Util;
 	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
@@ -135,7 +136,7 @@ package Test::YAFT {
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
 	sub throws (&)                      :Util(Test::YAFT::Argument::Throws);
-	sub todo_skip                       :Util(\&Test::More::todo_skip);
+	sub todo_skip ($$)                  :Util;
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
@@ -453,6 +454,14 @@ package Test::YAFT {
 		local $Test::Builder::Level = $Test::Builder::Level + 4;
 
 		&frame ($code);
+	}
+
+	sub todo_skip ($$) {
+		my ($how_many, $reason) = @_;
+
+		@_ = ($reason, $how_many);
+
+		goto \& Test::More::todo_skip;
 	}
 
 	1;

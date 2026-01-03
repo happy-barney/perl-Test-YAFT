@@ -11,5 +11,11 @@ assume_test_yaft_exports BAIL_OUT
 	=> by_tag     => [qw [all default utils helpers]]
 	;
 
+assume_test_yaft_exports bail_out
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default utils helpers]]
+	;
+
 had_no_warnings;
 done_testing;

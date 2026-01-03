@@ -886,7 +886,15 @@ L<throws {}|/throws {}>
 
 =head2 BAIL_OUT
 
-Reexported L<Test::More/BAIL_OUT>
+=head2 bail_out
+
+	BAIL_OUT q (reason);
+	bail_out q (reason);
+
+Signals the C<harness> to terminate the whole test suite immediately.
+
+See also: L<Test::More::BAIL_OUT|Test::More/BAIL_OUT>,
+L<Test2::V0::bail_out|Test2::Tools::Basic/bail_out>
 
 =head2 diag
 

@@ -12,20 +12,10 @@ package Test::YAFT::Cmp::Complement {
 
 	require Safe::Isa;
 
-	BEGIN {
-		Test::Deep::Cmp->overload::OVERLOAD (
-			q (!) => \& _build_isnt,
-			q (~) => \& _build_isnt,
-		);
-	}
+	sub _create_complement {
+		my ($self) = @_;
 
-	sub _build_isnt {
-		my ($expect) = @_;
-
-		return $expect->_val
-			if $expect->$Safe::Isa::_isa (__PACKAGE__);
-
-		__PACKAGE__->new ($expect);
+		return $self->_val;
 	}
 
 	sub init {

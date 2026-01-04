@@ -218,6 +218,56 @@ Utility functions (exported by default).
 
 See L<Exporter::Tiny> for more import options.
 
+=head1 OVERLOADED OPERATORS
+
+L<Test::YAFT> overloads operators for L<Test::Deep> expectations,
+enabling tabular-style expectation definitions for improved readability.
+
+=over
+
+=item C<!>, C<~>, Unary C<->
+
+	assume q (...)
+		=> expect => ! expectation
+		;
+
+	assume q (...)
+		=> expect => ~ expectation
+		;
+
+	assume q (...)
+		=> expect => - expectation
+		;
+
+Creates a complementary expectation (negation).
+
+=item Binary C<+>
+
+	assume q (user should have valid properties)
+		=> expect =>
+			+ expectation # must pass
+			+ expectation # must pass as well
+			+ expectation # must pass as well
+		;
+
+Combines multiple expectations where all must pass. Same behaviour as
+L<Test::Deep>'s C<&> operator, but enables better vertical alignment for
+improved readability.
+
+=item Binary C<->
+
+	assume q (...)
+		=> expect =>
+			+ expectation # must pass
+			+ expectation # must pass as well
+			- expectation # must not pass
+		;
+
+Combines expectations where C<-> negates the expectation.
+Equivalent to C<+ !>.
+
+=back
+
 =head1 ASSUMPTIONS
 
 	use Test::YAFT qw (:assumptions);

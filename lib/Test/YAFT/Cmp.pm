@@ -7,10 +7,54 @@ use Syntax::Construct qw (package-block package-version);
 package Test::YAFT::Cmp {
 	use parent qw (Test::Deep::Cmp);
 
+	require overload;
+	require Safe::Isa;
+
+	require Test::YAFT::Cmp::Complement;
+
+	BEGIN {
+		Test::Deep::Cmp->overload::OVERLOAD (
+			q (+)   => \& Test::Deep::Cmp::make_all,
+			q (-)   => \& _overload_binary_minus,
+			q (!)   => \& _overload_complement,
+			q (~)   => \& _overload_complement,
+			q (neg) => \& _overload_complement,
+		);
+	}
+
+	sub _create_complement {
+		my ($self) = @_;
+
+		return Test::YAFT::Cmp::Complement::->new ($self);
+	}
+
+	sub _overload_binary_minus {
+		my ($lhs, $rhs, $swap) = @_;
+
+		if ($swap) {
+			$rhs = expect_value ($rhs);
+			($lhs, $rhs) = ($rhs, $lhs);
+		}
+
+		return $lhs + ! $rhs;
+	}
+
+	sub _overload_complement {
+		my ($expectation) = @_;
+
+		my $builder = $expectation->can (q (_create_complement))
+			// \ &_create_complement
+			;
+
+		$builder->($expectation);
+	}
+
 	sub init {
 		my ($self, $val) = @_;
 
-		$self->{val} = $val;
+		$self->{val} = $val
+			if @_ > 1
+			;
 	}
 
 	sub _val {
@@ -23,10 +67,27 @@ package Test::YAFT::Cmp {
 		Test::Deep::render_val ($value);
 	}
 
+	sub complementary {
+		my ($self, @values) = @_;
+
+		my $class = ref ($self) || $self;
+
+		my $instance = $class->new (@values);
+		$instance->{_complement} = $self->is_complement ? 0 : 1;
+
+		return $instance;
+	}
+
 	sub descend {
 		my ($self, $got) = @_;
 
 		Test::Deep::descend ($got, $self->_val);
+	}
+
+	sub is_complement {
+		my ($self) = @_;
+
+		return $self->{_complement};
 	}
 
 	sub renderGot {

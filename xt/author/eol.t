@@ -30,6 +30,7 @@ my @files = (
     't/assumptions.t',
     't/bail-out.t',
     't/cmp-details.t',
+    't/cmp-overload.t',
     't/deep-diag.t',
     't/diag.t',
     't/done-testing.t',

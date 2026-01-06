@@ -39,5 +39,14 @@ package Test::YAFT::Cmp::Complement {
 		return q (Different value than: ) . $self->_val->renderExp;
 	}
 
+	sub __dump_yaft {
+		my ($self, $dumper, $name) = @_;
+
+		return $dumper->_dump ($self->_val, $name)
+			=~ s (^ (?! [!])) ( )rx
+			=~ s (^) (!)r
+			;
+	}
+
 	1;
 }

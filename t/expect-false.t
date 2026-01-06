@@ -11,6 +11,13 @@ assume_test_yaft_exports expect_false
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_false)
+	=> got { expect_false }
+	=> expect => <<'END_OF_EXPECTED'
+expect_false ()
+END_OF_EXPECTED
+	;
+
 package Testing::Bool_Overload {
 	use overload
 		bool => sub { 0 },

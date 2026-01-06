@@ -11,5 +11,15 @@ assume_test_yaft_exports expect_subhash_of
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_subhash_of (foo => 1))
+	=> got { expect_subhash_of (foo => 1) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_subhash_of (
+  'foo',
+  1,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

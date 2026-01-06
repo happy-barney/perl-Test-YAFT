@@ -11,5 +11,15 @@ assume_test_yaft_exports expect_array_elements_only
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_array_elements_only (1, 2))
+	=> got { expect_array_elements_only (1, 2) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_array_elements_only (
+  1,
+  2,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

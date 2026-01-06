@@ -11,5 +11,14 @@ assume_test_yaft_exports expect_scalarref
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_scalarref (42))
+	=> got { expect_scalarref (42) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_scalarref (
+  42,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

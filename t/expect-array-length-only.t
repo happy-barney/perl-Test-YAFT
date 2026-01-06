@@ -11,5 +11,14 @@ assume_test_yaft_exports expect_array_length_only
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_array_length_only (3))
+	=> got { expect_array_length_only (3) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_array_length_only (
+  3,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

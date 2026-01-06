@@ -11,5 +11,15 @@ assume_test_yaft_exports expect_superhash_of
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_superhash_of (foo => 1))
+	=> got { expect_superhash_of (foo => 1) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_superhash_of (
+  'foo',
+  1,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

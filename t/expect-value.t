@@ -11,6 +11,15 @@ assume_test_yaft_exports expect_value
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_value (42))
+	=> got { expect_value (42) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_value (
+  42,
+)
+END_OF_EXPECTED
+	;
+
 check_test q (expecting value)
 	=> assumption {
 		it q (should just pass)

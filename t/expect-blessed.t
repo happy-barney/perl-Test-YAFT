@@ -11,5 +11,14 @@ assume_test_yaft_exports expect_blessed
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_blessed (q (Foo)))
+	=> got { expect_blessed (q (Foo)) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_blessed (
+  'Foo',
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

@@ -3,6 +3,7 @@
 
 requires "Attribute::Handlers" => "0";
 requires "Context::Singleton" => "0";
+requires "Data::Dumper" => "0";
 requires "Devel::StackTrace" => "0";
 requires "Exporter::Tiny" => "0";
 requires "Module::Pluggable" => "4.8";
@@ -10,6 +11,7 @@ requires "Ref::Util" => "0";
 requires "Safe::Isa" => "0";
 requires "Scalar::Util" => "0";
 requires "Sub::Install" => "0";
+requires "Sub::Override" => "0";
 requires "Sub::Util" => "0";
 requires "Syntax::Construct" => "0";
 requires "Test::Deep" => "0";

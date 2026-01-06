@@ -11,6 +11,16 @@ assume_test_yaft_exports expect_compare
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_compare (q (>), 42))
+	=> got { expect_compare (q (>), 42) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_compare (
+  '>',
+  42,
+)
+END_OF_EXPECTED
+	;
+
 check_test q (successful compare with '>' operator)
 	=> assumption {
 		it q (should just pass)
@@ -34,14 +44,14 @@ check_test q (failed compare with '>' operator)
 	=> actual_ok   => 0
 	=> name        => q (should just fail)
 	=> diag        => <<'EXPECTED_DIAG'
-+----+-----+----+---------------------------------+
-| Elt|Got  | Elt|Expected                         |
-+----+-----+----+---------------------------------+
-*   0|42   *   0|bless( {                         *
-|    |     *   1|  operator => '>',               *
-|    |     *   2|  val => 42                      *
-|    |     *   3|}, 'Test::YAFT::Cmp::Compare' )  *
-+----+-----+----+---------------------------------+
++----+-----+----+------------------+
+| Elt|Got  | Elt|Expected          |
++----+-----+----+------------------+
+*   0|42   *   0|expect_compare (  *
+|    |     *   1|  '>',            *
+|    |     *   2|  42,             *
+|    |     *   3|)                 *
++----+-----+----+------------------+
 Compared $data
    got : '42'
 expect : > '42'

@@ -57,6 +57,23 @@ package Test::YAFT::Attributes {
 		return sub { $builder->new (@arguments, @_) };
 	}
 
+	sub _register_expectation {
+		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
+
+		my $name    = &_symbol_name;
+		my $coderef = &_symbol_code;
+		my $wrapper = sub {
+			my $expectation = $coderef->(@_);
+
+			Test::YAFT::Dumper->register_ref_builder ($expectation, $name, @_);
+
+			return $expectation;
+		};
+
+		no warnings q (redefine);
+		*{$symbol} = _sync_prototype ($coderef => $wrapper);
+	}
+
 	sub _exported {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
@@ -81,11 +98,7 @@ package Test::YAFT::Attributes {
 			unless my $coderef = &_build_coderef
 			;
 
-		if (defined (my $prototype = Sub::Util::prototype ($referent))) {
-			Sub::Util::set_prototype $prototype => $coderef;
-		}
-
-		*{$symbol} = $coderef;
+		*{$symbol} = _sync_prototype ($referent => $coderef);
 	}
 
 	sub _is_distinct_prototype {
@@ -109,10 +122,26 @@ package Test::YAFT::Attributes {
 		push @$push_into, grep { ! exists $exists{$_} } @_;
 	}
 
+	sub _symbol_code {
+		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
+
+		*{$symbol}{CODE};
+	}
+
 	sub _symbol_name {
 		my ($package, $symbol, $referent, $attr, $data, $phase, $filename, $linenum) = @_;
 
 		*{$symbol}{NAME};
+	}
+
+	sub _sync_prototype {
+		my ($referent, $coderef) = @_;
+
+		if (defined (my $prototype = Sub::Util::prototype ($referent))) {
+			Sub::Util::set_prototype $prototype => $coderef;
+		}
+
+		return $coderef;
 	}
 
 	sub Assumption {
@@ -123,6 +152,7 @@ package Test::YAFT::Attributes {
 	sub Expectation {
 		&_exported;
 		&_install_coderef;
+		&_register_expectation;
 	}
 
 	sub Foundation {

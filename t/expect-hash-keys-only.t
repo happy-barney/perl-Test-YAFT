@@ -11,5 +11,15 @@ assume_test_yaft_exports expect_hash_keys_only
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_hash_keys_only (q (foo), q (bar)))
+	=> got { expect_hash_keys_only (q (foo), q (bar)) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_hash_keys_only (
+  'foo',
+  'bar',
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

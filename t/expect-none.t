@@ -11,5 +11,15 @@ assume_test_yaft_exports expect_none
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_none (1, 2))
+	=> got { expect_none (1, 2) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_none (
+  1,
+  2,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

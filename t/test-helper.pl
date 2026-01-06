@@ -104,6 +104,35 @@ sub assume_test_yaft_exports {
 	};
 }
 
+sub assume_yaft_dump {
+	my ($message, @args) = @_;
+
+	my %args = Test::YAFT::_test_yaft_assumption_args (@args);
+
+	my $result = Test::YAFT::_build_got (\ %args);
+	my $value = $result->{value};
+
+	local $Data::Dumper::Deparse   = 1;
+	local $Data::Dumper::Indent    = 1;
+	local $Data::Dumper::Purity    = 0;
+	local $Data::Dumper::Terse     = 1;
+	local $Data::Dumper::Deepcopy  = 1;
+	local $Data::Dumper::Quotekeys = 0;
+	local $Data::Dumper::Useperl   = 1;
+	local $Data::Dumper::Sortkeys  = 1;
+
+	my $dumped = Test::YAFT::Dumper::Dumper ($value);
+	my $expect = $args{expect};
+
+	$dumped =~ s (\n+$) ()x;
+	$expect =~ s (\n+$) ()x;
+
+	assume $message
+		=> got    => $dumped
+		=> expect => $expect
+		;
+}
+
 sub assumption (&;@) {
 	my ($code) = shift;
 

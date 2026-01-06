@@ -11,5 +11,14 @@ assume_test_yaft_exports expect_scalarref_only
 	=> by_tag     => [qw [all default expectations]]
 	;
 
+assume_yaft_dump q (Dumper should produce expect_scalarref_only (42))
+	=> got { expect_scalarref_only (42) }
+	=> expect => <<'END_OF_EXPECTED'
+expect_scalarref_only (
+  42,
+)
+END_OF_EXPECTED
+	;
+
 had_no_warnings;
 done_testing;

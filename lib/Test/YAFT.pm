@@ -12,6 +12,7 @@ package Test::YAFT {
 	use Safe::Isa qw ();
 	use Scalar::Util qw ();
 	use Sub::Install qw ();
+	use Sub::Override qw ();
 
 	use Test::Deep qw ();
 	use Test::Differences qw ();
@@ -25,6 +26,7 @@ package Test::YAFT {
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
+	use Test::YAFT::Dumper;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
@@ -205,6 +207,10 @@ package Test::YAFT {
 		my ($title, @args) = @_;
 
 		my %args = _test_yaft_assumption_args @args;
+
+		my $guard = Sub::Override::->new (
+			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
+		);
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {

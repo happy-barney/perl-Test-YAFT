@@ -56,6 +56,7 @@ package Test::YAFT {
 	sub expect_number_greater_than ($);
 	sub expect_number_less_than ($);
 	sub expect_obj_isa ($);
+	sub expect_plain_ref ();
 	sub expect_re ($);
 	sub expect_starts_with ($);
 	sub expect_str ($);
@@ -121,6 +122,7 @@ package Test::YAFT {
 	sub expect_number_greater_than ($)  :Expectation(Test::YAFT::Cmp::Compare,q (>));
 	sub expect_number_less_than ($)     :Expectation(Test::YAFT::Cmp::Compare,q (<));
 	sub expect_obj_isa ($)              :Expectation(\&Test::Deep::obj_isa);
+	sub expect_plain_ref ()             :Expectation(Test::YAFT::Expect::Plain_Ref);
 	sub expect_re ($)                   :Expectation(\&Test::Deep::re);
 	sub expect_ref_type                 :Expectation(\&Test::Deep::reftype);
 	sub expect_regexp_matches           :Expectation(\&Test::Deep::regexpmatches);

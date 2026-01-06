@@ -855,6 +855,18 @@ L<expect_blessed_to|/expect_blessed_to>,
 L<expect_instance_of|/expect_instance_of>,
 L<expect_isa|/expect_isa>
 
+=head2 expect_plain_ref
+
+	it q (should be a plain reference)
+		=> got    => $got
+		=> expect => expect_plain_ref
+		;
+
+Evaluates that C<$got> is not a blessed reference (an object).
+
+See also:
+L<expect_blessed_ref|/expect_blessed_ref>
+
 =head2 expect_re
 
 	assume q (error message should contain specific text)

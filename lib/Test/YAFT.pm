@@ -43,6 +43,7 @@ package Test::YAFT {
 	sub expect_blessed_to ($);
 	sub expect_code (&);
 	sub expect_complement ($);
+	sub expect_instance_of ($);
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub override (&);
@@ -84,6 +85,7 @@ package Test::YAFT {
 	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
 	sub expect_hash_keys                :Expectation(\&Test::Deep::hashkeys);
 	sub expect_hash_keys_only           :Expectation(\&Test::Deep::hashkeysonly);
+	sub expect_instance_of ($)          :Expectation(\&Test::Deep::obj_isa);
 	sub expect_isa                      :Expectation(\&Test::Deep::Isa);
 	sub expect_listmethods              :Expectation(\&Test::Deep::listmethods);
 	sub expect_methods                  :Expectation(\&Test::Deep::methods);

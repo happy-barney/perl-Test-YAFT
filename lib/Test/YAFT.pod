@@ -477,6 +477,7 @@ Provided as part of the mapping of L<Test::Deep> expectations.
 See also:
 L<expect_blessed_ref|/expect_blessed_ref ()>,
 L<expect_blessed_to|/expect_blessed_to ($)>,
+L<expect_instance_of|/expect_instance_of ($)>,
 L<expect_obj_isa|/expect_obj_isa>
 L<Test::Deep::blessed|/Test::Deep#blessed>
 
@@ -492,6 +493,7 @@ Evaluates that C<$got> is a blessed reference (an object).
 See also:
 L<expect_blessed|/expect_blessed ($)>,
 L<expect_blessed_to|/expect_blessed_to ($)>,
+L<expect_instance_of|/expect_instance_of ($)>,
 L<expect_ref_type|/expect_ref_type>,
 L<expect_obj_isa|/expect_obj_isa>
 
@@ -610,9 +612,39 @@ Re-exported from L<Test::Deep/hashkeys>.
 
 Re-exported from L<Test::Deep/hashkeysonly>.
 
+=head2 expect_instance_of
+
+	assume q (object should be valid user instance)
+		=> got    => $object
+		=> expect => expect_instance_of (My::User::)
+		;
+
+Verifies that C<$got> is an instance of the specified class or any of its subclasses.
+
+Unlike L<expect_blessed_to|/expect_blessed_to>, this matches also inheritance.
+
+	# Matches: bless {}, My::Class::
+	# Also matches: bless {}, My::Class::Subclass::
+	expect_instance_of (My::Class::)
+
+See also:
+L<expect_blessed|/expect_blessed>,
+L<expect_blessed_to|/expect_blessed_to>,
+L<expect_blessed_ref|/expect_blessed_ref>,
+L<expect_isa|/expect_isa>
+
 =head2 expect_isa
 
-Re-exported from L<Test::Deep/Isa>. Instance or inheritance expectation.
+Evaluates that C<$got> is either a blessed instance of the provided class,
+or C<ref ($got)>> is the provided string (e.g., C<HASH>).
+
+	expect_isa (My::Class::);
+	expect_isa (q (HASH));
+
+See also:
+L<expect_blessed_to|/expect_blessed_to>
+L<expect_instance_of|/expect_instance_of>
+.
 
 =head2 expect_listmethods
 

@@ -591,6 +591,23 @@ combination with other L<Test::YAFT> expectations.
 Negative expectation. Usually it is easier to use the overloaded
 complement operators C<!> or C<~>.
 
+=head2 expect_does
+
+	assume q (object should perform required role)
+		=> got    => $object
+		=> expect => expect_does (My::Role::)
+		;
+
+Verifies that C<$got> is blessed object providing behaviour the specified role.
+
+See also:
+L<expect_blessed|/expect_blessed>,
+L<expect_blessed_to|/expect_blessed_to>,
+L<expect_blessed_ref|/expect_blessed_ref>,
+L<expect_can|/expect_can>
+L<expect_instance_of|/expect_instance_of>,
+L<expect_isa|/expect_isa>,
+
 =head2 expect_false
 
 Boolean expectation for false values.

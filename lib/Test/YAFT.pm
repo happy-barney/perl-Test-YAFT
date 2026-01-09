@@ -46,6 +46,7 @@ package Test::YAFT {
 	sub expect_does ($);
 	sub expect_instance_of ($);
 	sub expect_isa ($);
+	sub expect_number ($;$);
 	sub expect_obj_isa ($);
 	sub got (&);
 	sub had_no_warnings (;$);
@@ -97,6 +98,7 @@ package Test::YAFT {
 	sub expect_none                     :Expectation(\&Test::Deep::none);
 	sub expect_none_of                  :Expectation(\&Test::Deep::noneof);
 	sub expect_num                      :Expectation(\&Test::Deep::num);
+	sub expect_number ($;$)             :Expectation(\&Test::Deep::num);
 	sub expect_obj_isa ($)              :Expectation(\&Test::Deep::obj_isa);
 	sub expect_re                       :Expectation(\&Test::Deep::re);
 	sub expect_ref_type                 :Expectation(\&Test::Deep::reftype);

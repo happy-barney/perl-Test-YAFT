@@ -695,7 +695,26 @@ Re-exported from L<Test::Deep/noneof>.
 
 =head2 expect_num
 
-Re-exported from L<Test::Deep/num>.
+Alias for L<expect_number|/expect_number>.
+
+=head2 expect_number
+
+	assume q (value should be the answer)
+		=> got    => $value
+		=> expect => expect_number (42)
+		;
+
+	assume q (measurement should be approximately pi)
+		=> got    => $measurement
+		=> expect => expect_number (3.14159, 0.001) # 3.14059 to 3.14259
+		;
+
+When tolerance is provided, C<$got> must be within the tolerance range of
+the expected value. Without tolerance, C<$got> must be numerically equal.
+
+See also:
+L<expect_num|/expect_num>,
+L<Test::Deep/num>
 
 =head2 expect_obj_isa
 

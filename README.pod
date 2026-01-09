@@ -681,7 +681,21 @@ Re-exported from L<Test::Deep/num>.
 
 =head2 expect_obj_isa
 
-Re-exported from L<Test::Deep/obj_isa>.
+	assume q (object should be valid user instance)
+		=> got    => $object
+		=> expect => expect_obj_isa (My::User::)
+		;
+
+Alias for L<expect_instance_of|/expect_instance_of>.
+
+Provided for compatibility when migrating from L<Test::Deep>.
+
+See also:
+L<expect_blessed|/expect_blessed>,
+L<expect_blessed_ref|/expect_blessed_ref>,
+L<expect_blessed_to|/expect_blessed_to>,
+L<expect_instance_of|/expect_instance_of>,
+L<expect_isa|/expect_isa>
 
 =head2 expect_re
 

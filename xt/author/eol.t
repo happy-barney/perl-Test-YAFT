@@ -79,6 +79,7 @@ my @files = (
     't/expect-none-of.t',
     't/expect-none.t',
     't/expect-num.t',
+    't/expect-number-greater-than.t',
     't/expect-number.t',
     't/expect-obj-isa.t',
     't/expect-re.t',

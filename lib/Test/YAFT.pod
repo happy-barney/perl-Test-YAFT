@@ -585,6 +585,9 @@ In addition to the success truth value, the code block can optionally return a d
 Similar to L<Test::More/cmp_ok> but provided as an expectation, allowing
 combination with other L<Test::YAFT> expectations.
 
+See also:
+L<expect_number_greater_than|/expect_number_greater_than>
+
 =head2 expect_complement_to
 
 	expect_complement_to (42)
@@ -713,8 +716,30 @@ When tolerance is provided, C<$got> must be within the tolerance range of
 the expected value. Without tolerance, C<$got> must be numerically equal.
 
 See also:
+L<expect_compare|/expect_compare>,
 L<expect_num|/expect_num>,
+L<expect_number_greater_than|/expect_number_greater_than>,
 L<Test::Deep/num>
+
+=head2 expect_number_greater_than
+
+	assume q (score should exceed passing threshold)
+		=> got    => $score
+		=> expect => expect_number_greater_than (42)
+		;
+
+Verifies that C<$got> is numerically greater than the provided value.
+
+Uses numeric comparison, so string numbers are converted to their numeric
+values before comparison.
+
+	# Matches: 61, 100, 1000
+	# Does not match: 60, 59, 0
+	expect_number_greater_than (60)
+
+See also:
+L<expect_compare|/expect_compare>,
+L<expect_number|/expect_number>
 
 =head2 expect_obj_isa
 

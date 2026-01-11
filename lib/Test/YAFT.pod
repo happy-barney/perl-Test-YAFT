@@ -587,6 +587,7 @@ combination with other L<Test::YAFT> expectations.
 
 See also:
 L<expect_number_greater_than|/expect_number_greater_than>
+L<expect_number_less_than|/expect_number_less_than>
 
 =head2 expect_complement_to
 
@@ -740,6 +741,28 @@ values before comparison.
 See also:
 L<expect_compare|/expect_compare>,
 L<expect_number|/expect_number>
+L<expect_number_less_than|/expect_number_less_than>
+
+=head2 expect_number_less_than
+
+	assume q (temperature should be below freezing point)
+		=> got    => $temperature
+		=> expect => expect_number_less_than (0)
+		;
+
+Verifies that C<$got> is numerically less than the provided value.
+
+Uses numeric comparison, so string numbers are converted to their numeric
+values before comparison.
+
+	# Matches: -1, -100, -273
+	# Does not match: 0, 1, 100
+	expect_number_less_than (0)
+
+See also:
+L<expect_compare|/expect_compare>,
+L<expect_number|/expect_number>,
+L<expect_number_greater_than|/expect_number_greater_than>
 
 =head2 expect_obj_isa
 

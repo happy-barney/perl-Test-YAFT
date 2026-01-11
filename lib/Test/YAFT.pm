@@ -59,6 +59,7 @@ package Test::YAFT {
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub ignore ();
+	sub not_important ();
 	sub override (&);
 	sub pass ($);
 	sub skip ($$);
@@ -148,6 +149,7 @@ package Test::YAFT {
 	sub ignore ()                       :Expectation(\&Test::Deep::ignore);
 	sub it                              :Assumption(\&_test_yaft_assumption);
 	sub nok                             :Assumption;
+	sub not_important ()                :Expectation(\&Test::Deep::ignore);
 	sub note                            :Util(\&Test::More::note);
 	sub ok                              :Assumption;
 	sub override (&)                    :Util(Test::YAFT::Argument::Override::);

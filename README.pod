@@ -995,6 +995,13 @@ Matches any value without checking it.
 Used in deep structure comparisons to skip verification of specific fields
 whose values are unpredictable or irrelevant to the test.
 
+=head2 not_important
+
+Alias for L<ignore|/ignore>.
+
+Provides a more explicit alternative to L<ignore|/ignore> when you want
+to emphasise that a field value is not relevant to the test.
+
 =head1 UTILITIES
 
 	use Test::YAFT qw (:utils);

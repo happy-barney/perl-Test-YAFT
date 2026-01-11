@@ -122,6 +122,7 @@ my @files = (
     't/ignore.t',
     't/internals-build-got.t',
     't/nok.t',
+    't/not-imoirtant.t',
     't/note.t',
     't/ok.t',
     't/override.t',

@@ -56,10 +56,12 @@ my %module_build_args = (
     "HTTP::Status" => 0,
     "JSON" => 0,
     "List::Util" => 0,
+    "Moose" => 0,
     "Test::EOL" => 0,
     "Test::Tester" => "1.302107",
     "Type::Tiny" => 0,
     "Types::Common::Numeric" => 0,
+    "Types::Standard" => 0,
     "feature" => 0,
     "require::relative" => 0
   }
@@ -72,10 +74,12 @@ my %fallback_build_requires = (
   "JSON" => 0,
   "List::Util" => 0,
   "Module::Build" => "0.28",
+  "Moose" => 0,
   "Test::EOL" => 0,
   "Test::Tester" => "1.302107",
   "Type::Tiny" => 0,
   "Types::Common::Numeric" => 0,
+  "Types::Standard" => 0,
   "feature" => 0,
   "require::relative" => 0
 );

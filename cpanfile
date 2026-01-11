@@ -38,10 +38,12 @@ on 'test' => sub {
   requires "HTTP::Status" => "0";
   requires "JSON" => "0";
   requires "List::Util" => "0";
+  requires "Moose" => "0";
   requires "Test::EOL" => "0";
   requires "Test::Tester" => "1.302107";
   requires "Type::Tiny" => "0";
   requires "Types::Common::Numeric" => "0";
+  requires "Types::Standard" => "0";
   requires "feature" => "0";
   requires "require::relative" => "0";
 };

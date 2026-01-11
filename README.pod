@@ -595,6 +595,25 @@ L<expect_number_less_than|/expect_number_less_than>
 Negative expectation. Usually it is easier to use the overloaded
 complement operators C<!> or C<~>.
 
+=head2 expect_data_contract
+
+Expectation checks whether the C<$got> value conforms to the data contract.
+
+The expectation recognizes L<Type::Tiny> and L<Moose> contracts and expects that if
+you are providing a data contract to check, the required libraries are already available.
+
+	# With Type::Tiny
+	assume q (...)
+		=> got    => $value
+		=> expect => expect_data_contract (Str)
+		;
+
+	# With Moose
+	assume q (...)
+		=> got    => $value
+		=> expect => expect_data_contract (q (Str))
+		;
+
 =head2 expect_does
 
 	assume q (object should perform required role)

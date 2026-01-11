@@ -596,6 +596,42 @@ L<expect_number_less_than|/expect_number_less_than>
 Negative expectation. Usually it is easier to use the overloaded
 complement operators C<!> or C<~>.
 
+=head2 expect_data_contract
+
+	assume q (age should be valid integer)
+		=> got    => $user->{age}
+		=> expect => expect_data_contract (Int)
+		;
+
+	assume q (username should be non-empty string)
+		=> got    => $user->{name}
+		=> expect => expect_data_contract (q (Str))
+		;
+
+Verifies that C<$got> conforms to the specified data contract.
+
+Supports both L<Type::Tiny> and L<Moose> data contract systems:
+
+=over
+
+=item Type::Tiny contracts
+
+Pass a Type::Tiny type object. The appropriate type library must be loaded.
+
+	use Types::Standard qw (Int Str ArrayRef);
+
+	expect_data_contract (Int)
+	expect_data_contract (ArrayRef[Str])
+
+=item Moose type constraints
+
+Pass the type name as a string. L<Moose::Util::TypeConstraints> must be available.
+
+	expect_data_contract (q (Int))
+	expect_data_contract (q (Str))
+
+=back
+
 =head2 expect_does
 
 	assume q (object should perform required role)

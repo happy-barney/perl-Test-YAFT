@@ -37,6 +37,10 @@ package Test::YAFT::Dumper {
 			if local $_ = $value->$Safe::Isa::_can (q (__dump_yaft))
 			;
 
+		return $value->display_name
+			if $value->$Safe::Isa::_isa (q (Type::Tiny))
+			;
+
 		my $result = $self->next::method ($value, $name);
 
 		# qr/(?^u:foo)/ => qr/foo/u

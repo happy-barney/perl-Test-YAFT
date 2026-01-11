@@ -632,6 +632,30 @@ Pass the type name as a string. L<Moose::Util::TypeConstraints> must be availabl
 
 =back
 
+See also:
+L<expect_data_contract_coerce|/expect_data_contract_coerce>
+
+=head2 expect_data_contract_coerce
+
+	assume q (count should be coercible to integer)
+		=> got    => $input
+		=> expect => expect_data_contract_coerce ($Coercible)
+		;
+
+	assume q (value should be valid after coercion)
+		=> got    => $user_input
+		=> expect => expect_data_contract_coerce (q (Coercible))
+		;
+
+Verifies that C<$got> conforms to the specified data contract after attempting coercion.
+
+Similar to L<expect_data_contract|/expect_data_contract>, but applies type coercion
+rules before validation. The type must have coercion rules defined, otherwise it
+behaves like L<expect_data_contract|/expect_data_contract>.
+
+See also:
+L<expect_data_contract|/expect_data_contract>
+
 =head2 expect_does
 
 	assume q (object should perform required role)

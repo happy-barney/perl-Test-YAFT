@@ -614,6 +614,23 @@ you are providing a data contract to check, the required libraries are already a
 		=> expect => expect_data_contract (q (Str))
 		;
 
+=head2 expect_data_contract_coerce
+
+Similar to L<expect_data_contract|/expect_data_contract> except it tries to coerce
+value before check.
+
+	# With Type::Tiny
+	assume q (...)
+		=> got    => $value
+		=> expect => expect_data_contract_coerce (Str)
+		;
+
+	# With Moose
+	assume q (...)
+		=> got    => $value
+		=> expect => expect_data_contract_coerce (q (Str))
+		;
+
 =head2 expect_does
 
 	assume q (object should perform required role)

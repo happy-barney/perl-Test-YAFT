@@ -823,7 +823,20 @@ Re-exported from L<Test::Deep/shallow>.
 
 =head2 expect_str
 
-Re-exported from L<Test::Deep/str>.
+Alias for L<expect_string|/expect_string>.
+
+=head2 expect_string
+
+	assume q (message should match exactly)
+		=> got    => $message
+		=> expect => expect_string (q (Hello, World!))
+		;
+
+Verifies that C<$got> is string-equal to the expected value.
+
+See also:
+L<expect_str|/expect_str>,
+L<Test::Deep/str>
 
 =head2 expect_subbag
 

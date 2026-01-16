@@ -50,6 +50,8 @@ package Test::YAFT {
 	sub expect_number_greater_than ($);
 	sub expect_number_less_than ($);
 	sub expect_obj_isa ($);
+	sub expect_str ($);
+	sub expect_string ($);
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub override (&);
@@ -114,7 +116,8 @@ package Test::YAFT {
 	sub expect_scalarref_only           :Expectation(\&Test::Deep::scalarrefonly);
 	sub expect_set                      :Expectation(\&Test::Deep::set);
 	sub expect_shallow                  :Expectation(\&Test::Deep::shallow);
-	sub expect_str                      :Expectation(\&Test::Deep::str);
+	sub expect_str ($)                  :Expectation(\&Test::Deep::str);
+	sub expect_string ($)               :Expectation(\&Test::Deep::str);
 	sub expect_subbag                   :Expectation(\&Test::Deep::subbagof);
 	sub expect_subbag_of                :Expectation(\&Test::Deep::subbagof);
 	sub expect_subhash                  :Expectation(\&Test::Deep::subhashof);

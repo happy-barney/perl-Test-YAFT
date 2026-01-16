@@ -94,6 +94,7 @@ my @files = (
     't/expect-set.t',
     't/expect-shallow.t',
     't/expect-str.t',
+    't/expect-string.t',
     't/expect-subbag-of.t',
     't/expect-subbag.t',
     't/expect-subhash-of.t',

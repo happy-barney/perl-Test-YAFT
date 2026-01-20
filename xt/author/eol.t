@@ -76,6 +76,7 @@ my @files = (
     't/expect-hash.t',
     't/expect-instance-of.t',
     't/expect-isa.t',
+    't/expect-like.t',
     't/expect-listmethods.t',
     't/expect-methods.t',
     't/expect-no-class.t',

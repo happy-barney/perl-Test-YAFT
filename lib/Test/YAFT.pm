@@ -47,6 +47,7 @@ package Test::YAFT {
 	sub expect_ends_with ($);
 	sub expect_instance_of ($);
 	sub expect_isa ($);
+	sub expect_like ($);
 	sub expect_number ($;$);
 	sub expect_number_greater_than ($);
 	sub expect_number_less_than ($);
@@ -100,6 +101,7 @@ package Test::YAFT {
 	sub expect_hash_keys_only           :Expectation(\&Test::Deep::hashkeysonly);
 	sub expect_instance_of ($)          :Expectation(\&Test::Deep::obj_isa);
 	sub expect_isa ($)                  :Expectation(\&Test::Deep::Isa);
+	sub expect_like ($)                 :Expectation(\&Test::Deep::re);
 	sub expect_listmethods              :Expectation(\&Test::Deep::listmethods);
 	sub expect_methods                  :Expectation(\&Test::Deep::methods);
 	sub expect_no_class                 :Expectation(\&Test::Deep::noclass);

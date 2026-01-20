@@ -627,6 +627,7 @@ When the expected suffix is C<undef>, it always passes.
 Otherwise, it always fails when C<$got> is C<undef>.
 
 See also:
+L<expect_like|/expect_like>,
 L<expect_re|/expect_re>,
 L<expect_starts_with|/expect_starts_with>,
 L<expect_string|/expect_string>
@@ -694,6 +695,21 @@ L<expect_blessed_to|/expect_blessed_to>,
 L<expect_blessed_ref|/expect_blessed_ref>,
 L<expect_instance_of|/expect_instance_of>,
 L<expect_ref_type|/expect_ref_type>
+
+=head2 expect_like
+
+	expect_like (qr ($regex))
+
+Evaluates that C<$got> matches the provided regexp.
+
+Provided to simplify migration from L<Test::More/like>.
+
+See also:
+L<expect_ends_with|/expect_ends_with>,
+L<expect_re|/expect_re>,
+L<expect_starts_with|/expect_starts_with>,
+L<expect_string|/expect_string>,
+L<Test::More/like>
 
 =head2 expect_listmethods
 
@@ -820,6 +836,12 @@ L<expect_starts_with|/expect_starts_with>,
 L<expect_string|/expect_string>,
 L<Test::Deep/re>
 
+See also:
+L<expect_ends_with|/expect_ends_with>,
+L<expect_like|/expect_like>,
+L<expect_starts_with|/expect_starts_with>,
+L<expect_string|/expect_string>
+
 =head2 expect_ref_type
 
 Re-exported from L<Test::Deep/reftype>.
@@ -871,6 +893,7 @@ Otherwise, it always fails when C<$got> is C<undef>.
 
 See also:
 L<expect_ends_with|/expect_ends_with>,
+L<expect_like|/expect_like>,
 L<expect_re|/expect_re>,
 L<expect_string|/expect_string>
 
@@ -889,6 +912,7 @@ Verifies that C<$got> is string-equal to the expected value.
 
 See also:
 L<expect_ends_with|/expect_ends_with>,
+L<expect_like|/expect_like>,
 L<expect_re|/expect_re>,
 L<expect_starts_with|/expect_starts_with>,
 L<expect_str|/expect_str>,

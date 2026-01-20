@@ -612,6 +612,24 @@ L<expect_can|/expect_can>
 L<expect_instance_of|/expect_instance_of>,
 L<expect_isa|/expect_isa>,
 
+=head2 expect_ends_with
+
+	assume q (filename should end with .txt)
+		=> got    => $filename
+		=> expect => expect_ends_with (q (.txt))
+		;
+
+Verifies that C<$got> ends with the expected suffix.
+
+When the expected suffix is C<undef>, it always passes.
+
+Otherwise, it always fails when C<$got> is C<undef>.
+
+See also:
+L<expect_starts_with|/expect_starts_with>,
+L<expect_string|/expect_string>,
+L<expect_re|/expect_re>
+
 =head2 expect_false
 
 Boolean expectation for false values.

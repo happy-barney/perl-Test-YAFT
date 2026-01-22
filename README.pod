@@ -626,9 +626,9 @@ When the expected suffix is C<undef>, it always passes.
 Otherwise, it always fails when C<$got> is C<undef>.
 
 See also:
+L<expect_re|/expect_re>,
 L<expect_starts_with|/expect_starts_with>,
-L<expect_string|/expect_string>,
-L<expect_re|/expect_re>
+L<expect_string|/expect_string>
 
 =head2 expect_false
 
@@ -801,7 +801,33 @@ L<expect_isa|/expect_isa>
 
 =head2 expect_re
 
-Re-exported from L<Test::Deep/re>.
+	assume q (error message should contain specific text)
+		=> got    => $error
+		=> expect => expect_re (qr (invalid input))
+		;
+
+	assume q (email should have valid format)
+		=> got    => $email
+		=> expect => expect_re (qr (^ \w+ @ \w+ [.] \w+ $)x)
+		;
+
+Verifies that C<$got> matches the provided regular expression.
+
+The argument must be a compiled regexp (C<qr//>).
+
+	# Matches: "Hello, World!", "Hello there", "Say Hello"
+	# Does not match: "hello", "HELLO", "Goodbye"
+	expect_re (qr (Hello))
+
+	# Case insensitive matching
+	# Matches: "Hello", "hello", "HELLO"
+	expect_re (qr (hello)i)
+
+See also:
+L<expect_ends_with|/expect_ends_with>,
+L<expect_starts_with|/expect_starts_with>,
+L<expect_string|/expect_string>,
+L<Test::Deep/re>
 
 =head2 expect_ref_type
 
@@ -853,8 +879,9 @@ When the expected prefix is C<undef>, it always passes.
 Otherwise, it always fails when C<$got> is C<undef>.
 
 See also:
-L<expect_string|/expect_string>,
-L<expect_re|/expect_re>
+L<expect_ends_with|/expect_ends_with>,
+L<expect_re|/expect_re>,
+L<expect_string|/expect_string>
 
 =head2 expect_str
 
@@ -870,6 +897,9 @@ Alias for L<expect_string|/expect_string>.
 Verifies that C<$got> is string-equal to the expected value.
 
 See also:
+L<expect_ends_with|/expect_ends_with>,
+L<expect_re|/expect_re>,
+L<expect_starts_with|/expect_starts_with>,
 L<expect_str|/expect_str>,
 L<Test::Deep/str>
 

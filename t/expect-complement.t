@@ -12,9 +12,9 @@ check_test q (should expect different value)
 			=> expect => expect_complement (42)
 			;
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (should just pass),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should just pass)
 	;
 
 check_test q (success expectation of something else than boolean true)
@@ -24,9 +24,9 @@ check_test q (success expectation of something else than boolean true)
 			=> expect => ! expect_true
 			;
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (should just pass),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should just pass)
 	;
 
 check_test q (failed expectation of something else than boolean true)
@@ -36,9 +36,9 @@ check_test q (failed expectation of something else than boolean true)
 			=> expect => ! expect_false
 			;
 	}
-	=> ok          => 0,
-	=> actual_ok   => 0,
-	=> name        => q (should just fail),
+	=> ok          => 0
+	=> actual_ok   => 0
+	=> name        => q (should just fail)
 	=> diag        => <<'DIAG'
 Compared $data
    got : '0'

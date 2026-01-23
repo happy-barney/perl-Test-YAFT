@@ -11,9 +11,9 @@ check_test q (when getting fail)
 			=> got    => 0
 			;
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (should just pass),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should just pass)
 	;
 
 check_test q (when getting true)
@@ -22,9 +22,9 @@ check_test q (when getting true)
 			=> got    => 1
 			;
 	}
-	=> ok          => 0,
-	=> actual_ok   => 0,
-	=> name        => q (should just fail),
+	=> ok          => 0
+	=> actual_ok   => 0
+	=> name        => q (should just fail)
 	;
 
 had_no_warnings;

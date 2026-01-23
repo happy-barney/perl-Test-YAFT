@@ -11,10 +11,10 @@ check_test q (expecting value)
 			=> got    => 42
 			=> expect => expect_value (42)
 			;
-	},
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (should just pass),
+	}
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should just pass)
 	;
 
 check_test q (failing to expect value)
@@ -24,9 +24,9 @@ check_test q (failing to expect value)
 			=> expect => 42
 			;
 	}
-	=> ok          => 0,
-	=> actual_ok   => 0,
-	=> name        => q (should just pass),
+	=> ok          => 0
+	=> actual_ok   => 0
+	=> name        => q (should just pass)
 	=> diag        => <<'EXPECTED_DIAG'
 +---+-----+----------+
 | Ln|Got  |Expected  |

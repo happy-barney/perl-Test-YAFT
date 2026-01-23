@@ -12,9 +12,9 @@ check_test q (successful compare with '>' operator)
 			=> expect => expect_compare (q (>), 42)
 			;
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (should just pass),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (should just pass)
 	;
 
 check_test q (failed compare with '>' operator)
@@ -24,10 +24,10 @@ check_test q (failed compare with '>' operator)
 			=> expect => expect_compare (q (>), 42)
 			;
 	}
-	=> ok          => 0,
-	=> actual_ok   => 0,
-	=> name        => q (should just fail),
-	=> diag        => <<'EXPECTED_DIAG',
+	=> ok          => 0
+	=> actual_ok   => 0
+	=> name        => q (should just fail)
+	=> diag        => <<'EXPECTED_DIAG'
 +----+-----+----+---------------------------------+
 | Elt|Got  | Elt|Expected                         |
 +----+-----+----+---------------------------------+

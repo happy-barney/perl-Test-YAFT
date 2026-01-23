@@ -17,8 +17,8 @@ check_test q (test_frame() should properly alter $Test::Builder::Level)
 	=> assumption {
 		custom_assert
 	}
-	=> ok   => 1,
-	=>name => q (custom-assert),
+	=> ok   => 1
+	=> name => q (custom-assert)
 	;
 
 had_no_warnings;

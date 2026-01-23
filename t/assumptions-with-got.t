@@ -33,9 +33,9 @@ check_assumptions q (should test thrown exception when 'got {}' block dies)
 			=> got    { die bless [ q (foo) ], q (Foo::Bar) }
 			=> throws => expect_isa (q (Foo::Bar))
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (got { } block),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (got { } block)
 	;
 
 check_assumptions q (should fail when expecting 'throws' but code lives)

@@ -30,6 +30,7 @@ on 'test' => sub {
   requires "HTTP::Response" => "0";
   requires "HTTP::Status" => "0";
   requires "JSON" => "0";
+  requires "List::Util" => "0";
   requires "Test::EOL" => "0";
   requires "Test::Tester" => "1.302107";
   requires "Type::Tiny" => "0";

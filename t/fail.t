@@ -5,6 +5,12 @@ use warnings;
 
 use require::relative q (test-helper.pl);
 
+assume_test_yaft_exports fail
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default asserts]]
+	;
+
 check_test q (when just fails)
 	=> assumption {
 		fail q (when just fails);

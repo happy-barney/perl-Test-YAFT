@@ -5,6 +5,12 @@ use warnings;
 
 use require::relative q (test-helper.pl);
 
+assume_test_yaft_exports expect_value
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default expectations]]
+	;
+
 check_test q (expecting value)
 	=> assumption {
 		it q (should just pass)

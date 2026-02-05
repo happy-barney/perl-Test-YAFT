@@ -10,6 +10,7 @@ use Test::Tester 1.302107 import => [qw ( !check_test )];
 use Test::YAFT;
 
 use Context::Singleton;
+use List::Util;
 
 my @assumptions = sort
 	q (assume),
@@ -18,6 +19,87 @@ my @assumptions = sort
 	;
 
 sub assumption_under_test;
+
+sub _exists_in_array {
+	my ($element, @array) = @_;
+
+	return defined List::Util::first { $_ eq $element } @array
+}
+
+sub _anonymous_importer {
+	my ($symbol, $exported, $import, $returns) = @_;
+
+	state $serial = 0;
+	state $prefix = q (Test::Export::__ANON__::);
+
+	$import = defined ($import)
+		? qq (q ($import))
+		: q ()
+		;
+
+	my $package = $prefix . ++$serial;
+
+	$symbol = q (&) . $symbol
+		if $symbol =~ m (^\w)
+		;
+
+	$returns //= qq {
+		local \$_ = \\ $symbol;
+
+		Ref::Util::is_coderef (\$_) ? defined &\$_ : defined \$_;
+	};
+
+	my $eval = qq {
+		package ${package} {
+			use strict;
+			use $exported $import;
+
+			$returns;
+		};
+	};
+
+	eval $eval
+		// die $@
+		;
+}
+
+sub assume_test_yaft_exports {
+	my ($symbol, %args) = @_;
+
+	my %tags = (
+		all          => 1,
+		default      => 0,
+		asserts      => 0,
+		helpers      => 0,
+		expectations => 0,
+		plumbings    => 0,
+	);
+
+	for my $tag (@{ $args{by_tag} // [] }) {
+		$tags{$tag} = 1;
+	}
+
+	Test::YAFT::test_frame {
+		subtest qq (importing $symbol) => sub {
+			it q (is exported by default)
+				=> got    { _anonymous_importer $symbol => Test::YAFT:: }
+				=> expect => expect_bool ($args{by_default})
+				;
+
+			it q (is exportable on demand)
+				=> got    { _anonymous_importer $symbol => Test::YAFT:: => $symbol }
+				=> expect => expect_bool ($args{on_demand})
+				;
+
+			for my $tag (sort keys %tags) {
+				it qq (is exportable by tag: $tag)
+					=> got    { _anonymous_importer $symbol => Test::YAFT:: => qq (:$tag) }
+					=> expect => expect_bool ($tags{$tag})
+					;
+			}
+		};
+	};
+}
 
 sub assumption (&;@) {
 	my ($code) = shift;

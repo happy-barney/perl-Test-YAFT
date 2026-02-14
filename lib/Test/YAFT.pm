@@ -18,12 +18,13 @@ package Test::YAFT {
 	use Test::More     v0.970 qw ();
 	use Test::Warnings v0.038 qw (:no_end_test !done_testing);
 
-	use Test::YAFT::Arrange;
+	use Test::YAFT::Argument;
+	use Test::YAFT::Argument::Arrange;
+	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
-	use Test::YAFT::Got;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
@@ -33,7 +34,7 @@ package Test::YAFT {
 	sub pass ($);
 
 	sub act (&;@)                       :Util;
-	sub arrange (&)                     :Util(Test::YAFT::Arrange::);
+	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
 	sub assume                          :Assumption(\&_test_yaft_assumption);
 	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
@@ -95,7 +96,7 @@ package Test::YAFT {
 	sub expect_value                    :Expectation(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);
 	sub fail                            :Assumption;
-	sub got (&)                         :Util(Test::YAFT::Got::);
+	sub got (&)                         :Util(Test::YAFT::Argument::Got::);
 	sub had_no_warnings (;$)            :Assumption(\&Test::Warnings::had_no_warnings);
 	sub ignore                          :Expectation(\&Test::Deep::ignore);
 	sub it                              :Assumption(\&_test_yaft_assumption);
@@ -128,9 +129,6 @@ package Test::YAFT {
 
 		proclaim $_->resolve
 			for @{ $args->{arrange} // [] };
-
-		proclaim s/^with_//r => $args->{$_}
-			for grep m/^with_/, keys %$args;
 	}
 
 	sub _act_dependencies {
@@ -150,6 +148,10 @@ package Test::YAFT {
 
 		return _run_act
 			unless exists $args->{got};
+
+		return _run_coderef ($args->{got}->{code})
+			if $args->{got}->$Safe::Isa::_isa (Test::YAFT::Argument::Got::)
+			;
 
 		return _run_coderef ($args->{got})
 			if Ref::Util::is_coderef ($args->{got});
@@ -251,18 +253,26 @@ package Test::YAFT {
 		my %args;
 
 		while (@_) {
-			if (Scalar::Util::blessed ($_[0])) {
-				$args{got} = shift and next
-					if $_[0]->isa (Test::YAFT::Got::);
-				push @{ $args{arrange} //= [] }, shift and next
-					if $_[0]->isa (Test::YAFT::Arrange::);
+			my $key = shift;
+
+			if (Scalar::Util::blessed ($key)) {
+				$key->set_argument (\ %args), next
+					if $key->isa (Test::YAFT::Argument::)
+					;
+
 				die qq (Ref ${\ ref $_[0] } not recognized);
 			}
 
-			my ($key, $value) = splice @_, 0, 2;
+			my $value = shift;
 
-			push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
-				if $key eq q (arrange);
+			if (my ($property) = $key =~ m (^ with [_] (.*) $)x) {
+				unshift @_, arrange { $property => $value };
+				next;
+			}
+
+			# TODO: what should be good syntax here ?
+			#push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
+			#	if $key eq q (arrange);
 
 			$args{$key} = $value;
 		}

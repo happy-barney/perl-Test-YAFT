@@ -16,8 +16,7 @@ package Test::YAFT {
 	use Test::Deep qw ();
 	use Test::Differences qw ();
 	use Test::More     v0.970 qw ();
-
-	require Test::Warnings;
+	use Test::Warnings v0.038 qw (:no_end_test !done_testing);
 
 	use Test::YAFT::Arrange;
 	use Test::YAFT::Attributes;
@@ -30,6 +29,7 @@ package Test::YAFT {
 	sub act (&;@);
 	sub arrange (&);
 	sub got (&);
+	sub had_no_warnings (;$);
 	sub pass ($);
 
 	sub act (&;@)                       :Util;
@@ -96,7 +96,7 @@ package Test::YAFT {
 	sub explain                         :Util(\&Test::More::explain);
 	sub fail                            :Assumption;
 	sub got (&)                         :Util(Test::YAFT::Got::);
-	sub had_no_warnings                 :Assumption(\&Test::Warnings::had_no_warnings);
+	sub had_no_warnings (;$)            :Assumption(\&Test::Warnings::had_no_warnings);
 	sub ignore                          :Expectation(\&Test::Deep::ignore);
 	sub it                              :Assumption(\&_test_yaft_assumption);
 	sub nok                             :Assumption;

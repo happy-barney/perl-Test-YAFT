@@ -4,19 +4,27 @@ use warnings;
 
 use Syntax::Construct qw (package-block package-version);
 
-package Test::YAFT::Got {
+package Test::YAFT::Argument {
+
+	sub argument_name;
+	sub set_argument;
+
 	sub new {
 		my ($class, $code) = @_;
 
-		bless $code, $class;
+		bless {
+			code => $code,
+		}, $class;
 	}
 
 	sub resolve {
-		$_[0]->();
+		my ($self) = @_;
+
+		$self->{code}->();
 	}
 
 	1;
-};
+}
 
 __END__
 
@@ -26,18 +34,7 @@ __END__
 
 =head1 NAME
 
-Test::YAFT::Got - Internals under got { }
-
-=head1 SYNOPSIS
-
-	use Test::YAFT;
-
-	it "should ..."
-		=> got { ... how to build test value ... }
-		=> throws => 'My::Project::X::Something::Went::Wrong',
-		;
-
-=head1 DESCRIPTION
+Test::YAFT::Argument - Internals behind block arguments
 
 =head1 AUTHOR
 

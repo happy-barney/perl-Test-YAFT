@@ -12,105 +12,108 @@ package Test::YAFT {
 	use Safe::Isa qw ();
 	use Scalar::Util qw ();
 	use Sub::Install qw ();
+	use Sub::Override qw ();
 
 	use Test::Deep qw ();
 	use Test::Differences qw ();
 	use Test::More     v0.970 qw ();
+	use Test::Warnings v0.038 qw (:no_end_test !done_testing);
 
-	require Test::Warnings;
-
-	use Test::YAFT::Arrange;
+	use Test::YAFT::Argument;
+	use Test::YAFT::Argument::Arrange;
+	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
-	use Test::YAFT::Got;
+	use Test::YAFT::Dumper;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
 	sub arrange (&);
 	sub got (&);
-	sub pass (;$);
+	sub had_no_warnings (;$);
+	sub pass ($);
 
-	sub act (&;@)                   :Exported(all,helpers);
-	sub arrange (&)                 :Exported(all,helpers);
-	sub assume                      :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub BAIL_OUT                    :Exported(all,helpers)      :From(\&Test::More::BAIL_OUT);
-	sub cmp_details                 :Exportable(all,plumbings)  :From(\&Test::Deep::cmp_details);
-	sub deep_diag                   :Exportable(all,plumbings)  :From(\&Test::Deep::deep_diag);
-	sub diag                        :Exported(all,helpers)      :From(\&Test::More::diag);
-	sub done_testing                :Exported(all,helpers)      :From(\&Test::More::done_testing);
-	sub eq_deeply                   :Exportable(all,plumbings)  :From(\&Test::Deep::eq_deeply);
-	sub expect_all                  :Exported(all,expectations) :From(\&Test::Deep::all);
-	sub expect_any                  :Exported(all,expectations) :From(\&Test::Deep::any);
-	sub expect_array                :Exported(all,expectations) :From(\&Test::Deep::array);
-	sub expect_array_each           :Exported(all,expectations) :From(\&Test::Deep::array_each);
-	sub expect_array_elements_only  :Exported(all,expectations) :From(\&Test::Deep::arrayelementsonly);
-	sub expect_array_length         :Exported(all,expectations) :From(\&Test::Deep::arraylength);
-	sub expect_array_length_only    :Exported(all,expectations) :From(\&Test::Deep::arraylengthonly);
-	sub expect_bag                  :Exported(all,expectations) :From(\&Test::Deep::bag);
-	sub expect_blessed              :Exported(all,expectations) :From(\&Test::Deep::blessed);
-	sub expect_bool                 :Exported(all,expectations) :From(\&Test::Deep::bool);
-	sub expect_code                 :Exported(all,expectations) :From(\&Test::Deep::code);
-	sub expect_compare              :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Compare);
-	sub expect_complement           :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp::Complement);
-	sub expect_false                :Exported(all,expectations);
-	sub expect_hash                 :Exported(all,expectations) :From(\&Test::Deep::hash);
-	sub expect_hash_each            :Exported(all,expectations) :From(\&Test::Deep::hash_each);
-	sub expect_hash_keys            :Exported(all,expectations) :From(\&Test::Deep::hashkeys);
-	sub expect_hash_keys_only       :Exported(all,expectations) :From(\&Test::Deep::hashkeysonly);
-	sub expect_isa                  :Exported(all,expectations) :From(\&Test::Deep::Isa);
-	sub expect_listmethods          :Exported(all,expectations) :From(\&Test::Deep::listmethods);
-	sub expect_methods              :Exported(all,expectations) :From(\&Test::Deep::methods);
-	sub expect_no_class             :Exported(all,expectations) :From(\&Test::Deep::noclass);
-	sub expect_none                 :Exported(all,expectations) :From(\&Test::Deep::none);
-	sub expect_none_of              :Exported(all,expectations) :From(\&Test::Deep::noneof);
-	sub expect_num                  :Exported(all,expectations) :From(\&Test::Deep::num);
-	sub expect_obj_isa              :Exported(all,expectations) :From(\&Test::Deep::obj_isa);
-	sub expect_re                   :Exported(all,expectations) :From(\&Test::Deep::re);
-	sub expect_ref_type             :Exported(all,expectations) :From(\&Test::Deep::reftype);
-	sub expect_regexp_matches       :Exported(all,expectations) :From(\&Test::Deep::regexpmatches);
-	sub expect_regexp_only          :Exported(all,expectations) :From(\&Test::Deep::regexponly);
-	sub expect_regexpref            :Exported(all,expectations) :From(\&Test::Deep::regexpref);
-	sub expect_regexpref_only       :Exported(all,expectations) :From(\&Test::Deep::regexprefonly);
-	sub expect_scalarref            :Exported(all,expectations) :From(\&Test::Deep::scalref);
-	sub expect_scalarref_only       :Exported(all,expectations) :From(\&Test::Deep::scalarrefonly);
-	sub expect_set                  :Exported(all,expectations) :From(\&Test::Deep::set);
-	sub expect_shallow              :Exported(all,expectations) :From(\&Test::Deep::shallow);
-	sub expect_str                  :Exported(all,expectations) :From(\&Test::Deep::str);
-	sub expect_subbag               :Exported(all,expectations) :From(\&Test::Deep::subbagof);
-	sub expect_subbag_of            :Exported(all,expectations) :From(\&Test::Deep::subbagof);
-	sub expect_subhash              :Exported(all,expectations) :From(\&Test::Deep::subhashof);
-	sub expect_subhash_of           :Exported(all,expectations) :From(\&Test::Deep::subhashof);
-	sub expect_subset               :Exported(all,expectations) :From(\&Test::Deep::subsetof);
-	sub expect_subset_of            :Exported(all,expectations) :From(\&Test::Deep::subsetof);
-	sub expect_superbag             :Exported(all,expectations) :From(\&Test::Deep::superbagof);
-	sub expect_superbag_of          :Exported(all,expectations) :From(\&Test::Deep::superbagof);
-	sub expect_superhash            :Exported(all,expectations) :From(\&Test::Deep::superhashof);
-	sub expect_superhash_of         :Exported(all,expectations) :From(\&Test::Deep::superhashof);
-	sub expect_superset             :Exported(all,expectations) :From(\&Test::Deep::supersetof);
-	sub expect_superset_of          :Exported(all,expectations) :From(\&Test::Deep::supersetof);
-	sub expect_true                 :Exported(all,expectations);
-	sub expect_use_class            :Exported(all,asserts)      :From(\&Test::Deep::useclass);
-	sub expect_value                :Exported(all,expectations) :Cmp_Builder(Test::YAFT::Cmp);
-	sub explain                     :Exported(all,helpers)      :From(\&Test::More::explain);
-	sub fail                        :Exported(all,asserts);
-	sub got (&)                     :Exported(all,helpers);
-	sub had_no_warnings             :Exported(all,asserts)      :From(\&Test::Warnings::had_no_warnings);
-	sub ignore                      :Exported(all,expectations) :From(\&Test::Deep::ignore);
-	sub it                          :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub nok                         :Exported(all,asserts);
-	sub note                        :Exported(all,helpers)      :From(\&Test::More::note);
-	sub ok                          :Exported(all,asserts);
-	sub pass (;$)                   :Exported(all,asserts)      :From(\&Test::More::pass);
-	sub plan                        :Exported(all,helpers)      :From(\&Test::More::plan);
-	sub skip                        :Exported(all,helpers)      :From(\&Test::More::skip);
-	sub subtest                     :Exported(all,helpers);
-	sub test_deep_cmp               :Exportable(all,plumbings);
-	sub test_frame (&)              :Exportable(all,plumbings);
-	sub there                       :Exported(all,asserts)      :From(\&_test_yaft_assumption);
-	sub todo                        :Exported(all,helpers)      :From(\&Test::More::todo);
-	sub todo_skip                   :Exported(all,helpers)      :From(\&Test::More::todo_skip);
+	sub act (&;@)                       :Util;
+	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
+	sub assume                          :Assumption(\&_test_yaft_assumption);
+	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
+	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
+	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
+	sub diag                            :Util(\&Test::More::diag);
+	sub done_testing                    :Util(\&Test::More::done_testing);
+	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
+	sub expect_all                      :Expectation(\&Test::Deep::all);
+	sub expect_any                      :Expectation(\&Test::Deep::any);
+	sub expect_array                    :Expectation(\&Test::Deep::array);
+	sub expect_array_each               :Expectation(\&Test::Deep::array_each);
+	sub expect_array_elements_only      :Expectation(\&Test::Deep::arrayelementsonly);
+	sub expect_array_length             :Expectation(\&Test::Deep::arraylength);
+	sub expect_array_length_only        :Expectation(\&Test::Deep::arraylengthonly);
+	sub expect_bag                      :Expectation(\&Test::Deep::bag);
+	sub expect_blessed                  :Expectation(\&Test::Deep::blessed);
+	sub expect_bool                     :Expectation(\&Test::Deep::bool);
+	sub expect_code                     :Expectation(\&Test::Deep::code);
+	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
+	sub expect_complement               :Expectation(Test::YAFT::Cmp::Complement);
+	sub expect_false                    :Expectation(\&Test::Deep::bool, 0);
+	sub expect_hash                     :Expectation(\&Test::Deep::hash);
+	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
+	sub expect_hash_keys                :Expectation(\&Test::Deep::hashkeys);
+	sub expect_hash_keys_only           :Expectation(\&Test::Deep::hashkeysonly);
+	sub expect_isa                      :Expectation(\&Test::Deep::Isa);
+	sub expect_listmethods              :Expectation(\&Test::Deep::listmethods);
+	sub expect_methods                  :Expectation(\&Test::Deep::methods);
+	sub expect_no_class                 :Expectation(\&Test::Deep::noclass);
+	sub expect_none                     :Expectation(\&Test::Deep::none);
+	sub expect_none_of                  :Expectation(\&Test::Deep::noneof);
+	sub expect_num                      :Expectation(\&Test::Deep::num);
+	sub expect_obj_isa                  :Expectation(\&Test::Deep::obj_isa);
+	sub expect_re                       :Expectation(\&Test::Deep::re);
+	sub expect_ref_type                 :Expectation(\&Test::Deep::reftype);
+	sub expect_regexp_matches           :Expectation(\&Test::Deep::regexpmatches);
+	sub expect_regexp_only              :Expectation(\&Test::Deep::regexponly);
+	sub expect_regexpref                :Expectation(\&Test::Deep::regexpref);
+	sub expect_regexpref_only           :Expectation(\&Test::Deep::regexprefonly);
+	sub expect_scalarref                :Expectation(\&Test::Deep::scalref);
+	sub expect_scalarref_only           :Expectation(\&Test::Deep::scalarrefonly);
+	sub expect_set                      :Expectation(\&Test::Deep::set);
+	sub expect_shallow                  :Expectation(\&Test::Deep::shallow);
+	sub expect_str                      :Expectation(\&Test::Deep::str);
+	sub expect_subbag                   :Expectation(\&Test::Deep::subbagof);
+	sub expect_subbag_of                :Expectation(\&Test::Deep::subbagof);
+	sub expect_subhash                  :Expectation(\&Test::Deep::subhashof);
+	sub expect_subhash_of               :Expectation(\&Test::Deep::subhashof);
+	sub expect_subset                   :Expectation(\&Test::Deep::subsetof);
+	sub expect_subset_of                :Expectation(\&Test::Deep::subsetof);
+	sub expect_superbag                 :Expectation(\&Test::Deep::superbagof);
+	sub expect_superbag_of              :Expectation(\&Test::Deep::superbagof);
+	sub expect_superhash                :Expectation(\&Test::Deep::superhashof);
+	sub expect_superhash_of             :Expectation(\&Test::Deep::superhashof);
+	sub expect_superset                 :Expectation(\&Test::Deep::supersetof);
+	sub expect_superset_of              :Expectation(\&Test::Deep::supersetof);
+	sub expect_true                     :Expectation(\&Test::Deep::bool, 1);
+	sub expect_use_class                :Expectation(\&Test::Deep::useclass);
+	sub expect_value                    :Expectation(Test::YAFT::Cmp);
+	sub explain                         :Util(\&Test::More::explain);
+	sub fail                            :Assumption;
+	sub got (&)                         :Util(Test::YAFT::Argument::Got::);
+	sub had_no_warnings (;$)            :Assumption(\&Test::Warnings::had_no_warnings);
+	sub ignore                          :Expectation(\&Test::Deep::ignore);
+	sub it                              :Assumption(\&_test_yaft_assumption);
+	sub nok                             :Assumption;
+	sub note                            :Util(\&Test::More::note);
+	sub ok                              :Assumption;
+	sub pass ($)                        :Assumption(\&Test::More::pass);
+	sub plan                            :Util(\&Test::More::plan);
+	sub skip                            :Util(\&Test::More::skip);
+	sub subtest                         :Util;
+	sub test_deep_cmp                   :Foundation;
+	sub test_frame (&)                  :Foundation;
+	sub there                           :Assumption(\&_test_yaft_assumption);
+	sub todo                            :Util(\&Test::More::todo);
+	sub todo_skip                       :Util(\&Test::More::todo_skip);
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
@@ -128,9 +131,6 @@ package Test::YAFT {
 
 		proclaim $_->resolve
 			for @{ $args->{arrange} // [] };
-
-		proclaim s/^with_//r => $args->{$_}
-			for grep m/^with_/, keys %$args;
 	}
 
 	sub _act_dependencies {
@@ -150,6 +150,10 @@ package Test::YAFT {
 
 		return _run_act
 			unless exists $args->{got};
+
+		return _run_coderef ($args->{got}->{code})
+			if $args->{got}->$Safe::Isa::_isa (Test::YAFT::Argument::Got::)
+			;
 
 		return _run_coderef ($args->{got})
 			if Ref::Util::is_coderef ($args->{got});
@@ -204,6 +208,10 @@ package Test::YAFT {
 
 		my %args = _test_yaft_assumption_args @args;
 
+		my $guard = Sub::Override::->new (
+			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
+		);
+
 		my ($ok, $stack, $got, $expect);
 		test_frame {
 			_act_arrange (\ %args);
@@ -251,18 +259,26 @@ package Test::YAFT {
 		my %args;
 
 		while (@_) {
-			if (Scalar::Util::blessed ($_[0])) {
-				$args{got} = shift and next
-					if $_[0]->isa (Test::YAFT::Got::);
-				push @{ $args{arrange} //= [] }, shift and next
-					if $_[0]->isa (Test::YAFT::Arrange::);
+			my $key = shift;
+
+			if (Scalar::Util::blessed ($key)) {
+				$key->set_argument (\ %args), next
+					if $key->isa (Test::YAFT::Argument::)
+					;
+
 				die qq (Ref ${\ ref $_[0] } not recognized);
 			}
 
-			my ($key, $value) = splice @_, 0, 2;
+			my $value = shift;
 
-			push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
-				if $key eq q (arrange);
+			if (my ($property) = $key =~ m (^ with [_] (.*) $)x) {
+				unshift @_, arrange { $property => $value };
+				next;
+			}
+
+			# TODO: what should be good syntax here ?
+			#push @{ $args{arrange} //= [] }, Test::YAFT::Arrange::->new (sub { $value }) and next
+			#	if $key eq q (arrange);
 
 			$args{$key} = $value;
 		}
@@ -289,18 +305,6 @@ package Test::YAFT {
 		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
 	}
 
-	sub arrange (&) {
-		return Test::YAFT::Arrange::->new (@_);
-	}
-
-	sub expect_false {
-		Test::Deep::bool (0);
-	}
-
-	sub expect_true {
-		Test::Deep::bool (1);
-	}
-
 	sub fail {
 		my ($title, %args) = @_;
 
@@ -312,10 +316,6 @@ package Test::YAFT {
 				expect => expect_true,
 				;
 		}
-	}
-
-	sub got (&) {
-		Test::YAFT::Got->new (@_);
 	}
 
 	sub nok {

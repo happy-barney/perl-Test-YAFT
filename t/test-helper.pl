@@ -10,6 +10,7 @@ use Test::Tester 1.302107 import => [qw ( !check_test )];
 use Test::YAFT;
 
 use Context::Singleton;
+use List::Util;
 
 my @assumptions = sort
 	q (assume),
@@ -18,6 +19,119 @@ my @assumptions = sort
 	;
 
 sub assumption_under_test;
+
+sub _exists_in_array {
+	my ($element, @array) = @_;
+
+	return defined List::Util::first { $_ eq $element } @array
+}
+
+sub _anonymous_importer {
+	my ($symbol, $exported, $import, $returns) = @_;
+
+	state $serial = 0;
+	state $prefix = q (Test::Export::__ANON__::);
+
+	$import = defined ($import)
+		? qq (q ($import))
+		: q ()
+		;
+
+	my $package = $prefix . ++$serial;
+
+	$symbol = q (&) . $symbol
+		if $symbol =~ m (^\w)
+		;
+
+	$returns //= qq {
+		local \$_ = \\ $symbol;
+
+		Ref::Util::is_coderef (\$_) ? defined &\$_ : defined \$_;
+	};
+
+	my $eval = qq {
+		package ${package} {
+			use strict;
+			use $exported $import;
+
+			$returns;
+		};
+	};
+
+	eval $eval
+		// die $@
+		;
+}
+
+sub assume_test_yaft_exports {
+	my ($symbol, %args) = @_;
+
+	my %tags = (
+		all          => 1,
+		default      => 0,
+		asserts      => 0,
+		assumptions  => 0,
+		expectations => 0,
+		foundations  => 0,
+		helpers      => 0,
+		plumbings    => 0,
+		utils        => 0,
+	);
+
+	for my $tag (@{ $args{by_tag} // [] }) {
+		$tags{$tag} = 1;
+	}
+
+	Test::YAFT::test_frame {
+		subtest qq (importing $symbol) => sub {
+			it q (is exported by default)
+				=> got    { _anonymous_importer $symbol => Test::YAFT:: }
+				=> expect => expect_bool ($args{by_default})
+				;
+
+			it q (is exportable on demand)
+				=> got    { _anonymous_importer $symbol => Test::YAFT:: => $symbol }
+				=> expect => expect_bool ($args{on_demand})
+				;
+
+			for my $tag (sort keys %tags) {
+				it qq (is exportable by tag: $tag)
+					=> got    { _anonymous_importer $symbol => Test::YAFT:: => qq (:$tag) }
+					=> expect => expect_bool ($tags{$tag})
+					;
+			}
+		};
+	};
+}
+
+sub assume_yaft_dump {
+	my ($message, @args) = @_;
+
+	my %args = Test::YAFT::_test_yaft_assumption_args (@args);
+
+	my $result = Test::YAFT::_build_got (\ %args);
+	my $value = $result->{value};
+
+	local $Data::Dumper::Deparse   = 1;
+	local $Data::Dumper::Indent    = 1;
+	local $Data::Dumper::Purity    = 0;
+	local $Data::Dumper::Terse     = 1;
+	local $Data::Dumper::Deepcopy  = 1;
+	local $Data::Dumper::Quotekeys = 0;
+	local $Data::Dumper::Useperl   = 1;
+	local $Data::Dumper::Sortkeys  = 1;
+
+	my $dumped = Test::YAFT::Dumper::Dumper ($value);
+	my $expect = $args{expect};
+
+	$dumped =~ s (\n+$) ()x;
+	$expect =~ s (\n+$) ()x;
+
+	assume $message
+		=> got    => $dumped
+		=> expect => $expect
+		;
+}
 
 sub assumption (&;@) {
 	my ($code) = shift;
@@ -75,23 +189,3 @@ sub check_test {
 }
 
 1;
-
-__END__
-
-=head2 check_test (&;@)
-
-Simple wrapper around L<Test::Tester/check_test> using prototype to get rid of sub
-and allow expectations to be specified as key-value pairs.
-
-Suggested usage:
-
-	subtest q (...) => sub {
-        # check_test generates lot of asserts, group them together by subtest
-        check_test
-            { assert to test }
-            ok => 1,
-            actual_ok => 1,
-            ...
-            ;
-    }
-

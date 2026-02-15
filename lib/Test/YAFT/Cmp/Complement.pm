@@ -12,20 +12,10 @@ package Test::YAFT::Cmp::Complement {
 
 	require Safe::Isa;
 
-	BEGIN {
-		Test::Deep::Cmp->overload::OVERLOAD (
-			q (!) => \& _build_isnt,
-			q (~) => \& _build_isnt,
-		);
-	}
+	sub _create_complement {
+		my ($self) = @_;
 
-	sub _build_isnt {
-		my ($expect) = @_;
-
-		return $expect->_val
-			if $expect->$Safe::Isa::_isa (__PACKAGE__);
-
-		__PACKAGE__->new ($expect);
+		return $self->_val;
 	}
 
 	sub init {
@@ -47,6 +37,15 @@ package Test::YAFT::Cmp::Complement {
 		my ($self) = @_;
 
 		return q (Different value than: ) . $self->_val->renderExp;
+	}
+
+	sub __dump_yaft {
+		my ($self, $dumper, $name) = @_;
+
+		return $dumper->_dump ($self->_val, $name)
+			=~ s (^ (?! [!])) ( )rx
+			=~ s (^) (!)r
+			;
 	}
 
 	1;

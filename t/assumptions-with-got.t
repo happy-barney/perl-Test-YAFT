@@ -5,6 +5,12 @@ use  warnings;
 
 use require::relative q (test-helper.pl);
 
+assume_test_yaft_exports got
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default utils helpers]]
+	;
+
 check_assumptions q (should accept 'got { }' block as value under 'got' parameter)
 	=> assumption {
 		assumption_under_test q (got { } block)
@@ -33,9 +39,9 @@ check_assumptions q (should test thrown exception when 'got {}' block dies)
 			=> got    { die bless [ q (foo) ], q (Foo::Bar) }
 			=> throws => expect_isa (q (Foo::Bar))
 	}
-	=> ok          => 1,
-	=> actual_ok   => 1,
-	=> name        => q (got { } block),
+	=> ok          => 1
+	=> actual_ok   => 1
+	=> name        => q (got { } block)
 	;
 
 check_assumptions q (should fail when expecting 'throws' but code lives)

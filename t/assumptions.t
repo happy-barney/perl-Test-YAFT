@@ -5,6 +5,24 @@ use warnings;
 
 use require::relative q (test-helper.pl);
 
+assume_test_yaft_exports assume
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default assumptions asserts]]
+	;
+
+assume_test_yaft_exports it
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default assumptions asserts]]
+	;
+
+assume_test_yaft_exports there
+	=> by_default => 1
+	=> on_demand  => 1
+	=> by_tag     => [qw [all default assumptions asserts]]
+	;
+
 note <<'';
 This test tests all assumption functions (with same functionality) Test::YAFT provides:
 - it
@@ -44,7 +62,7 @@ check_assumptions q (when failing while expecting 'false' it shouldn't provide i
 	=> name        => q (should fail like 'nok')
 	;
 
-check_assumptions q (when failing with custom diag it should provide it even when assumption doesn't provide any)
+check_assumptions q (when failing with custom diag (string) it should provide it even when assumption doesn't provide any)
 	=> assumption {
 		assumption_under_test q (when failing with custom diag)
 			=> got    => 1
@@ -55,6 +73,19 @@ check_assumptions q (when failing with custom diag it should provide it even whe
 	=> actual_ok   => 0
 	=> name        => q (when failing with custom diag)
 	=> diag        => q (it should not fail)
+	;
+
+check_assumptions q (when failing with custom diag (code) it should provide it even when assumption doesn't provide any)
+	=> assumption {
+		assumption_under_test q (when failing with custom diag)
+			=> got    => 1
+			=> expect => expect_false
+			=> diag   => sub { q (it should not fail), q ( - really not) }
+	}
+	=> ok          => 0
+	=> actual_ok   => 0
+	=> name        => q (when failing with custom diag)
+	=> diag        => q (it should not fail - really not)
 	;
 
 check_assumptions q (assumptions should accept 'Test::Deep' expectations)

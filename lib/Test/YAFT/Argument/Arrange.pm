@@ -4,25 +4,19 @@ use warnings;
 
 use Syntax::Construct qw (package-block package-version);
 
-package Test::YAFT::Arrange {
+package Test::YAFT::Argument::Arrange {
+	use parent q (Test::YAFT::Argument::Array);
+
+	use mro;
+
 	use Context::Singleton;
 
-	sub new {
-		my ($class, $code) = @_;
-
-		bless {
-			code => $code,
-			resolved => 0,
-		}, $class;
-	}
+	use constant argument_name => q (arrange);
 
 	sub resolve {
 		my ($self) = @_;
 
-		return if $self->{resolved};
-
-		$self->{resolved} = 1;
-		proclaim $self->{code}->();
+		$self->{resolved} //= [ proclaim $self->next::method ];
 	}
 
 	sub DESTROY {

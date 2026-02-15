@@ -981,7 +981,19 @@ Wraps any value as an expectation.
 
 =head2 ignore
 
-Re-exported from L<Test::Deep/ignore>.
+	assume q (response should have expected structure)
+		=> got    => $response
+		=> expect => expect_hash ({
+			status    => 200,
+			data      => expect_hash_keys (qw (id name)),
+			timestamp => ignore,
+		})
+		;
+
+Matches any value without checking it.
+
+Used in deep structure comparisons to skip verification of specific fields
+whose values are unpredictable or irrelevant to the test.
 
 =head1 UTILITIES
 

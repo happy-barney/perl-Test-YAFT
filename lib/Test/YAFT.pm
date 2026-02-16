@@ -146,7 +146,8 @@ package Test::YAFT {
 		my ($args) = @_;
 
 		proclaim $_->resolve
-			for @{ $args->{arrange} // [] };
+			for @{ $args->{arrange} // [] }
+			;
 	}
 
 	sub _act_dependencies {

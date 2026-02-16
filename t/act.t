@@ -56,7 +56,7 @@ frame {
 	act { die q (Exception foo) };
 
 	it q (should catch exception thrown by act { } block)
-		=> throws => expect_re (qr/^Exception foo at /)
+		=> throws => expect_re (qr (^Exception foo at))
 		;
 };
 
@@ -69,6 +69,58 @@ frame {
 		;
 };
 
-had_no_warnings;
+frame {
+	act { 1 }
+		q (host),
+		q (path),
+		;
 
+	arrange { host => q (example.com) };
+
+	assume q (throws an exception when dependencies are not resolved)
+		=> throws => q (Act dependencies not fulfilled: path)
+		;
+};
+
+subtest q (only single `act {}` per context) => sub {
+	# following tests cannot standard Test::YAFT style because every
+	# assumption creates its own subcontext, there `do block`
+
+	assume q (`act {}` can be defined in current context)
+		=> got    => do { eval { act { q (parent-context-act) } }; $@ }
+		=> expect => expect_false
+		;
+
+	assume q (`act {}` is installed)
+		=> expect => q (parent-context-act)
+		;
+
+	assume q (`act {}` in current context cannot be redefined)
+		=> got    => do { eval { act { } }; $@ }
+		=> expect => expect_re (qr (Act already known in current context))
+		;
+
+	assume q (`act {}` is still available)
+		=> expect => q (parent-context-act)
+		;
+
+	subtest q (in subcontext one can define new act) => sub {
+		assume q (`act {}` can be defined in current context)
+			=> got    => do { eval { act { q (subcontext-act) } }; $@ }
+			=> expect => expect_false
+			;
+
+		assume q (`act {}` is installed)
+			=> expect => q (subcontext-act)
+		;
+	};
+
+	subtest q (in subcontext one can use act from parent context) => sub {
+		assume q (`act {}` is inherited)
+			=> expect => q (parent-context-act)
+			;
+	};
+};
+
+had_no_warnings;
 done_testing;

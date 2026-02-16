@@ -327,6 +327,10 @@ package Test::YAFT {
 
 		my $singleton = qq (${SINGLETON_ACT}::${\ ++$counter });
 
+		die q (Act already known in current context)
+			if is_deduced $SINGLETON_ACT
+			;
+
 		contrive $singleton
 			=> dep => \@dependencies
 			=> as  => sub { _run_coderef ($act, @_) }

@@ -23,6 +23,7 @@ package Test::YAFT {
 	use Test::YAFT::Argument::Arrange;
 	use Test::YAFT::Argument::Expect;
 	use Test::YAFT::Argument::Got;
+	use Test::YAFT::Argument::Override;
 	use Test::YAFT::Argument::Throws;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
@@ -40,6 +41,7 @@ package Test::YAFT {
 	sub expect_complement ($);
 	sub got (&);
 	sub had_no_warnings (;$);
+	sub override (&);
 	sub pass ($);
 	sub throws (&);
 
@@ -117,6 +119,7 @@ package Test::YAFT {
 	sub nok                             :Assumption;
 	sub note                            :Util(\&Test::More::note);
 	sub ok                              :Assumption;
+	sub override (&)                    :Util(Test::YAFT::Argument::Override::);
 	sub pass ($)                        :Assumption(\&Test::More::pass);
 	sub plan                            :Util(\&Test::More::plan);
 	sub skip                            :Util(\&Test::More::skip);
@@ -229,7 +232,7 @@ package Test::YAFT {
 	sub _test_yaft_assumption {
 		my ($title, @args) = @_;
 
-		my %args = _test_yaft_assumption_args @args;
+		my %args = _test_yaft_assumption_args (@args);
 
 		my $guard = Sub::Override::->new (
 			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
@@ -237,6 +240,10 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
+			$_->resolve
+				for @{ $args{override} // [] }
+				;
+
 			_act_arrange (\ %args);
 			my $result = _build_got (\ %args);
 

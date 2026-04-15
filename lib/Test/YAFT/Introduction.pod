@@ -152,6 +152,74 @@ There can be multiple arrange blocks, executed in order of definition.
 Each block should return C<<singleton => value>> pairs, one singleton can be
 arranged only once.
 
+=head2 Mocking and Overriding with L<<C<override { }>|Test::YAFT/override { }>>
+
+L<Test::YAFT> provides flexible mocking capabilities through the
+L<<C<override { }>|Test::YAFT/override { }>> function, allowing you
+to override methods and functions at different scopes.
+
+=head3 Override for Entire Class
+
+Override a method for all instances of a class:
+
+	my $standard_user = User->new (name => q (John));
+	my $premium_user  = User->new (name => q (Jane));
+	my $admin_user    = User->new (name => q (Dave));
+
+	# All users get 10% discount
+	override { q (User::discount_rate) => 0.10 };
+
+	assume q (all users receive standard discount)
+		=> got    => $standard_user->discount_rate
+		=> expect => 0.10
+		;
+
+=head3 Override for Specific Objects
+
+Override a method for particular object instances:
+
+	# Premium user gets higher discount
+	override { $premium_user => discount_rate => 0.25 };
+
+	assume q (standard user receives standard discount)
+		=> got    => $standard_user->discount_rate
+		=> expect => 0.10
+		;
+
+	assume q (premium user receives premium discount)
+		=> got    => $premium_user->discount_rate
+		=> expect => 0.25
+		;
+
+=head3 Assumption-Scoped Override
+
+Override a method for a single assumption:
+
+	assume q (admin receives maximum discount for this purchase)
+		=> override { $admin_user => discount_rate => 0.50 }
+		=> got      => $admin_user->discount_rate
+		=> expect   => 0.50
+		;
+
+	assume q (admin reverts to standard discount after)
+		=> got    => $admin_user->discount_rate
+		=> expect => 0.10
+		;
+
+=head3 Override with Code References
+
+For more complex behaviour, use code references:
+
+	override {
+		$premium_user => calculate_price => sub {
+			my ($self, $base_price) = @_;
+			my $discount = $self->original::method ($base_price);
+			return $discount * 0.9;  # Additional 10% off
+		}
+	};
+
+The original method is accessible via C<original::method> syntax.
+
 =head1 AUTHOR
 
 Branislav Zahradník <barney@cpan.org>

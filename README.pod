@@ -785,6 +785,36 @@ Re-exported from L<Test::More/diag>.
 
 Re-exported from L<Test::More/done_testing>.
 
+=head2 expect {}
+
+	assume q (...)
+		=> got    { ... }
+		=> expect { ... }
+		;
+
+The C<expect {}> function can be used to compute the expected value for a test assertion block.
+Computation is done execution context (similar to L<arrange {}|/arrange {}>).
+
+It also offers aesthetic clarity when used in conjunction with L<got {}|/got {}>,
+as well as it provides handy way to bypass stringification effect of fat comma.
+
+	assume q (...)
+		=> expect => expect_false
+		=> got    { 0 }
+		;
+
+vs.
+
+	assume q (...)
+		=> expect { expect_false }
+		=> got    { 0 }
+		;
+
+See also:
+L<act {}|/act {}>,
+L<arrange {}|/arrange {}>,
+L<got {}|/got {}>,
+
 =head2 explain
 
 Re-exported from L<Test::More/explain>.

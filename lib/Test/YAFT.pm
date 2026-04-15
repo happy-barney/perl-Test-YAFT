@@ -21,6 +21,7 @@ package Test::YAFT {
 
 	use Test::YAFT::Argument;
 	use Test::YAFT::Argument::Arrange;
+	use Test::YAFT::Argument::Expect;
 	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
@@ -30,6 +31,7 @@ package Test::YAFT {
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
 	sub arrange (&);
+	sub expect (&);
 	sub expect_blessed ($);
 	sub expect_blessed_ref ();
 	sub expect_blessed_to ($);
@@ -48,6 +50,7 @@ package Test::YAFT {
 	sub diag                            :Util(\&Test::More::diag);
 	sub done_testing                    :Util(\&Test::More::done_testing);
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
+	sub expect (&)                      :Util(Test::YAFT::Argument::Expect);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
 	sub expect_array                    :Expectation(\&Test::Deep::array);
@@ -128,6 +131,7 @@ package Test::YAFT {
 	sub _act_dependencies;
 	sub _act_singleton;
 	sub _build_got;
+	sub _resolve_argument;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
@@ -170,6 +174,16 @@ package Test::YAFT {
 			value    => $args->{got},
 			error    => undef,
 		};
+	}
+
+	sub _resolve_argument {
+		my ($argument) = @_;
+
+		return $argument->resolve
+			if $argument->$Safe::Isa::_isa (Test::YAFT::Argument::)
+			;
+
+		return $argument;
 	}
 
 	sub _run_act {
@@ -233,8 +247,8 @@ package Test::YAFT {
 				;
 
 			($got, $expect) = $result->{lives_ok}
-				? ($result->{value}, $args{expect})
-				: ($result->{error}, $args{throws})
+				? ($result->{value}, _resolve_argument $args{expect})
+				: ($result->{error}, _resolve_argument $args{throws})
 				;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);

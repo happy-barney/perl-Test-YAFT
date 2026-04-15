@@ -815,6 +815,7 @@ See also:
 L<act {}|/act {}>,
 L<arrange {}|/arrange {}>,
 L<got {}|/got {}>,
+L<throws {}|/throws {}>
 
 =head2 explain
 
@@ -852,6 +853,21 @@ Re-exported from L<Test::More/skip>.
 
 Similar to L<Test::More/subtest> but also creates a new
 L<Context::Singleton> frame for each subtest.
+
+=head2 throws {}
+
+	assume q (...)
+		=> got    { ... }
+		=> throws { ... }
+		;
+
+Similar to L<expect {}/expect {}> but for C<throws> assumptions argument.
+
+See also:
+L<act {}|/act {}>,
+L<arrange {}|/arrange {}>,
+L<expect {}|/expect {}>,
+L<got {}|/got {}>,
 
 =head2 todo_skip
 

@@ -23,6 +23,7 @@ package Test::YAFT {
 	use Test::YAFT::Argument::Arrange;
 	use Test::YAFT::Argument::Expect;
 	use Test::YAFT::Argument::Got;
+	use Test::YAFT::Argument::Throws;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
 	use Test::YAFT::Dumper;
@@ -40,6 +41,7 @@ package Test::YAFT {
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass ($);
+	sub throws (&);
 
 	sub act (&;@)                       :Util;
 	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
@@ -122,7 +124,7 @@ package Test::YAFT {
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
-	sub todo                            :Util(\&Test::More::todo);
+	sub throws (&)                      :Util(Test::YAFT::Argument::Throws);
 	sub todo_skip                       :Util(\&Test::More::todo_skip);
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);

@@ -15,6 +15,7 @@ my @files = (
     'lib/Test/YAFT/Argument/Expect.pm',
     'lib/Test/YAFT/Argument/Got.pm',
     'lib/Test/YAFT/Argument/Scalar.pm',
+    'lib/Test/YAFT/Argument/Throws.pm',
     'lib/Test/YAFT/Attributes.pm',
     'lib/Test/YAFT/Cmp.pm',
     'lib/Test/YAFT/Cmp/Compare.pm',
@@ -114,6 +115,7 @@ my @files = (
     't/test-deep-cmp.t',
     't/test-frame.t',
     't/test-helper.pl',
+    't/throws.t',
     't/todo-skip.t'
 );
 

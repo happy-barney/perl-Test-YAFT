@@ -542,7 +542,18 @@ and C<[ ]> means neither declared nor defined.
 
 =head2 expect_code
 
-Re-exported from L<Test::Deep/code>.
+Evaluates that C<$got> matches the behaviour described in the code block.
+C<$got> value is available inside the block as C<$_> as well as C<$_[0]>.
+
+In addition to the success truth value, the code block can optionally return a diagnostic message as the second value.
+
+	expect_code {
+		# truth value - is it odd?
+		$_ % 2 == 1,
+
+		# optional diagnostic message
+		q (Expect even number),
+	}
 
 =head2 expect_compare
 

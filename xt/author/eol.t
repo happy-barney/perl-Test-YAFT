@@ -19,6 +19,7 @@ my @files = (
     'lib/Test/YAFT/Cmp/Compare.pm',
     'lib/Test/YAFT/Dumper.pm',
     'lib/Test/YAFT/Expect/Complement.pm',
+    'lib/Test/YAFT/Expect/Blessed.pm',
     'lib/Test/YAFT/Introduction.pod',
     'lib/Test/YAFT/Test/Deep.pod',
     'lib/Test/YAFT/Test/Exception.pod',

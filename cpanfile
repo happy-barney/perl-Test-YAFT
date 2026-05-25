@@ -15,6 +15,7 @@ requires "Sub::Override" => "0";
 requires "Sub::Util" => "0";
 requires "Syntax::Construct" => "0";
 requires "Test::Deep" => "0";
+requires "Test::Deep::Blessed" => "0";
 requires "Test::Deep::Cmp" => "0";
 requires "Test::Differences" => "0";
 requires "Test::More" => "v0.970.0";

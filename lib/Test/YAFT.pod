@@ -444,9 +444,28 @@ Re-exported from L<Test::Deep/arraylengthonly>.
 
 Re-exported from L<Test::Deep/bag>.
 
-=head2 expect_blessed
+=head2 expect_blessed ($)
 
-Re-exported from L<Test::Deep/blessed>.
+	assume q (object should be blessed to specific class)
+		=> got    => $object
+		=> expect => expect_blessed (My::Class::)
+		;
+
+Validates that C<$got> is blessed to exactly the given package name.
+
+Unlike L<expect_obj_isa|/expect_obj_isa>, this checks for exact package blessing without
+considering inheritance. The object must be blessed to the specified package name,
+not a subclass.
+
+	# Matches: bless {}, My::Class::
+	# Does not match: bless {}, My::Class::Subclass::
+	expect_blessed_to (My::Class::)
+
+Provided as part of the mapping of L<Test::Deep> expectations.
+
+See also:
+L<expect_obj_isa|/expect_obj_isa>
+L<Test::Deep::blessed|/Test::Deep#blessed>
 
 =head2 expect_bool
 

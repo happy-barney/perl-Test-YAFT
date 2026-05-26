@@ -451,20 +451,12 @@ Re-exported from L<Test::Deep/bag>.
 		=> expect => expect_blessed (My::Class::)
 		;
 
-Validates that C<$got> is blessed to exactly the given package name.
-
-Unlike L<expect_obj_isa|/expect_obj_isa>, this checks for exact package blessing without
-considering inheritance. The object must be blessed to the specified package name,
-not a subclass.
-
-	# Matches: bless {}, My::Class::
-	# Does not match: bless {}, My::Class::Subclass::
-	expect_blessed_to (My::Class::)
-
+Alias for L<expect_blessed_to|/expect_blessed_to>.
 Provided as part of the mapping of L<Test::Deep> expectations.
 
 See also:
 L<expect_blessed_ref|/expect_blessed_ref ()>,
+L<expect_blessed_to|/expect_blessed_to ($)>,
 L<expect_obj_isa|/expect_obj_isa>
 L<Test::Deep::blessed|/Test::Deep#blessed>
 
@@ -479,8 +471,32 @@ Evaluates that C<$got> is a blessed reference (an object).
 
 See also:
 L<expect_blessed|/expect_blessed ($)>,
+L<expect_blessed_to|/expect_blessed_to ($)>,
 L<expect_ref_type|/expect_ref_type>,
 L<expect_obj_isa|/expect_obj_isa>
+
+=head2 expect_blessed_to ($)
+
+	assume q (object should be blessed to specific class)
+		=> got    => $object
+		=> expect => expect_blessed_to (My::Class::)
+		;
+
+Validates that C<$got> is blessed to exactly the given package name.
+
+Unlike L<expect_instance_of|/expect_instance_of>, this checks for exact
+package blessing without considering inheritance. The object must be
+blessed to the specified package name, not a subclass.
+
+	# Matches: bless {}, My::Class::
+	# Does not match: bless {}, My::Class::Subclass::
+	expect_blessed_to (My::Class::)
+
+See also:
+L<expect_blessed|/expect_blessed ($)>,
+L<expect_blessed_ref|/expect_blessed_ref ()>,
+L<expect_obj_isa|/expect_obj_isa>
+L<Test::Deep::blessed|/Test::Deep#blessed>
 
 =head2 expect_bool
 

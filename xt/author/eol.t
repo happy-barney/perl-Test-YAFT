@@ -51,6 +51,7 @@ my @files = (
     't/expect-array.t',
     't/expect-bag.t',
     't/expect-blessed-ref.t',
+    't/expect-blessed-to.t',
     't/expect-blessed.t',
     't/expect-bool.t',
     't/expect-code.t',

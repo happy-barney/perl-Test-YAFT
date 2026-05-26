@@ -466,9 +466,62 @@ See also:
 L<expect_obj_isa|/expect_obj_isa>
 L<Test::Deep::blessed|/Test::Deep#blessed>
 
+=head2 expect_blessed_ref
+
+	it q (should be a blessed object)
+		=> got    => $got
+		=> expect => expect_blessed_ref
+		;
+
+Evaluates that C<$got> is a blessed reference (an object).
+
+See also:
+L<expect_blessed|/expect_blessed>,
+L<expect_ref_type|/expect_ref_type>,
+L<expect_isa|/expect_isa>
+
 =head2 expect_bool
 
 Re-exported from L<Test::Deep/bool>.
+
+=head2 expect_can
+
+	assume q (object should support required methods)
+		=> got    => $object
+		=> expect => expect_can (qw (save delete validate))
+		;
+
+	assume q (class should support required methods)
+		=> got    => Connection::
+		=> expect => expect_can (q (connect))
+		;
+
+Verifies that C<$got> can respond to every specified method.
+
+C<$got> is interpreted as either a class name or an object instance.
+
+Methods must be provided and implemented. For:
+
+    package Foo {
+        sub abstract;
+        sub implemented { ... }
+    }
+
+test:
+
+    it q (...)
+        => got    => Foo::
+        => expect => expect_can (qw (missing implemented abstract))
+        ;
+
+will fail with diagnostic message showing availability of expected methods
+
+    [-] abstract
+    [x] implemented
+    [ ] missing
+
+where C<[x]> means implemented, C<[-]> means declared but not defined,
+and C<[ ]> means neither declared nor defined.
 
 =head2 expect_code
 

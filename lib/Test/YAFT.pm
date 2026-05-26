@@ -31,6 +31,7 @@ package Test::YAFT {
 	sub act (&;@);
 	sub arrange (&);
 	sub expect_blessed ($);
+	sub expect_blessed_ref ();
 	sub expect_complement ($);
 	sub got (&);
 	sub had_no_warnings (;$);
@@ -54,7 +55,9 @@ package Test::YAFT {
 	sub expect_array_length_only        :Expectation(\&Test::Deep::arraylengthonly);
 	sub expect_bag                      :Expectation(\&Test::Deep::bag);
 	sub expect_blessed ($)              :Expectation(Test::YAFT::Expect::Blessed);
+	sub expect_blessed_ref ()           :Expectation(Test::YAFT::Expect::Blessed_Ref);
 	sub expect_bool                     :Expectation(\&Test::Deep::bool);
+	sub expect_can                      :Expectation(Test::YAFT::Expect::Can);
 	sub expect_code                     :Expectation(\&Test::Deep::code);
 	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
 	sub expect_complement ($)           :Expectation(Test::YAFT::Expect::Complement);

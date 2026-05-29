@@ -30,6 +30,7 @@ package Test::YAFT {
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
 	sub arrange (&);
+	sub expect_complement ($);
 	sub got (&);
 	sub had_no_warnings (;$);
 	sub pass ($);
@@ -55,7 +56,7 @@ package Test::YAFT {
 	sub expect_bool                     :Expectation(\&Test::Deep::bool);
 	sub expect_code                     :Expectation(\&Test::Deep::code);
 	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
-	sub expect_complement               :Expectation(Test::YAFT::Expect::Complement);
+	sub expect_complement ($)           :Expectation(Test::YAFT::Expect::Complement);
 	sub expect_false                    :Expectation(\&Test::Deep::bool, 0);
 	sub expect_hash                     :Expectation(\&Test::Deep::hash);
 	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);

@@ -67,27 +67,16 @@ package Test::YAFT::Cmp {
 		Test::Deep::render_val ($value);
 	}
 
-	sub complementary {
-		my ($self, @values) = @_;
-
-		my $class = ref ($self) || $self;
-
-		my $instance = $class->new (@values);
-		$instance->{_complement} = $self->is_complement ? 0 : 1;
-
-		return $instance;
-	}
-
 	sub descend {
 		my ($self, $got) = @_;
 
 		Test::Deep::descend ($got, $self->_val);
 	}
 
-	sub is_complement {
+	sub is_yaft_complement {
 		my ($self) = @_;
 
-		return $self->{_complement};
+		return $self->Test::YAFT::Expect::Complement::is_complement;
 	}
 
 	sub renderGot {

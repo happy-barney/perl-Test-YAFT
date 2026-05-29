@@ -14,6 +14,8 @@ use Test::YAFT;
 use Context::Singleton;
 use List::Util;
 
+my $SINGLETON_EXPECTATION = \ q (testing-expectation);
+
 my @assumptions = sort
 	q (assume),
 	q (it),
@@ -199,6 +201,16 @@ sub check_test {
 			);
 		};
 	};
+}
+
+sub expectation {
+	deduce ($SINGLETON_EXPECTATION)->(@_);
+}
+
+sub testing_expectation (&) {
+	my ($code) = @_;
+
+	arrange { $SINGLETON_EXPECTATION => $code };
 }
 
 1;

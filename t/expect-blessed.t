@@ -129,13 +129,12 @@ END_OF_EXPECTED
 |    |                               *   1|  'Testing::Child',  *
 |    |                               *   2|)                    *
 +----+-------------------------------+----+---------------------+
-Compared blessed($data)
+Compared blessed $data
    got : 'Testing::Child'
-expect : 'Testing::Child'
+expect : not 'Testing::Child'
 END_OF_DIAG
 		;
 
-not 1 and
 	check_test q (failed validation without an object)
 		=> assumption {
 			it q (should fail without an object)
@@ -150,7 +149,7 @@ not 1 and
 +----+------------------+----+---------------------+
 | Elt|Got               | Elt|Expected             |
 +----+------------------+----+---------------------+
-*   0|'Testing::Child'  *   0|expect_blessed (     *
+*   0|'Testing::Child'  *   0|! expect_blessed (   *
 |    |                  *   1|  'Testing::Child',  *
 |    |                  *   2|)                    *
 +----+------------------+----+---------------------+

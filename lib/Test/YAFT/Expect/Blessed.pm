@@ -7,8 +7,6 @@ use Syntax::Construct qw (package-block package-version);
 package Test::YAFT::Expect::Blessed {
 	use parent qw (Test::YAFT::Expect);
 
-	require Scalar::Util;l
-
 	sub descend {
 		my ($self, $got) = @_;
 

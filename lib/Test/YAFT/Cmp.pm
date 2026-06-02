@@ -10,7 +10,7 @@ package Test::YAFT::Cmp {
 	require overload;
 	require Safe::Isa;
 
-	require Test::YAFT::Cmp::Complement;
+	require Test::YAFT::Expect::Complement;
 
 	BEGIN {
 		Test::Deep::Cmp->overload::OVERLOAD (
@@ -25,7 +25,7 @@ package Test::YAFT::Cmp {
 	sub _create_complement {
 		my ($self) = @_;
 
-		return Test::YAFT::Cmp::Complement::->new ($self);
+		return Test::YAFT::Expect::Complement::->new ($self);
 	}
 
 	sub _overload_binary_minus {

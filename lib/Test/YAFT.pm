@@ -24,8 +24,8 @@ package Test::YAFT {
 	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
-	use Test::YAFT::Cmp::Complement;
 	use Test::YAFT::Dumper;
+	use Test::YAFT::Expect::Complement;
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
@@ -55,7 +55,7 @@ package Test::YAFT {
 	sub expect_bool                     :Expectation(\&Test::Deep::bool);
 	sub expect_code                     :Expectation(\&Test::Deep::code);
 	sub expect_compare                  :Expectation(Test::YAFT::Cmp::Compare);
-	sub expect_complement               :Expectation(Test::YAFT::Cmp::Complement);
+	sub expect_complement               :Expectation(Test::YAFT::Expect::Complement);
 	sub expect_false                    :Expectation(\&Test::Deep::bool, 0);
 	sub expect_hash                     :Expectation(\&Test::Deep::hash);
 	sub expect_hash_each                :Expectation(\&Test::Deep::hash_each);
@@ -237,7 +237,7 @@ package Test::YAFT {
 				|| $expect->$Safe::Isa::_isa (Test::Deep::Boolean::)
 				;
 
-			if ($expect->$Safe::Isa::_isa (Test::YAFT::Cmp::Complement::)) {
+			if ($expect->$Safe::Isa::_isa (Test::YAFT::Expect::Complement::)) {
 				Test::More::ok ($ok, $title);
 				Test::More::diag (Test::Deep::deep_diag ($stack))
 					unless $ok;

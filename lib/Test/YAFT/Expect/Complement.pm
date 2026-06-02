@@ -4,7 +4,7 @@ use warnings;
 
 use Syntax::Construct qw (package-block package-version);
 
-package Test::YAFT::Cmp::Complement {
+package Test::YAFT::Expect::Complement {
 	use parent qw (Test::YAFT::Cmp);
 
 	require Test::Deep;

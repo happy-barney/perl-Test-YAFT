@@ -4,6 +4,8 @@ use warnings;
 
 use feature qw (state);
 
+use Sub::Override;
+
 # Test::Tester 1.302107 => Allow regexp in Test::Tester
 use Test::Tester 1.302107 import => [qw ( !check_test )];
 
@@ -18,13 +20,9 @@ my @assumptions = sort
 	q (there),
 	;
 
+my $test_deep_render_val = \ &Test::Deep::render_val;
+
 sub assumption_under_test;
-
-sub _exists_in_array {
-	my ($element, @array) = @_;
-
-	return defined List::Util::first { $_ eq $element } @array
-}
 
 sub _anonymous_importer {
 	my ($symbol, $exported, $import, $returns) = @_;
@@ -60,6 +58,15 @@ sub _anonymous_importer {
 
 	eval $eval
 		// die $@
+		;
+}
+
+sub _override_render_val {
+	my ($value) = @_;
+
+	# Replace refaddr with '...'
+	$test_deep_render_val->($value)
+		=~ s ( ((?: ^ | =)\w+) [(] 0x [0-9a-f]+ [)] ) ($1(0x...))rgx
 		;
 }
 
@@ -150,6 +157,9 @@ sub check_assumptions {
 		%arguments,
 	);
 
+	# Test::Tester does not like when diag message contains refaddresses
+	my $guard = Sub::Override::->new (q (Test::Deep::render_val) => \ &_override_render_val);
+
 	Test::YAFT::test_frame {
 		subtest $message => sub {
 			for my $assumption (@assumptions) {
@@ -176,6 +186,9 @@ sub check_test {
 		type   => q (),
 		%arguments,
 	);
+
+	# Test::Tester does not like when diag message contains refaddresses
+	my $guard = Sub::Override::->new (q (Test::Deep::render_val) => \ &_override_render_val);
 
 	Test::YAFT::test_frame {
 		subtest $message => sub {

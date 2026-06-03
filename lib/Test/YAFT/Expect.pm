@@ -18,22 +18,39 @@ package Test::YAFT::Expect {
 		return Test::YAFT::Expect::Complement::->new ($self);
 	}
 
-	sub _expectation_result {
-		my ($self, $result) = @_;
-
-		return ($self->is_complement xor $result);
-	}
-
 	sub _yaft_complement :lvalue {
 		my ($self) = @_;
 
 		$self->data->{yaft_complement};
 	}
 
-	sub descend {
-		my ($self, $got) = @_;
+	sub __dump_yaft {
+		my ($self, $dumper, $name) = @_;
 
-		return $self->_expectation_result ($self->SUPER::descend ($got));
+		return $dumper->_dump_builder ($self->_val, {
+			builder => $self->__dump_yaft_builder,
+			args    => [ $self->__dump_yaft_args ],
+		});
+	}
+
+	sub __dump_yaft_args {
+		my ($self) = @_;
+
+		return $self->_val;
+	}
+
+	sub __dump_yaft_builder {
+		my ($self) = @_;
+
+		my $class = Scalar::Util::blessed ($self);
+
+		return qq (expect ${class}::),
+	}
+
+	sub expect {
+		my $class = shift;
+
+		return $class->new (@_);
 	}
 
 	sub is_complement {
@@ -46,15 +63,6 @@ package Test::YAFT::Expect {
 		my ($self, $expectation) = @_;
 
 		return Test::YAFT::expect_shallow ($expectation);
-	}
-
-	sub __dump_yaft {
-		my ($self, $dumper, $name) = @_;
-
-		my $value = $dumper->_dump ($self->_val, $name);
-		my $class = Scalar::Util::blessed ($self);
-
-		return qq (new ${class}:: (\n$value\n));
 	}
 
 	1;

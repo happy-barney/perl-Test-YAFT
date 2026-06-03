@@ -54,7 +54,16 @@ package Test::YAFT::Attributes {
 			return $builder;
 		}
 
-		return sub { $builder->new (@arguments, @_) };
+		my $file = qq ($builder.pm);
+		$file =~ s (::) (/)g;
+
+		return sub {
+			local ($@, $!, $^E);
+			require $file;
+
+			$builder->new (@arguments, @_);
+		};
+
 	}
 
 	sub _register_expectation {

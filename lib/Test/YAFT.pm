@@ -24,7 +24,6 @@ package Test::YAFT {
 	use Test::YAFT::Argument::Got;
 	use Test::YAFT::Attributes;
 	use Test::YAFT::Cmp;
-	use Test::YAFT::Cmp::Compare;
 	use Test::YAFT::Cmp::Complement;
 	use Test::YAFT::Dumper;
 

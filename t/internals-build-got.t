@@ -3,7 +3,7 @@
 use v5.14;
 use  warnings;
 
-use require::relative q (test-helper.pl);
+use Test::Load::Helper;
 
 it q (should build result from non-coderef)
 	=> got    => Test::YAFT::_build_got ({ got => q (foo) })

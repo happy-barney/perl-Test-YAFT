@@ -55,11 +55,11 @@ my %module_build_args = (
     "JSON" => 0,
     "List::Util" => 0,
     "Test::EOL" => 0,
+    "Test::Load::Helper" => 0,
     "Test::Tester" => "1.302107",
     "Type::Tiny" => 0,
     "Types::Common::Numeric" => 0,
-    "feature" => 0,
-    "require::relative" => 0
+    "feature" => 0
   }
 );
 
@@ -71,11 +71,11 @@ my %fallback_build_requires = (
   "List::Util" => 0,
   "Module::Build" => "0.28",
   "Test::EOL" => 0,
+  "Test::Load::Helper" => 0,
   "Test::Tester" => "1.302107",
   "Type::Tiny" => 0,
   "Types::Common::Numeric" => 0,
-  "feature" => 0,
-  "require::relative" => 0
+  "feature" => 0
 );
 
 

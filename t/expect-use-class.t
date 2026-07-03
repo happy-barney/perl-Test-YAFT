@@ -3,7 +3,7 @@
 use v5.14;
 use warnings;
 
-use require::relative q (test-helper.pl);
+use Test::Load::Helper;
 
 assume_test_yaft_exports expect_use_class
 	=> by_default => 1

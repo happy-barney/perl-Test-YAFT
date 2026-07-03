@@ -3,7 +3,7 @@
 use v5.14;
 use warnings;
 
-use require::relative q (test-helper.pl);
+use Test::Load::Helper;
 
 subtest q (resource /countries/:continent provides alphabetical sorted list countries on the continent) => sub {
 	act { GET qq (/countries/$_[0]) } q (continent);

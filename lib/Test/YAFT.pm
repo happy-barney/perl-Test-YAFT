@@ -286,6 +286,10 @@ package Test::YAFT {
 	sub act (&;@) {
 		my ($act, @dependencies) = @_;
 
+		die q (Act already known in current context)
+			if is_deduced $SINGLETON_ACT
+			;
+
 		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($act, @dependencies);
 	}
 

@@ -7,6 +7,9 @@ use Syntax::Construct qw (package-block package-version);
 package Test::YAFT::Act::Context {
 	use Context::Singleton;
 
+	use constant DISPATCH_ARRAY => 1;
+	use constant DISPATCH_HASH  => 2;
+
 	sub new {
 		my ($class, $act) = @_;
 
@@ -40,7 +43,16 @@ package Test::YAFT::Act::Context {
 	sub arguments {
 		my ($self) = @_;
 
-		return @{ $self->_resolve_arguments }{$self->{act}->dependencies};
+		my @dependencies = $self->{act}->dependencies;
+
+		return @{ $self->_resolve_arguments }{@dependencies}
+			if $self->{act}{dispatch_type} eq DISPATCH_ARRAY
+			;
+
+		my %arguments;
+		@arguments{@dependencies} =  @{ $self->_resolve_arguments }{@dependencies};
+
+		return %arguments;
 	}
 
 	sub unresolved {

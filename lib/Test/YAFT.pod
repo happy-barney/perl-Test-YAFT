@@ -656,6 +656,26 @@ Dependencies are specified after the block and are provided via
 L<arrange { }|/arrange { }> block or via C<with_NAME> parameters
 in assumptions.
 
+=head3 Named parameter dispatch
+
+By default, dependencies are passed as positional arguments. To receive
+them as named parameters (key-value pairs), specify a hash reference as
+the first parameter after the block:
+
+	act { GET qq (/countries), @_ }
+		+{},
+		q (continent),
+		q (format),
+		;
+
+	it q (should list countries)
+		=> with_continent => q (europe)
+		=> with_format    => q (json)
+		=> expect         => ...
+		;
+
+The act code receives: C<$code-E<gt>(continent =E<gt> q (europe), format =E<gt> q (json))>
+
 =head2 arrange { }
 
 	arrange { foo => q (bar) };

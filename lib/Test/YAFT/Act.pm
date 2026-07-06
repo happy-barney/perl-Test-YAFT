@@ -5,14 +5,27 @@ use warnings;
 use Syntax::Construct qw (package-block package-version);
 
 package Test::YAFT::Act {
+	use Ref::Util ();
+
 	use Test::YAFT::Act::Context;
 
 	sub new {
 		my ($class, $act, @dependencies) = @_;
 
+		my $dispatch_type = ref ($dependencies[0])
+			? shift @dependencies
+			: [ ]
+			;
+
+		$dispatch_type = Ref::Util::is_hashref ($dispatch_type)
+			? Test::YAFT::Act::Context::DISPATCH_HASH
+			: Test::YAFT::Act::Context::DISPATCH_ARRAY
+			;
+
 		return bless {
-			act          => $act,
-			dependencies => \ @dependencies,
+			act           => $act,
+			dependencies  => \ @dependencies,
+			dispatch_type => $dispatch_type,
 		}, $class;
 	}
 

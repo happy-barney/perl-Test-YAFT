@@ -6,7 +6,14 @@ use warnings;
 use Test::Load::Helper;
 
 subtest q (resource /countries/:continent provides alphabetical sorted list countries on the continent) => sub {
-	act { GET qq (/countries/$_[0]) } q (continent);
+	act {
+		my %args = @_;
+
+		GET qq (/countries/$args{continent});
+	}
+		+{},
+		q (continent),
+		;
 
 	it q (should list North America continental countries)
 		=> with_continent => q (north-america)

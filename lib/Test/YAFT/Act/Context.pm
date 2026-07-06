@@ -31,6 +31,12 @@ package Test::YAFT::Act::Context {
 		}
 	}
 
+	sub act {
+		my ($self) = @_;
+
+		$self->{act}->act;
+	}
+
 	sub arguments {
 		my ($self) = @_;
 

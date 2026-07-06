@@ -5,7 +5,7 @@ use warnings;
 use Syntax::Construct qw (package-block package-version);
 
 package Test::YAFT::Act {
-	use Context::Singleton;
+	use Test::YAFT::Act::Context;
 
 	sub new {
 		my ($class, $act, @dependencies) = @_;
@@ -18,6 +18,10 @@ package Test::YAFT::Act {
 
 	sub act {
 		$_[0]->{act};
+	}
+
+	sub context {
+		Test::YAFT::Act::Context::->new ($_[0]);
 	}
 
 	sub dependencies {
@@ -46,4 +50,3 @@ Branislav Zahradník <barney.cpan@gmail.com>
 This module is part of L<Test::YAFT> distribution.
 
 =cut
-

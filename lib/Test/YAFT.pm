@@ -139,7 +139,7 @@ package Test::YAFT {
 	}
 
 	sub _act_singleton {
-		deduce ($SINGLETON_ACT)->act;
+		deduce ($SINGLETON_ACT);
 	}
 
 	sub _build_got {
@@ -165,7 +165,7 @@ package Test::YAFT {
 	}
 
 	sub _run_act {
-		my @missing = grep { ! try_deduce $_ } _act_dependencies;
+		my @missing = deduce ($SINGLETON_ACT)->context->unresolved;
 
 		return {
 			lives_ok => 0,
@@ -173,7 +173,7 @@ package Test::YAFT {
 			error    => qq (Act dependencies not fulfilled: ${\ join q (, ), sort @missing }),
 		} if @missing;
 
-		deduce _act_singleton;
+		deduce _act_singleton->act;
 	}
 
 	sub _run_coderef {

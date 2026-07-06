@@ -129,7 +129,8 @@ package Test::YAFT {
 		my ($args) = @_;
 
 		proclaim $_->resolve
-			for @{ $args->{arrange} // [] };
+			for @{ $args->{arrange} // [] }
+			;
 	}
 
 	sub _act_dependencies {
@@ -148,14 +149,16 @@ package Test::YAFT {
 		my ($args) = @_;
 
 		return _run_act
-			unless exists $args->{got};
+			unless exists $args->{got}
+			;
 
 		return _run_coderef ($args->{got}->{code})
 			if $args->{got}->$Safe::Isa::_isa (Test::YAFT::Argument::Got::)
 			;
 
 		return _run_coderef ($args->{got})
-			if Ref::Util::is_coderef ($args->{got});
+			if Ref::Util::is_coderef ($args->{got})
+			;
 
 		return +{
 			lives_ok => 1,
@@ -191,13 +194,16 @@ package Test::YAFT {
 		my ($diag, $stack, $got) = @_;
 
 		return
-			unless $diag;
+			unless $diag
+			;
 
 		return Test::More::diag ($diag->($stack, $got))
-			if Ref::Util::is_coderef ($diag);
+			if Ref::Util::is_coderef ($diag)
+			;
 
 		return Test::More::diag (@$diag)
-			if Ref::Util::is_arrayref ($diag);
+			if Ref::Util::is_arrayref ($diag)
+			;
 
 		return Test::More::diag ($diag);
 	}
@@ -221,7 +227,8 @@ package Test::YAFT {
 			return fail $title, diag => $expected_to_live
 				? qq (Expected to live but died: $result->{error})
 				: q  (Expected to die but lives)
-				if $expected_to_live xor $result->{lives_ok}
+				if  $expected_to_live
+				xor $result->{lives_ok}
 				;
 
 			($got, $expect) = $result->{lives_ok}
@@ -240,13 +247,16 @@ package Test::YAFT {
 			if ($expect->$Safe::Isa::_isa (Test::YAFT::Cmp::Complement::)) {
 				Test::More::ok ($ok, $title);
 				Test::More::diag (Test::Deep::deep_diag ($stack))
-					unless $ok;
+					unless $ok
+					;
 				return $ok;
 			}
 
 			Test::Differences::eq_or_diff $got, $expect, $title;
 			Test::More::diag (Test::Deep::deep_diag ($stack))
-				if ref $got || ref $expect;
+				if ref $got
+				|| ref $expect
+				;
 
 			return;
 		} or _run_diag ($args{diag}, $stack, $got);
@@ -367,7 +377,8 @@ package Test::YAFT {
 		}
 
 		Sub::Install::install_sub ({ into => $class, as => $_, code => $methods{$_} })
-			for keys %methods;
+			for keys %methods
+			;
 
 		return $class;
 	}

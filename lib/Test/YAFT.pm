@@ -117,20 +117,11 @@ package Test::YAFT {
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
-	sub _act_arrange;
 	sub _build_got;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
 	sub _test_yaft_assumption_args;
-
-	sub _act_arrange {
-		my ($args) = @_;
-
-		proclaim $_->resolve
-			for @{ $args->{arrange} // [] }
-			;
-	}
 
 	sub _build_got {
 		my ($args) = @_;
@@ -152,6 +143,21 @@ package Test::YAFT {
 			value    => $args->{got},
 			error    => undef,
 		};
+	}
+
+	sub _resolve_argument {
+		my ($argument) = @_;
+
+		return $argument->resolve
+			if $argument->$Safe::Isa::_isa (Test::YAFT::Argument::)
+			;
+
+		return [ map { $_->resolve } @$argument ]
+			if Ref::Util::is_arrayref ($argument)
+			&& $argument->[0]->$Safe::Isa::_isa (Test::YAFT::Argument::)
+			;
+
+		return $argument;
 	}
 
 	sub _run_act {
@@ -207,7 +213,8 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
-			_act_arrange (\ %args);
+			_resolve_argument $args{arrange};
+
 			my $result = _build_got (\ %args);
 
 			my $expected_to_live = ! exists $args{throws};

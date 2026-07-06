@@ -49,7 +49,7 @@ L<Test::YAFT> provides the Arrange-Act-Assert pattern:
 
 =item B<Arrange> - Set up test context using C<arrange { }>
 
-=item B<Act> - Execute code under test using C<got { }> or C<act { }>
+=item B<Act> - Execute code under test using C<got { }> or C<act {}>
 
 =item B<Assert> - Verify results using C<expect> or C<throws>
 
@@ -124,7 +124,7 @@ When C<throws> is specified, the test expects the code to die:
 		=> throws => expect_obj_isa (My::X::Positive_Quantity::)
 		;
 
-To specify such block across multiple assumptions, use the L<act { }|/act { }> block.
+To specify such block across multiple assumptions, use the L<act {}|/act {}> block.
 
 =head2 Context
 
@@ -637,23 +637,47 @@ Re-exported from L<Test::Deep/ignore>.
 
 Utility functions help organise tests. They are exported by default.
 
-=head2 act { }
+=head2 act {}
 
-	act { GET qq (/countries/$_[0]) }
-		q (continent)
+	act {
+		my ($login, $password) = @_;
+		...;
+		return $value_under_test;
+	}
+		q (login),
+		q (password),
 		;
 
-	it q (should list countries)
-		=> with_continent => q (europe)
-		=> expect         => ...
+	assume q (user is authenticated)
+		=> with_login	 => ...
+		=> with_password => ...
+		=> expect		 => ...
 		;
 
-Defines a shared computation for C<got> across multiple assumptions.
-The block receives dependency values as arguments.
+Inspired by the Arrange-Act-Assert testing approach, this utility defines
+a shared computation for C<got> across multiple assumptions. The block
+receives dependency values as arguments in their order of definition.
 
-Dependencies are specified after the block and are provided via
-L<arrange { }|/arrange { }> block or via C<with_NAME> parameters
-in assumptions.
+Dependencies are listed after the block.
+
+Provide them using L</arrange {}> or C<with_NAME> parameters within assumptions.
+Each dependency can be provided only once.
+
+	assume q (...)
+		=> with_dependency => ...
+		=> arrange { dependency => ... }
+
+Dependencies can be provided for each test in context can be provided by
+L</arrange { }>
+
+There can be only one C<act {}> definition per context.
+
+Assumption without an explicit C<got> invokes C<act {}> automatically.
+All dependencies must be provided before invocation.
+
+See also:
+L</arrange { }>,
+L</got { }>
 
 =head3 Named parameter dispatch
 

@@ -9,6 +9,8 @@ use Test::EOL;
 my @files = (
     'lib/Test/YAFT.pm',
     'lib/Test/YAFT.pod',
+    'lib/Test/YAFT/Act.pm',
+    'lib/Test/YAFT/Act/Context.pm',
     'lib/Test/YAFT/Argument.pm',
     'lib/Test/YAFT/Argument/Arrange.pm',
     'lib/Test/YAFT/Argument/Array.pm',
@@ -35,6 +37,8 @@ my @files = (
     't/core/cmp-details.t',
     't/core/cmp-overload.t',
     't/core/internals-build-got.t',
+    't/core/test-yaft-act-context.t',
+    't/core/test-yaft-act.t',
     't/examples/test-rest-countries/resource-countries.t',
     't/examples/test-rest-countries/test-helper.pl',
     't/examples/test-type-tiny-constraint/constraint-test.t',

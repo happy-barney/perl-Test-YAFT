@@ -19,6 +19,7 @@ package Test::YAFT {
 	use Test::More     v0.970 qw ();
 	use Test::Warnings v0.038 qw (:no_end_test !done_testing);
 
+	use Test::YAFT::Act;
 	use Test::YAFT::Argument;
 	use Test::YAFT::Argument::Arrange;
 	use Test::YAFT::Argument::Got;
@@ -117,8 +118,6 @@ package Test::YAFT {
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
 	sub _act_arrange;
-	sub _act_dependencies;
-	sub _act_singleton;
 	sub _build_got;
 	sub _run_act;
 	sub _run_coderef;
@@ -131,18 +130,6 @@ package Test::YAFT {
 		proclaim $_->resolve
 			for @{ $args->{arrange} // [] }
 			;
-	}
-
-	sub _act_dependencies {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-
-		return @dependencies;
-	}
-
-	sub _act_singleton {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-
-		return $act;
 	}
 
 	sub _build_got {
@@ -168,8 +155,9 @@ package Test::YAFT {
 	}
 
 	sub _run_act {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-		my @missing = grep { ! try_deduce $_ } @dependencies;
+		my $singleton = deduce ($SINGLETON_ACT)->context;
+
+		my @missing = $singleton->unresolved;
 
 		return {
 			lives_ok => 0,
@@ -177,7 +165,7 @@ package Test::YAFT {
 			error    => qq (Act dependencies not fulfilled: ${\ join q (, ), sort @missing }),
 		} if @missing;
 
-		deduce _act_singleton;
+		_run_coderef ($singleton->act, $singleton->arguments);
 	}
 
 	sub _run_coderef {
@@ -297,21 +285,12 @@ package Test::YAFT {
 
 	sub act (&;@) {
 		my ($act, @dependencies) = @_;
-		state $counter = 0;
 
-		# As far as Context::Singleton doesn't support frame local contrive (yet)
-		# we have to improvise
-		# - singleton 'Test::YAFT::act' will contain name of frame specific singleton
-		# - and that singleton will contain all dependencies
-
-		my $singleton = qq (${SINGLETON_ACT}::${\ ++$counter });
-
-		contrive $singleton
-			=> dep => \@dependencies
-			=> as  => sub { _run_coderef ($act, @_) }
+		die q (Act already known in current context)
+			if is_deduced $SINGLETON_ACT
 			;
 
-		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
+		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($act, @dependencies);
 	}
 
 	sub fail {

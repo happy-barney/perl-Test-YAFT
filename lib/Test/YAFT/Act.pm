@@ -10,10 +10,10 @@ package Test::YAFT::Act {
 	use Test::YAFT::Act::Context;
 
 	sub new {
-		my ($class, $act, @dependencies) = @_;
+		my ($class, $act, @args) = @_;
 
-		my $dispatch_type = ref ($dependencies[0])
-			? shift @dependencies
+		my $dispatch_type = ref ($args[0])
+			? shift @args
 			: [ ]
 			;
 
@@ -22,10 +22,20 @@ package Test::YAFT::Act {
 			: Test::YAFT::Act::Context::DISPATCH_ARRAY
 			;
 
+		my (@dependencies, %options);
+		while (@args) {
+			push @dependencies, my $dependency = shift @args;
+
+			$options{$dependency} = shift @args
+				if ref $args[0]
+				;
+		}
+
 		return bless {
 			act           => $act,
 			dependencies  => \ @dependencies,
 			dispatch_type => $dispatch_type,
+			options       => \ %options,
 		}, $class;
 	}
 
@@ -39,6 +49,10 @@ package Test::YAFT::Act {
 
 	sub dependencies {
 		@{ $_[0]->{dependencies} }
+	}
+
+	sub options {
+		$_[0]->{options}
 	}
 
 	1;

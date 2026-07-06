@@ -18,6 +18,7 @@ it q (accepts stringy act without arguments)
 	=> expect =>
 		+ expect_methods     (act          => q (act-name))
 		+ expect_listmethods (dependencies => [ ])
+		+ expect_methods     (options      => { })
 	;
 
 it q (accepts string act with some arguments)
@@ -25,6 +26,7 @@ it q (accepts string act with some arguments)
 	=> expect =>
 		+ expect_methods     (act          => q (act-name))
 		+ expect_listmethods (dependencies => [qw (arg-1 arg-2)])
+		+ expect_methods     (options      => { })
 	;
 
 it q (accepts coderef act without arguments)
@@ -32,6 +34,7 @@ it q (accepts coderef act without arguments)
 	=> expect =>
 		+ expect_methods     (act          => expect_shallow ($act_coderef))
 		+ expect_listmethods (dependencies => [ ])
+		+ expect_methods     (options      => { })
 	;
 
 it q (accepts coderef act with some arguments)
@@ -39,6 +42,19 @@ it q (accepts coderef act with some arguments)
 	=> expect =>
 		+ expect_methods     (act          => expect_shallow ($act_coderef))
 		+ expect_listmethods (dependencies => [qw (arg-1 arg-2)])
+		+ expect_methods     (options      => { })
+	;
+
+it q (accepts argument options)
+	=> got    { build_act (
+		q (act),
+		q (foo),
+		q (bar), { default => 1 },
+		q (baz),
+	) }
+	=> expect =>
+		+ expect_listmethods (dependencies => [qw (foo bar baz)])
+		+ expect_methods     (options      => { bar => { default => 1 }})
 	;
 
 had_no_warnings;

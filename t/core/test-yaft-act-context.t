@@ -35,6 +35,15 @@ assume q (act with unresolved dependencies)
 		+ expect_listmethods (unresolved   => [q (bar)])
 	;
 
+not 1 and
+assume q (act with default values)
+	=> arrange { foo => q (foo-1) }
+	=> got     { build_context (q (act), foo => { default => 1 }, bar => { default => 2 }) }
+	=> expect  =>
+		+ expect_listmethods (arguments    => [q (foo-1), 2])
+		+ expect_listmethods (unresolved   => [ ])
+	;
+
 assume q (act with pseudo-named arguments)
 	=> arrange { foo => q (foo-1) }
 	=> arrange { bar => q (bar-2) }

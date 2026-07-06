@@ -23,8 +23,14 @@ package Test::YAFT::Act::Context {
 
 		$self->{arguments} //= do {
 			my %arguments;
+			my $options = $self->{act}->options;
 
 			for my $argument ($self->{act}->dependencies) {
+				$arguments{$argument} = $options->{$argument}{default}
+					if exists $options->{$argument}
+					&& exists $options->{$argument}{default}
+					;
+
 				$arguments{$argument} = deduce ($argument)
 					if try_deduce ($argument)
 					;

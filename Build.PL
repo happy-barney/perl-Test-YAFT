@@ -15,7 +15,7 @@ my %module_build_args = (
   },
   "dist_abstract" => "Yet another testing framework",
   "dist_author" => [
-    "Branislav Zahradn\x{ed}k <barney\@cpan.org>"
+    "Branislav Zahradn\x{ed}k <barney.cpan\@gmail.com>"
   ],
   "dist_name" => "Test-YAFT",
   "dist_version" => "1.0.3",

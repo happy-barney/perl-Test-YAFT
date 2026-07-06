@@ -71,7 +71,7 @@ Test::YAFT::Cmp::Compare - Comparator similar to Test::Builder::cmp_ok
 
 =head1 AUTHOR
 
-Branislav Zahradník <barney@cpan.org>
+Branislav Zahradník <barney.cpan@gmail.com>
 
 =head1 COPYRIGHT AND LICENCE
 

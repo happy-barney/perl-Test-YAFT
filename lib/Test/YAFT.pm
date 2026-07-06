@@ -19,6 +19,7 @@ package Test::YAFT {
 	use Test::More     v0.970 qw ();
 	use Test::Warnings v0.038 qw (:no_end_test !done_testing);
 
+	use Test::YAFT::Act;
 	use Test::YAFT::Argument;
 	use Test::YAFT::Argument::Arrange;
 	use Test::YAFT::Argument::Got;
@@ -134,15 +135,11 @@ package Test::YAFT {
 	}
 
 	sub _act_dependencies {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-
-		return @dependencies;
+		deduce ($SINGLETON_ACT)->dependencies;
 	}
 
 	sub _act_singleton {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-
-		return $act;
+		deduce ($SINGLETON_ACT)->act;
 	}
 
 	sub _build_got {
@@ -168,8 +165,7 @@ package Test::YAFT {
 	}
 
 	sub _run_act {
-		my ($act, @dependencies) = @{ deduce $SINGLETON_ACT };
-		my @missing = grep { ! try_deduce $_ } @dependencies;
+		my @missing = grep { ! try_deduce $_ } _act_dependencies;
 
 		return {
 			lives_ok => 0,
@@ -311,7 +307,7 @@ package Test::YAFT {
 			=> as  => sub { _run_coderef ($act, @_) }
 			;
 
-		proclaim $SINGLETON_ACT => [ $singleton, @dependencies ];
+		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($singleton, @dependencies);
 	}
 
 	sub fail {

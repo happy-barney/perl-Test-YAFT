@@ -220,7 +220,7 @@ package Test::YAFT {
 
 			return fail $title, diag => $expected_to_live
 				? qq (Expected to live but died: $result->{error})
-				: q  (Expected to die by lives)
+				: q  (Expected to die but lives)
 				if $expected_to_live xor $result->{lives_ok}
 				;
 

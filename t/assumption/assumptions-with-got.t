@@ -54,7 +54,7 @@ check_assumptions q (should fail when expecting 'throws' but code lives)
 	=> actual_ok   => 0
 	=> name        => q (got { } block)
 	=> diag        => <<'EXPECTED_DIAG'
-Expected to die by lives
+Expected to die but lives
 EXPECTED_DIAG
 	;
 

@@ -35,6 +35,7 @@ package Test::YAFT {
 	sub BAIL_OUT ($);
 	sub bail_out ($);
 	sub done_testing (;$$);
+	sub expect (&);
 	sub got (&;@);
 	sub had_no_warnings (;$);
 	sub pass ($);
@@ -51,6 +52,7 @@ package Test::YAFT {
 	sub diag                            :Util(\&Test::More::diag);
 	sub done_testing (;$$)              :Util;
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
+	sub expect (&)                      :Util(Test::YAFT::Argument::Expect::);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
 	sub expect_array                    :Expectation(\&Test::Deep::array);
@@ -125,6 +127,7 @@ package Test::YAFT {
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
 	sub _build_got;
+	sub _resolve_argument;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
@@ -234,8 +237,8 @@ package Test::YAFT {
 				;
 
 			($got, $expect) = $result->{lives_ok}
-				? ($result->{value}, $args{expect})
-				: ($result->{error}, $args{throws})
+				? ($result->{value}, _resolve_argument $args{expect})
+				: ($result->{error}, _resolve_argument $args{throws})
 				;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);

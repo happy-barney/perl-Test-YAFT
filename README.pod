@@ -90,6 +90,7 @@ Additionally, L<Test::Differences> is used to report differences when tests fail
 =item C<expect> - The expected value (L<Test::Deep::Cmp> or plain value)
 
 	=> expect => expect_foo (...)
+	=> expect { expect_foo (...) }
 
 =item C<throws> - Expected exception (when testing for errors)
 
@@ -851,6 +852,36 @@ See also:
 L<Test::More::done_testing|Test::More/done_testing>,
 L<Test2::V0::done_testing|Test2::Tools::Basic/done_testing>.
 
+=head2 expect {}
+
+	assume q (...)
+		=> got    { ... }
+		=> expect { ... }
+		;
+
+The C<expect {}> function can be used to compute the expected value for a test assertion
+block. Computation is done within the execution context (similar to L</arrange {}>).
+
+It also offers aesthetic clarity when used in conjunction with L</got {}>, as well as
+providing a handy way to bypass the stringification effect of a fat comma.
+
+	assume q (...)
+		=> expect => expect_false
+		=> got    { 0 }
+		;
+
+vs.
+
+	assume q (...)
+		=> expect { expect_false }
+		=> got    { 0 }
+		;
+
+See also:
+L</act {}>,
+L</arrange {}>,
+L</got {}>.
+
 =head2 explain
 
 	diag explain \ %hash;
@@ -898,7 +929,8 @@ Use L<arranged|/arranged> to access arranged values within the block.
 See also:
 L</act {}>,
 L</arrange {}>,
-L</arranged ($)>.
+L</arranged ($)>,
+L</expect {}>.
 
 =head2 note
 

@@ -18,6 +18,7 @@ my @files = (
     'lib/Test/YAFT/Argument/Got.pm',
     'lib/Test/YAFT/Argument/Override.pm',
     'lib/Test/YAFT/Argument/Scalar.pm',
+    'lib/Test/YAFT/Argument/Throws.pm',
     'lib/Test/YAFT/Attributes.pm',
     'lib/Test/YAFT/Cmp.pm',
     'lib/Test/YAFT/Cmp/Compare.pm',
@@ -116,6 +117,7 @@ my @files = (
     't/util/plan.t',
     't/util/skip.t',
     't/util/subtest.t',
+    't/util/throws.t',
     't/util/todo-skip.t'
 );
 

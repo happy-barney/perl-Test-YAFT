@@ -41,6 +41,7 @@ package Test::YAFT {
 	sub override (&);
 	sub pass ($);
 	sub plan ($;$);
+	sub throws (&);
 
 	sub act (&;@)                       :Util;
 	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
@@ -123,7 +124,7 @@ package Test::YAFT {
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
-	sub todo                            :Util(\&Test::More::todo);
+	sub throws (&)                      :Util(Test::YAFT::Argument::Throws::);
 	sub todo_skip                       :Util(\&Test::More::todo_skip);
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);

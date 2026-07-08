@@ -96,6 +96,7 @@ Additionally, L<Test::Differences> is used to report differences when tests fail
 =item C<throws> - Expected exception (when testing for errors)
 
 	=> throws => expect_foo (...)
+	=> throws { expect_foo (...) }
 
 =item C<with_*> - Context setup
 
@@ -902,7 +903,8 @@ See also:
 L</act {}>,
 L</arrange {}>,
 L</got {}>,
-L</override {}>.
+L</override {}>,
+L</throws {}>.
 
 =head2 explain
 
@@ -929,7 +931,7 @@ L<Test::More::explain|Test::More/explain>.
 
 	assume q (should throw exception on invalid input)
 		=> got    { $calculator->divide (10, 0) }
-		=> throws => expect_re (qr (division by zero))
+		=> throws { expect_re (qr (division by zero)) }
 		;
 
 Specifies code to compute the value under test.
@@ -1100,6 +1102,22 @@ the parent context without affecting sibling tests.
 See also:
 L<Test::More::subtest|Test::More/subtest>,
 L<Test2::Tools::Subtest>.
+
+=head2 throws {}
+
+	assume q (...)
+		=> got    { ... }
+		=> throws { ... }
+		;
+
+Similar to L</expect {}> but for C<throws> assumptions argument.
+
+See also:
+L</act {}>,
+L</arrange {}>,
+L</expect {}>,
+L</got {}>
+L</override {}>.
 
 =head2 todo_skip
 

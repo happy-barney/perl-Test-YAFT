@@ -326,6 +326,26 @@ check verifies the code did not die before comparison.
 Value under test. When L<< C<got {}>|/got {} >> is used, the block is evaluated
 and its error status is checked before comparison.
 
+=item override
+
+	assume q (...)
+		=> override { Package::function => q (bar) }
+		=> override { Package::function => sub { q (bar) } }
+		=> override { Package:: => function => q (bar) }
+		=> override { Package:: => function => sub { q (bar) } }
+		=> override { $object => function => q (bar) }
+		=> override { $object => function => sub { q (bar) } }
+		...
+		;
+
+L<<C<override {}>|/override {}>> blocks are evaluated in the context of the
+assumption's sub-context before resolving the value under test.
+
+Multiple L<<C<override {}>|/override {}>> blocks are evaluated in declaration order.
+
+L<<C<override {}>|/override {}>> blocks are evaluated before
+L<<C<arrange {}>|/arrange {}>> blocks.
+
 =item throws
 
 Expected exception. When specified along with computed C<got> value, an additional
@@ -880,7 +900,8 @@ vs.
 See also:
 L</act {}>,
 L</arrange {}>,
-L</got {}>.
+L</got {}>,
+L</override {}>.
 
 =head2 explain
 
@@ -948,6 +969,72 @@ See also:
 L<diag|/diag>,
 L<Test::More::note|Test::More/note>,
 L<Test2::V0::note|Test2::Tools::Basic/note>.
+
+=head2 override {}
+
+	# Override a function
+	override {
+		q (Some::Module::function) => sub {
+			my $rv = original::function (@_);
+			...;
+		}
+	};
+
+	# Override with scalar value
+	override {
+		q (Some::Module::function) => $value
+	};
+
+	# Override method for specific object
+	override { $user => authenticate => 1 };
+
+    # assumption specific override
+	it q (should ...)
+		=> override { q (Some::Module::function) => sub { ... } }
+		=> got      { ... }
+		=> expect   { ... }
+		;
+
+Temporarily overrides a function's or method's behaviour within the
+current scope.
+
+=over
+
+=item Two-value syntax (function override)
+
+The block returns a pair: fully qualified function name and override value.
+
+	override { q (Package::function) => sub { ... } };
+	override { q (Package::function) => $scalar_value };
+
+=item Three-value syntax (object-specific method override):
+
+The block returns: object, method name, and override value.
+
+	override { $object => method => sub { ... } };
+	override { $object => method => $scalar_value };
+
+When the override value is a coderef, it replaces the function/method.
+When it's a scalar, the function/method returns that value directly.
+
+=back
+
+The original function is made available via C<original::function> or
+C<original::method> syntax, allowing the override to optionally call
+the original implementation.
+
+Like L</arrange {}>, when called in a void context, the override is
+applied immediately. When used as an assumption parameter, the override
+is applied within the assumption's scope.
+
+Multiple overrides can be stacked, with the most recent override taking
+precedence, previous override available via C<original::*>.
+
+See also:
+L</act {}>,
+L</arrange {}>,
+L</expect {}>,
+L</got {}>.
 
 =head2 plan
 

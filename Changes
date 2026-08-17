@@ -2,7 +2,10 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+v1.0.4     2026-08-17 07:35 UTC
+
 	Use non-@cpan.org email address.
+	Improve act {}
 
 v1.0.3     2026-06-03 07:01 UTC
 

@@ -27,7 +27,14 @@ Not supported
 
 =item BAIL_OUT
 
-Reexported
+    BAIL_OUT q (reason);
+    bail_out q (reason);
+
+Fully supported, C<reason> argument is enforced via prototype.
+
+See:
+L<BAIL_OUT|Test::YAFT/BAIL_OUT ($)>,
+L<bail_out|Test::YAFT/bail_out ($)>.
 
 =item can_ok
 
@@ -39,11 +46,17 @@ Implemented as an expectation C<expect_compare>.
 
 =item diag
 
-Reexported
+Fully supported.
+
+See:
+L<diag|Test::YAFT/diag>.
 
 =item done_testing
 
-Reexported
+Fully supported with additional options.
+
+See:
+L<done_testing|Test::YAFT/done_testing>.
 
 =item eq_array
 
@@ -59,7 +72,10 @@ Replaced with C<it>
 
 =item explain
 
-Reexported
+Fully supported.
+
+See:
+L<expect|Test::YAFT/expect>.
 
 =item fail
 
@@ -91,7 +107,10 @@ Not supported
 
 =item note
 
-Reexported
+Fully supported.
+
+See:
+L<note|Test::YAFT/note>.
 
 =item ok
 
@@ -103,7 +122,10 @@ Reexported
 
 =item plan
 
-Reexported
+Fully supported with additional options.
+
+See:
+L<plan|Test::YAFT/plan>.
 
 =item require_ok
 

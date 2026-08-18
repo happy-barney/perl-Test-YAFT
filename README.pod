@@ -47,9 +47,9 @@ L<Test::YAFT> provides the Arrange-Act-Assert pattern:
 
 =over
 
-=item B<Arrange> - Set up test context using C<arrange { }>
+=item B<Arrange> - Set up test context using C<arrange {}>
 
-=item B<Act> - Execute code under test using C<got { }> or C<act {}>
+=item B<Act> - Execute code under test using C<got {}> or C<act {}>
 
 =item B<Assert> - Verify results using C<expect> or C<throws>
 
@@ -109,7 +109,7 @@ Additionally, L<Test::Differences> is used to report differences when tests fail
 
 =head2 Computed C<got> Value
 
-The C<got { }> block computes the value under test within an C<eval>,
+The C<got {}> block computes the value under test within an C<eval>,
 automatically checking for unexpected exceptions:
 
 	it q (should calculate total)
@@ -302,10 +302,10 @@ Accepted parameters:
 		...
 		;
 
-L<<C<arrange { }>|/arrange { }>> blocks are evaluated in the context of the
+L<< C<arrange {}>|/arrange {} >> blocks are evaluated in the context of the
 assumption's sub-context before resolving the value under test.
 
-Multiple L<<C<arrange { }>|/arrange { }>> blocks are evaluated in order.
+Multiple L<< C<arrange {}>|/arrange {} >> blocks are evaluated in the order of their specification.
 
 =item diag
 
@@ -322,7 +322,7 @@ check verifies the code did not die before comparison.
 
 =item got
 
-Value under test. When L<<C<got { }>|/got { }>> is used, the block is evaluated
+Value under test. When L<< C<got {}>|/got {} >> is used, the block is evaluated
 and its error status is checked before comparison.
 
 =item throws
@@ -668,7 +668,7 @@ Each dependency can be provided only once.
 		=> arrange { dependency => ... }
 
 Dependencies can be provided for each test in context can be provided by
-L</arrange { }>
+L</arrange {}>.
 
 There can be only one C<act {}> definition per context.
 
@@ -676,8 +676,8 @@ Assumption without an explicit C<got> invokes C<act {}> automatically.
 All dependencies must be provided before invocation.
 
 See also:
-L</arrange { }>,
-L</got { }>
+L</arrange {}>,
+L</got {}>.
 
 =head3 Named parameter dispatch
 
@@ -724,59 +724,176 @@ In the second assumption, the provided value C<q (xml)> overrides the default.
 
 Default values work with both positional and named parameter dispatch.
 
-=head2 arrange { }
+=head2 arrange {}
+
+	act { ... } q (foo);
 
 	arrange { foo => q (bar) };
 
-	it q (should ...)
-		=> arrange { foo => q (bar2) }
-		=> got     { $foo->method (deduce q (foo)) }
+	# act will use q (bar)
+	assume q (uses arranged value)
+		=> expect => ...
+		;
+
+	# act will use q (bar-2)
+	assume q (overrides arranged value in local context)
+		=> arrange { foo => q (bar-2) }
 		=> expect  => ...
 		;
 
-Sets up test context by providing values to L<Context::Singleton>.
+Provides the "Arrange" step of the Arrange-Act-Assert testing approach.
 
-When called in void context, values are proclaimed immediately.
-When used as a parameter, values are proclaimed in the test-local frame.
+Sets up test context values.
 
-Returns a guard object evaluated in the frame valid at the time
-of evaluation.
+The block is evaluated in list context and should return pairs of
+property names and values.
 
-=head2 BAIL_OUT
+When called in void context, value is populated immediately in current context.
+When used as an assumption parameter, value is populated within that assumption's
+sub-context.
 
-Reexported L<Test::More/BAIL_OUT>
+Each property can only be arranged once per context. Attempting to
+arrange the same property twice in the same context will fail.
+
+See also:
+L</act {}>,
+L</got {}>.
+
+=head2 BAIL_OUT ($)
+
+=head2 bail_out ($)
+
+	BAIL_OUT q (reason);
+	bail_out q (reason);
+
+Signals the C<harness> to terminate the whole test suite immediately.
+
+See also:
+L<Test::More::BAIL_OUT|Test::More/BAIL_OUT>,
+L<Test2::V0::bail_out|Test2::Tools::Basic/bail_out>.
 
 =head2 diag
 
-Re-exported from L<Test::More/diag>.
+	diag q (diagnostic message);
+	diag @diagnostic_messages;
+
+Prints diagnostic messages that won't interfere with test output.
+
+Diagnostic messages from C<diag> always appear in test output, making them
+suitable for reporting problems that require immediate attention.
+
+Accepts a list of values that are concatenated together.
+
+Returns C<false>.
+
+See also:
+L<Test::More::diag|Test::More/diag>,
+L<Test2::V0::diag|Test2::Tools::Basic/diag>.
 
 =head2 done_testing
 
-Re-exported from L<Test::More/done_testing>.
+	done_testing;
+	done_testing (42);
+	done_testing (tests => 42);
+
+Declares that testing is complete.
+
+When called without arguments, the number of tests run is determined
+automatically.
+
+When called with a numeric argument, verifies that exactly that many
+tests were executed. If the actual count differs, the test suite fails.
+
+See also:
+L<Test::More::done_testing|Test::More/done_testing>,
+L<Test2::V0::done_testing|Test2::Tools::Basic/done_testing>.
 
 =head2 explain
 
-Re-exported from L<Test::More/explain>.
+	diag explain \ %hash;
+	diag explain @array;
+	diag explain $scalar;
 
-=head2 got { }
+Converts any value into a human-readable string representation.
 
-    it q (should die)
-        => got { $foo->do_something }
-        => throws => expect_obj_isa (...)
-        ;
+Particularly useful for displaying the contents of complex data
+structures in diagnostic messages.
 
-Specifies code to compute the test value. The block is evaluated
-in an C<eval>, and C<it> checks the error status before comparison.
+Returns a string (or list of strings) suitable for printing.
 
-Use with C<throws> to test that code should die.
+See also:
+L<Test::More::explain|Test::More/explain>.
+
+=head2 got {}
+
+	assume q (should return valid result)
+		=> got    { $calculator->divide (10, 2) }
+		=> expect => 5
+		;
+
+	assume q (should throw exception on invalid input)
+		=> got    { $calculator->divide (10, 0) }
+		=> throws => expect_re (qr (division by zero))
+		;
+
+Specifies code to compute the value under test.
+
+The block is evaluated in an C<eval> to capture both the return value
+and any exceptions thrown.
+
+When C<throws> is not specified the assumption fails if the code dies unexpectedly.
+
+When C<throws> is specified, the assumption fails if the code lives instead of dying.
+
+After checking the live/die status, the assumption compares either
+the return value (with C<expect>) or the exception (with C<throws>)
+against the expected value.
+
+Unlike L<< C<act {}>|/act {} >>, there is no option to specify dependencies.
+
+See also:
+L</act {}>,
+L</arrange {}>.
 
 =head2 note
 
-Re-exported from L<Test::More/note>.
+	note q (some note);
+	note @messages;
+
+Prints informational messages that appear only in verbose test output.
+
+Notes are not shown during normal test runs, making them suitable for debugging
+information or additional context that isn't critical for understanding test failures.
+
+Accepts a list of values that are concatenated together.
+
+See also:
+L<diag|/diag>,
+L<Test::More::note|Test::More/note>,
+L<Test2::V0::note|Test2::Tools::Basic/note>.
 
 =head2 plan
 
-Re-exported from L<Test::More/plan>.
+	plan 42;
+	plan tests => 42;
+
+	plan skip_all => q (reason);
+
+Declares the test plan - how many tests will be run or why all tests
+are being skipped.
+
+When called with a number, declares that exactly that many tests will
+be executed. The test suite fails if the actual count differs.
+
+When called with C<skip_all>, skips the entire test file with the
+provided reason. No tests will be run.
+
+Use L</done_testing> instead if you don't know the test count in advance.
+
+See also:
+L</done_testing>,
+L<Test::More::plan|Test::More/plan>,
+L<Test2::V0::plan|Test2::Tools::Basic/plan>.
 
 =head2 skip
 
@@ -784,12 +901,40 @@ Re-exported from L<Test::More/skip>.
 
 =head2 subtest
 
-    subtest q (title) => sub {
-        ...;
-    };
+	subtest q (title) => sub {
+		...;
+	};
 
-Similar to L<Test::More/subtest> but also creates a new
-L<Context::Singleton> frame for each subtest.
+Groups related tests together with an isolated execution context.
+
+Similar to L<Test::More::subtest|Test::More/subtest>, but creates a new
+sub-context for each subtest. This means context-defining blocks
+(e.g.: L</act {}>, L</arrange {}>, L</override {}>) defined within
+the subtest are scoped to that subtest only.
+
+	act { ... } qw (foo bar);
+
+	arrange { foo => 1 };
+	arrange { bar => 2 };
+
+	subtest q (with different arrangement) => sub {
+		arrange { foo => 99 };
+
+		assume q (uses parent's act but overridden foo)
+			=> expect => [99, 2]
+			;
+	};
+
+	assume q (parent context unchanged)
+		=> expect => [1, 2]
+		;
+
+This scoping enables test isolation and allows subtests to override
+the parent context without affecting sibling tests.
+
+See also:
+L<Test::More::subtest|Test::More/subtest>,
+L<Test2::Tools::Subtest>.
 
 =head2 todo_skip
 

@@ -30,13 +30,13 @@ package Test::YAFT {
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
-	sub arrange (&);
-	sub got (&);
+	sub arrange (&;@);
+	sub got (&;@);
 	sub had_no_warnings (;$);
 	sub pass ($);
 
 	sub act (&;@)                       :Util;
-	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
+	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
 	sub assume                          :Assumption(\&_test_yaft_assumption);
 	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
@@ -98,7 +98,7 @@ package Test::YAFT {
 	sub expect_value                    :Expectation(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);
 	sub fail                            :Assumption;
-	sub got (&)                         :Util(Test::YAFT::Argument::Got::);
+	sub got (&;@)                       :Util(Test::YAFT::Argument::Got::);
 	sub had_no_warnings (;$)            :Assumption(\&Test::Warnings::had_no_warnings);
 	sub ignore                          :Expectation(\&Test::Deep::ignore);
 	sub it                              :Assumption(\&_test_yaft_assumption);

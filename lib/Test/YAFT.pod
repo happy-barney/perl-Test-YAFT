@@ -678,6 +678,7 @@ All dependencies must be provided before invocation.
 
 See also:
 L</arrange {}>,
+L</arranged ($)>,
 L</got {}>.
 
 =head3 Named parameter dispatch
@@ -758,6 +759,48 @@ arrange the same property twice in the same context will fail.
 
 See also:
 L</act {}>,
+L</arranged ($)>,
+L</got {}>.
+
+=head2 arranged ($)
+
+	act {
+		my ($discount) = @_;
+		calculate_total (arranged q (tax_rate) // 0.20, $discount);
+	}
+		q (discount)
+		;
+
+	arrange { discount => 0.10 };
+
+	assume q (uses default tax rate)
+		=> expect => calculate_total (0.20, 0.10)
+		;
+
+	assume q (uses custom tax rate)
+		=> arrange { tax_rate => 0.15 }
+		=> expect  => calculate_total (0.15, 0.10)
+		;
+
+Alternative usage in C<got {}> block:
+
+	assume q (uses arranged configuration)
+		=> arrange { api_timeout => 30 }
+		=> got     { fetch_data (arranged q (api_timeout)) }
+		=> expect  => ...
+		;
+
+Returns the arranged value of the specified property.
+
+Useful for accessing optional arranged values inside C<got {}> and
+C<act {}> blocks. Mandatory dependencies for C<act {}> are passed
+via C<@_> in definition order.
+
+Returns C<undef> if the property has not been arranged yet.
+
+See also:
+L</act {}>,
+L</arrange {}>,
 L</got {}>.
 
 =head2 BAIL_OUT ($)
@@ -851,10 +894,12 @@ the return value (with C<expect>) or the exception (with C<throws>)
 against the expected value.
 
 Unlike L<< C<act {}>|/act {} >>, there is no option to specify dependencies.
+Use L<arranged|/arranged> to access arranged values within the block.
 
 See also:
 L</act {}>,
-L</arrange {}>.
+L</arrange {}>,
+L</arranged ($)>.
 
 =head2 note
 

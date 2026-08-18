@@ -2,6 +2,7 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+    Add `arranged ($)` - accessor to arranged values.
 	Add `bail_out ($)` - lowercase alternative to `BAIL_OUT ($)`.
 	Revamp utils documentation.
 	Allow block-y utils to accept and pass-through additional arguments.

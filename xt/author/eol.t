@@ -103,6 +103,7 @@ my @files = (
     't/test-helper.pl',
     't/util/act.t',
     't/util/arrange.t',
+    't/util/arranged.t',
     't/util/bail-out.t',
     't/util/diag.t',
     't/util/done-testing.t',

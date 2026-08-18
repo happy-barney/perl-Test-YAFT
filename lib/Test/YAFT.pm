@@ -31,6 +31,7 @@ package Test::YAFT {
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
 	sub arrange (&;@);
+	sub arranged ($);
 	sub BAIL_OUT ($);
 	sub bail_out ($);
 	sub done_testing (;$$);
@@ -41,6 +42,7 @@ package Test::YAFT {
 
 	sub act (&;@)                       :Util;
 	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
+	sub arranged ($)                    :Util;
 	sub assume                          :Assumption(\&_test_yaft_assumption);
 	sub BAIL_OUT ($)                    :Util(\&Test::More::BAIL_OUT);
 	sub bail_out ($)                    :Util(\&Test::More::BAIL_OUT);
@@ -303,6 +305,16 @@ package Test::YAFT {
 			;
 
 		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($act, @dependencies);
+	}
+
+	sub arranged ($) {
+		my ($name) = @_;
+
+		return deduce $name
+			if try_deduce $name
+			;
+
+		return undef;
 	}
 
 	sub done_testing (;$$) {

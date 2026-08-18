@@ -31,18 +31,21 @@ package Test::YAFT {
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
 	sub arrange (&;@);
+	sub BAIL_OUT ($);
+	sub done_testing (;$$);
 	sub got (&;@);
 	sub had_no_warnings (;$);
 	sub pass ($);
+	sub plan ($;$);
 
 	sub act (&;@)                       :Util;
 	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
 	sub assume                          :Assumption(\&_test_yaft_assumption);
-	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
+	sub BAIL_OUT ($)                    :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                            :Util(\&Test::More::diag);
-	sub done_testing                    :Util(\&Test::More::done_testing);
+	sub done_testing (;$$)              :Util;
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
@@ -106,7 +109,7 @@ package Test::YAFT {
 	sub note                            :Util(\&Test::More::note);
 	sub ok                              :Assumption;
 	sub pass ($)                        :Assumption(\&Test::More::pass);
-	sub plan                            :Util(\&Test::More::plan);
+	sub plan ($;$)                      :Util;
 	sub skip                            :Util(\&Test::More::skip);
 	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
@@ -300,6 +303,14 @@ package Test::YAFT {
 		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($act, @dependencies);
 	}
 
+	sub done_testing (;$$) {
+		shift
+			if @_ > 1
+			;
+
+		goto &Test::More::done_testing;
+	}
+
 	sub fail {
 		my ($title, %args) = @_;
 
@@ -335,6 +346,14 @@ package Test::YAFT {
 				diag   => q (),
 				;
 		}
+	}
+
+	sub plan ($;$) {
+		unshift @_, q (tests)
+			if @_ == 1
+			;
+
+		goto \& Test::More::plan;
 	}
 
 	sub subtest {

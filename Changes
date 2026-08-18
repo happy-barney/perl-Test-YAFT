@@ -2,6 +2,7 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+	Add `bail_out ($)` - lowercase alternative to `BAIL_OUT ($)`.
 	Allow block-y utils to accept and pass-through additional arguments.
 	Use prototypes for utils restricted number of arguments.
 

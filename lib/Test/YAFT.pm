@@ -32,6 +32,7 @@ package Test::YAFT {
 	sub act (&;@);
 	sub arrange (&;@);
 	sub BAIL_OUT ($);
+	sub bail_out ($);
 	sub done_testing (;$$);
 	sub got (&;@);
 	sub had_no_warnings (;$);
@@ -42,6 +43,7 @@ package Test::YAFT {
 	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
 	sub assume                          :Assumption(\&_test_yaft_assumption);
 	sub BAIL_OUT ($)                    :Util(\&Test::More::BAIL_OUT);
+	sub bail_out ($)                    :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                            :Util(\&Test::More::diag);

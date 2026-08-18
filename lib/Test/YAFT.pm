@@ -30,20 +30,31 @@ package Test::YAFT {
 
 	# v5.14 forward prototype declaration to prevent warnings from attributes
 	sub act (&;@);
-	sub arrange (&);
-	sub got (&);
+	sub arrange (&;@);
+	sub arranged ($);
+	sub BAIL_OUT ($);
+	sub bail_out ($);
+	sub done_testing (;$$);
+	sub expect (&);
+	sub got (&;@);
 	sub had_no_warnings (;$);
+	sub override (&);
 	sub pass ($);
+	sub plan ($;$);
+	sub throws (&);
 
 	sub act (&;@)                       :Util;
-	sub arrange (&)                     :Util(Test::YAFT::Argument::Arrange::);
+	sub arrange (&;@)                   :Util(Test::YAFT::Argument::Arrange::);
+	sub arranged ($)                    :Util;
 	sub assume                          :Assumption(\&_test_yaft_assumption);
-	sub BAIL_OUT                        :Util(\&Test::More::BAIL_OUT);
+	sub BAIL_OUT ($)                    :Util(\&Test::More::BAIL_OUT);
+	sub bail_out ($)                    :Util(\&Test::More::BAIL_OUT);
 	sub cmp_details                     :Foundation(\&Test::Deep::cmp_details);
 	sub deep_diag                       :Foundation(\&Test::Deep::deep_diag);
 	sub diag                            :Util(\&Test::More::diag);
-	sub done_testing                    :Util(\&Test::More::done_testing);
+	sub done_testing (;$$)              :Util;
 	sub eq_deeply                       :Foundation(\&Test::Deep::eq_deeply);
+	sub expect (&)                      :Util(Test::YAFT::Argument::Expect::);
 	sub expect_all                      :Expectation(\&Test::Deep::all);
 	sub expect_any                      :Expectation(\&Test::Deep::any);
 	sub expect_array                    :Expectation(\&Test::Deep::array);
@@ -98,39 +109,32 @@ package Test::YAFT {
 	sub expect_value                    :Expectation(Test::YAFT::Cmp);
 	sub explain                         :Util(\&Test::More::explain);
 	sub fail                            :Assumption;
-	sub got (&)                         :Util(Test::YAFT::Argument::Got::);
+	sub got (&;@)                       :Util(Test::YAFT::Argument::Got::);
 	sub had_no_warnings (;$)            :Assumption(\&Test::Warnings::had_no_warnings);
 	sub ignore                          :Expectation(\&Test::Deep::ignore);
 	sub it                              :Assumption(\&_test_yaft_assumption);
 	sub nok                             :Assumption;
 	sub note                            :Util(\&Test::More::note);
 	sub ok                              :Assumption;
+	sub override (&)                    :Util(Test::YAFT::Argument::Override::);
 	sub pass ($)                        :Assumption(\&Test::More::pass);
-	sub plan                            :Util(\&Test::More::plan);
+	sub plan ($;$)                      :Util;
 	sub skip                            :Util(\&Test::More::skip);
 	sub subtest                         :Util;
 	sub test_deep_cmp                   :Foundation;
 	sub test_frame (&)                  :Foundation;
 	sub there                           :Assumption(\&_test_yaft_assumption);
-	sub todo                            :Util(\&Test::More::todo);
+	sub throws (&)                      :Util(Test::YAFT::Argument::Throws::);
 	sub todo_skip                       :Util(\&Test::More::todo_skip);
 
 	my $SINGLETON_ACT = q (Test::YAFT::act);
 
-	sub _act_arrange;
 	sub _build_got;
+	sub _resolve_argument;
 	sub _run_act;
 	sub _run_coderef;
 	sub _run_diag;
 	sub _test_yaft_assumption_args;
-
-	sub _act_arrange {
-		my ($args) = @_;
-
-		proclaim $_->resolve
-			for @{ $args->{arrange} // [] }
-			;
-	}
 
 	sub _build_got {
 		my ($args) = @_;
@@ -152,6 +156,21 @@ package Test::YAFT {
 			value    => $args->{got},
 			error    => undef,
 		};
+	}
+
+	sub _resolve_argument {
+		my ($argument) = @_;
+
+		return $argument->resolve
+			if $argument->$Safe::Isa::_isa (Test::YAFT::Argument::)
+			;
+
+		return [ map { $_->resolve } @$argument ]
+			if Ref::Util::is_arrayref ($argument)
+			&& $argument->[0]->$Safe::Isa::_isa (Test::YAFT::Argument::)
+			;
+
+		return $argument;
 	}
 
 	sub _run_act {
@@ -199,7 +218,7 @@ package Test::YAFT {
 	sub _test_yaft_assumption {
 		my ($title, @args) = @_;
 
-		my %args = _test_yaft_assumption_args @args;
+		my %args = _test_yaft_assumption_args (@args);
 
 		my $guard = Sub::Override::->new (
 			q (Data::Dumper::Dumper) => \ &Test::YAFT::Dumper::Dumper,
@@ -207,7 +226,9 @@ package Test::YAFT {
 
 		my ($ok, $stack, $got, $expect);
 		test_frame {
-			_act_arrange (\ %args);
+			_resolve_argument $args{override};
+			_resolve_argument $args{arrange};
+
 			my $result = _build_got (\ %args);
 
 			my $expected_to_live = ! exists $args{throws};
@@ -220,8 +241,8 @@ package Test::YAFT {
 				;
 
 			($got, $expect) = $result->{lives_ok}
-				? ($result->{value}, $args{expect})
-				: ($result->{error}, $args{throws})
+				? ($result->{value}, _resolve_argument $args{expect})
+				: ($result->{error}, _resolve_argument $args{throws})
 				;
 
 			($ok, $stack) = Test::Deep::cmp_details ($got, $expect);
@@ -293,6 +314,24 @@ package Test::YAFT {
 		proclaim $SINGLETON_ACT => Test::YAFT::Act::->new ($act, @dependencies);
 	}
 
+	sub arranged ($) {
+		my ($name) = @_;
+
+		return deduce $name
+			if try_deduce $name
+			;
+
+		return undef;
+	}
+
+	sub done_testing (;$$) {
+		shift
+			if @_ > 1
+			;
+
+		goto &Test::More::done_testing;
+	}
+
 	sub fail {
 		my ($title, %args) = @_;
 
@@ -328,6 +367,14 @@ package Test::YAFT {
 				diag   => q (),
 				;
 		}
+	}
+
+	sub plan ($;$) {
+		unshift @_, q (tests)
+			if @_ == 1
+			;
+
+		goto \& Test::More::plan;
 	}
 
 	sub subtest {

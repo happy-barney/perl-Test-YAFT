@@ -2,6 +2,15 @@ Revision history for Test::YAFT
 
 {{$NEXT}}
 
+    Add `arranged ($)` - accessor to arranged values.
+	Add `bail_out ($)` - lowercase alternative to `BAIL_OUT ($)`.
+    Add `expect {}` - syntax sugar complementing  `got {}`.
+	Add `override {}` - syntax sugar to override functions / method.
+    Add `throws {}` - syntax sugar complementing `got {}`.
+	Revamp utils documentation.
+	Allow block-y utils to accept and pass-through additional arguments.
+	Use prototypes for utils restricted number of arguments.
+
 v1.0.4     2026-08-17 07:35 UTC
 
 	Use non-@cpan.org email address.

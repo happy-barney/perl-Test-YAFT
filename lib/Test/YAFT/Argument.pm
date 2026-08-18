@@ -10,11 +10,11 @@ package Test::YAFT::Argument {
 	sub set_argument;
 
 	sub new {
-		my ($class, $code) = @_;
+		my ($class, $code, @pad) = @_;
 
-		bless {
-			code => $code,
-		}, $class;
+		my $self = bless { code => $code }, $class;
+
+		($self, @pad);
 	}
 
 	sub resolve {
